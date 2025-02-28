@@ -62,11 +62,11 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8">
         <div className="flex flex-col items-center">
           <Image
-            src="/logo/logo-preto.png"
+            src="https://res.cloudinary.com/ds6tkgdjg/image/upload/v1740777207/loyal-auto-sales/logo.png"
             alt="Loyal Auto Sales Logo"
-            width={250}
-            height={67}
-            className="mb-6"
+            width={200}
+            height={108}
+            className="mb-8"
             priority
           />
           <h2 className="text-center text-3xl font-extrabold text-gray-900">

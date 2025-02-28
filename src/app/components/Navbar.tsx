@@ -71,12 +71,12 @@ export default function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <Link href="/dashboard" className="flex items-center">
                 <Image
-                  src="/logo/logo-preto.png"
+                  src="https://res.cloudinary.com/ds6tkgdjg/image/upload/v1740777207/loyal-auto-sales/logo.png"
                   alt="Loyal Auto Sales Logo"
                   width={150}
-                  height={40}
-                  className="h-10 w-auto"
+                  height={81}
                   priority
+                  className="h-auto"
                 />
               </Link>
             </div>
