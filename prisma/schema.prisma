@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Vehicle {
@@ -34,7 +34,7 @@ model Image {
   createdAt DateTime @default(now())
   vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
 
-  @@index([vehicleId], map: "Image_vehicleId_fkey")
+  @@index([vehicleId])
 }
 
 model Expense {
@@ -47,7 +47,7 @@ model Expense {
   createdAt   DateTime @default(now())
   vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
 
-  @@index([vehicleId], map: "Expense_vehicleId_fkey")
+  @@index([vehicleId])
 }
 
 model MarketPrice {

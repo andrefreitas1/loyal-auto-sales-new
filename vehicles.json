@@ -1,0 +1,16 @@
+[
+  {
+    "id": "59d4d61b-3557-44e7-9658-453a9f2da3ec",
+    "brand": "uno",
+    "model": "uno",
+    "year": 2025,
+    "color": "preta",
+    "vin": "ASD21AS35F13AS13A",
+    "mileage": 10000,
+    "purchasePrice": 100000,
+    "purchaseDate": "2025-02-28T03:00:00.000Z",
+    "status": "in_preparation",
+    "createdAt": "2025-02-28T19:14:10.028Z",
+    "updatedAt": "2025-02-28T19:17:12.983Z"
+  }
+]
