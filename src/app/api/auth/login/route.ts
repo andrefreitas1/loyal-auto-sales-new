@@ -15,24 +15,22 @@ export async function POST(request: NextRequest) {
 
     console.log('Tentativa de login para:', email);
 
-    // Buscar usuário pelo email
-    const user = await prisma.$queryRaw`
-      SELECT id, email, name, password, role, active
-      FROM User
-      WHERE email = ${email}
-    `;
+    // Buscar usuário pelo email usando Prisma Client
+    const userData = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    });
 
-    console.log('Usuário encontrado:', user ? 'Sim' : 'Não');
+    console.log('Usuário encontrado:', userData ? 'Sim' : 'Não');
 
-    if (!user || !Array.isArray(user) || user.length === 0) {
+    if (!userData) {
       console.log('Usuário não encontrado para o email:', email);
       return NextResponse.json(
         { error: 'Usuário não encontrado' },
         { status: 401 }
       );
     }
-
-    const userData = user[0];
 
     // Verificar se o usuário está ativo
     console.log('Status do usuário:', userData.active ? 'Ativo' : 'Inativo');
