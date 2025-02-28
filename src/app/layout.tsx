@@ -1,7 +1,9 @@
+'use client';
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
-          {/* Não mostrar o Navbar na página de login */}
-          {children}
-        </div>
+        <SessionProvider>
+          <div className="min-h-screen bg-gray-50">
+            {/* Não mostrar o Navbar na página de login */}
+            {children}
+          </div>
+        </SessionProvider>
       </body>
     </html>
   );

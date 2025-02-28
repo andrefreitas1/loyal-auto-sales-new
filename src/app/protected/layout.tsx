@@ -3,37 +3,27 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { SessionProvider } from 'next-auth/react';
 import Navbar from '../components/Navbar';
+import Spinner from '../components/Spinner';
 
 export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <SessionProvider>
-      <ProtectedContent>{children}</ProtectedContent>
-    </SessionProvider>
-  );
-}
-
-function ProtectedContent({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return;
-
-    if (!session) {
-      router.replace('/login');
+    if (status === 'unauthenticated') {
+      router.push('/login');
     }
-  }, [session, status, router]);
+  }, [status, router]);
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-500"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner />
       </div>
     );
   }
@@ -45,7 +35,7 @@ function ProtectedContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <main className="min-h-[calc(100vh-4rem)]">
+      <main className="container mx-auto px-4 py-8">
         {children}
       </main>
     </>
