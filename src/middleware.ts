@@ -47,10 +47,7 @@ export async function middleware(request: NextRequest) {
 // Configurar quais rotas devem ser protegidas
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/vehicles/:path*',
-    '/users/:path*',
-    '/reports/:path*',
+    '/protected/:path*',
     '/api/:path*'
   ],
 }; 

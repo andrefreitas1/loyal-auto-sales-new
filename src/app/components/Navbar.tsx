@@ -57,10 +57,10 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/vehicles', label: 'Veículos' },
-    { href: '/reports', label: 'Relatórios' },
-    { href: '/users', label: 'Usuários' },
+    { href: '/protected/dashboard', label: 'Dashboard' },
+    { href: '/protected/vehicles', label: 'Veículos' },
+    { href: '/protected/reports', label: 'Relatórios' },
+    { href: '/protected/users', label: 'Usuários' },
   ];
 
   return (
