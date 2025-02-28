@@ -1,3 +1,10 @@
+import { DefaultSession } from 'next-auth';
+
+export interface VehicleImage {
+  url: string;
+  id: string;
+}
+
 export interface Expense {
   id: string;
   amount: number;
@@ -32,10 +39,22 @@ export interface Vehicle {
   status: 'acquired' | 'in_preparation' | 'for_sale' | 'sold';
   purchaseDate: Date;
   purchasePrice: number;
-  images: string[];
+  images: VehicleImage[];
   expenses: Expense[];
   marketPrices?: MarketPrices;
   saleInfo?: SaleInfo;
   createdAt: Date;
   updatedAt: Date;
+}
+
+declare module 'next-auth' {
+  interface User {
+    role?: string;
+  }
+
+  interface Session extends DefaultSession {
+    user?: {
+      role?: string;
+    } & DefaultSession['user']
+  }
 } 

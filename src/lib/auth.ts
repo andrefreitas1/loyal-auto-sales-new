@@ -2,6 +2,11 @@ import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { JWT } from 'next-auth/jwt';
+
+interface CustomToken extends JWT {
+  role?: string;
+}
 
 const prisma = new PrismaClient();
 
@@ -67,13 +72,13 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
+        (token as CustomToken).role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.role = token.role;
+        session.user.role = (token as CustomToken).role;
       }
       return session;
     }
