@@ -1,5 +1,3 @@
-import { DefaultSession } from 'next-auth';
-
 export interface VehicleImage {
   url: string;
   id: string;
@@ -45,16 +43,4 @@ export interface Vehicle {
   saleInfo?: SaleInfo;
   createdAt: Date;
   updatedAt: Date;
-}
-
-declare module 'next-auth' {
-  interface User {
-    role?: string;
-  }
-
-  interface Session extends DefaultSession {
-    user?: {
-      role?: string;
-    } & DefaultSession['user']
-  }
 } 

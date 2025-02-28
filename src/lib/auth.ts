@@ -1,32 +1,5 @@
 import { type NextAuthOptions } from 'next-auth';
 import { AdapterUser } from 'next-auth/adapters';
-
-type Role = 'admin' | 'operator';
-
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string;
-      email: string;
-      name: string;
-      role: Role;
-    };
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id: string;
-    email: string;
-    name: string;
-    role: Role;
-  }
-}
-
-interface User extends AdapterUser {
-  role: Role;
-}
-
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
@@ -44,7 +17,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Senha", type: "password" }
       },
-      async authorize(credentials): Promise<User | null> {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email e senha são obrigatórios');
         }
@@ -70,7 +43,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role as Role,
+            role: user.role,
             emailVerified: null,
           };
         } catch (error) {
