@@ -15,6 +15,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
+import { Vehicle } from '@/types/vehicle';
 
 interface DashboardStats {
   acquired: number;
@@ -26,17 +27,6 @@ interface DashboardStats {
   totalExpenses: number;
   totalProfit: number;
   totalInvestment: number;
-}
-
-interface Vehicle {
-  id: string;
-  brand: string;
-  model: string;
-  year: number;
-  images: Array<{
-    id: string;
-    url: string;
-  }>;
 }
 
 export default function Dashboard() {
@@ -67,7 +57,7 @@ export default function Dashboard() {
         const vehicles = await response.json();
         
         const totalInvestment = vehicles.reduce((acc: number, vehicle: Vehicle) => {
-          const expenses = vehicle.expenses?.reduce((sum: number, expense: any) => sum + expense.amount, 0) || 0;
+          const expenses = vehicle.expenses?.reduce((sum: number, expense) => sum + expense.amount, 0) || 0;
           return acc + vehicle.purchasePrice + expenses;
         }, 0);
 
