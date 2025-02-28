@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface UploadResponse {
   success: boolean;
@@ -15,30 +16,27 @@ export default function LogoUpload() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    if (!session || !session.user || session.user.role !== 'admin') {
+      setError('Você não tem permissão para fazer upload da logo');
+      return;
+    }
 
     setIsUploading(true);
     setError('');
     setSuccess('');
 
     try {
-      // Obter o token do localStorage
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Não autorizado');
-      }
-
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await fetch('/api/upload-logo', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
         body: formData,
       });
 
@@ -58,6 +56,10 @@ export default function LogoUpload() {
       setIsUploading(false);
     }
   };
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    return null;
+  }
 
   return (
     <div className="space-y-4">
