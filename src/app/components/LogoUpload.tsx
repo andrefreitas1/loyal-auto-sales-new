@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+interface UploadResponse {
+  success: boolean;
+  url?: string;
+  error?: string;
+  message?: string;
+}
+
 export default function LogoUpload() {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
@@ -18,26 +25,35 @@ export default function LogoUpload() {
     setSuccess('');
 
     try {
+      // Obter o token do localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Não autorizado');
+      }
+
       const formData = new FormData();
       formData.append('file', file);
 
       const response = await fetch('/api/upload-logo', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData,
       });
 
-      const data = await response.json();
+      const data: UploadResponse = await response.json();
 
-      if (response.ok) {
-        setSuccess('Logo atualizada com sucesso!');
+      if (response.ok && data.success) {
+        setSuccess(data.message || 'Logo atualizada com sucesso!');
         // Atualizar a página para mostrar a nova logo
         router.refresh();
       } else {
         setError(data.error || 'Erro ao fazer upload da logo');
       }
     } catch (error) {
-      setError('Erro ao fazer upload da logo');
       console.error('Erro:', error);
+      setError(error instanceof Error ? error.message : 'Erro ao fazer upload da logo');
     } finally {
       setIsUploading(false);
     }
