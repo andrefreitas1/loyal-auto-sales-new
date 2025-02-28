@@ -2,11 +2,6 @@ import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { JWT } from 'next-auth/jwt';
-
-interface CustomToken extends JWT {
-  role?: string;
-}
 
 const prisma = new PrismaClient();
 
@@ -16,71 +11,60 @@ export const authOptions: AuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Senha", type: "password" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error('Email e senha são obrigatórios');
         }
 
         try {
-          const user = await prisma.$queryRaw`
-            SELECT id, email, name, password, role, active
-            FROM User
-            WHERE email = ${credentials.email}
-          `;
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
 
-          if (!user || !Array.isArray(user) || user.length === 0) {
+          if (!user) {
             return null;
           }
 
-          const userData = user[0];
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
 
-          if (!userData.active) {
-            return null;
-          }
-
-          const validPassword = await bcrypt.compare(credentials.password, userData.password);
-          
-          if (!validPassword) {
+          if (!isPasswordValid) {
             return null;
           }
 
           return {
-            id: userData.id,
-            email: userData.email,
-            name: userData.name,
-            role: userData.role
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
           };
         } catch (error) {
-          console.error('Erro na autenticação:', error);
+          console.error('Erro durante autenticação:', error);
           return null;
-        } finally {
-          await prisma.$disconnect();
         }
       }
     })
   ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
-  },
-  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/login',
+    error: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        (token as CustomToken).role = user.role;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.role = (token as CustomToken).role;
+      if (session?.user) {
+        session.user.role = token.role;
       }
       return session;
     }
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 }; 
