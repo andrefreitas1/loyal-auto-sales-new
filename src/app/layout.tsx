@@ -1,16 +1,9 @@
-'use client';
-
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import { Providers } from "./providers";
+export { metadata } from "./metadata";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Loyal Auto Sales",
-  description: "Sistema de gerenciamento de veículos",
-};
 
 export default function RootLayout({
   children,
@@ -20,12 +13,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <SessionProvider>
+        <Providers>
           <div className="min-h-screen bg-gray-50">
             {/* Não mostrar o Navbar na página de login */}
             {children}
           </div>
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );
