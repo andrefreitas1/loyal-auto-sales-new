@@ -1,36 +1,22 @@
-import { AuthOptions, DefaultSession } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import { type NextAuthOptions } from 'next-auth';
+import type { Session, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string;
-      role: string;
-      email: string;
-      name: string;
-    }
-  }
+type UserRole = 'admin' | 'operator';
 
-  interface User {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  }
+interface CustomUser extends User {
+  role: UserRole;
 }
 
-declare module 'next-auth/jwt' {
-  interface JWT {
-    role?: string;
-  }
+interface CustomSession extends Session {
+  user?: CustomUser;
 }
 
 const prisma = new PrismaClient();
 
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -64,7 +50,7 @@ export const authOptions: AuthOptions = {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role,
+            role: user.role as UserRole,
           };
         } catch (error) {
           console.error('Erro durante autenticação:', error);
@@ -84,9 +70,9 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }): Promise<CustomSession> {
       if (session?.user) {
-        session.user.role = token.role;
+        (session.user as CustomUser).role = token.role as UserRole;
       }
       return session;
     }
