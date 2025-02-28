@@ -7,6 +7,11 @@ import { authOptions } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+interface CloudinaryResponse {
+  secure_url: string;
+  [key: string]: any;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Verificar autenticação
@@ -34,7 +39,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Fazer o upload para o Cloudinary usando stream
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'loyal-auto-sales',
@@ -44,7 +49,7 @@ export async function POST(request: NextRequest) {
         },
         (error, result) => {
           if (error) reject(error);
-          else resolve(result);
+          else resolve(result as CloudinaryResponse);
         }
       );
 
