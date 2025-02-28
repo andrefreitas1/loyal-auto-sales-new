@@ -8,6 +8,11 @@ export const runtime = 'nodejs';
 
 const prisma = new PrismaClient();
 
+interface CloudinaryResponse {
+  secure_url: string;
+  [key: string]: any;
+}
+
 async function uploadToCloudinary(file: File) {
   try {
     // Converter o arquivo para um buffer
@@ -15,7 +20,7 @@ async function uploadToCloudinary(file: File) {
     const buffer = Buffer.from(bytes);
 
     // Fazer o upload para o Cloudinary usando stream
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'vehicles',
@@ -23,7 +28,7 @@ async function uploadToCloudinary(file: File) {
         },
         (error, result) => {
           if (error) reject(error);
-          else resolve(result);
+          else resolve(result as CloudinaryResponse);
         }
       );
 
