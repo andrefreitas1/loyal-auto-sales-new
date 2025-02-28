@@ -1,27 +1,35 @@
 import { type NextAuthOptions } from 'next-auth';
-import { type DefaultSession, type DefaultUser } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { AdapterUser } from 'next-auth/adapters';
 
-type UserRole = 'admin' | 'operator';
-
-interface IUser extends DefaultUser {
-  role: UserRole;
-}
+type Role = 'admin' | 'operator';
 
 declare module 'next-auth' {
-  interface User extends IUser {}
-  interface Session extends DefaultSession {
-    user?: User;
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      name: string;
+      role: Role;
+    };
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    role?: UserRole;
+    id: string;
+    email: string;
+    name: string;
+    role: Role;
   }
 }
+
+interface User extends AdapterUser {
+  role: Role;
+}
+
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -36,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Senha", type: "password" }
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email e senha são obrigatórios');
         }
@@ -62,7 +70,8 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role as UserRole,
+            role: user.role as Role,
+            emailVerified: null,
           };
         } catch (error) {
           console.error('Erro durante autenticação:', error);
@@ -78,16 +87,23 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
         token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.user.role = token.role;
-      }
+      session.user = {
+        id: token.id,
+        email: token.email,
+        name: token.name,
+        role: token.role,
+      };
       return session;
     }
   },
   secret: process.env.NEXTAUTH_SECRET,
+}; 
 }; 
