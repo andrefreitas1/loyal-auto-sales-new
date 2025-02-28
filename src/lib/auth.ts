@@ -1,7 +1,27 @@
-import { AuthOptions } from 'next-auth';
+import { AuthOptions, DefaultSession } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+
+declare module 'next-auth' {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession['user']
+  }
+
+  interface User {
+    role: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    role?: string;
+  }
+}
 
 const prisma = new PrismaClient();
 
