@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -11,6 +11,8 @@ export default function Login() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/protected/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,16 +24,23 @@ export default function Login() {
         email,
         password,
         redirect: false,
+        callbackUrl,
       });
 
       if (result?.error) {
-        setError('Email ou senha inválidos');
+        if (result.error === 'CredentialsSignin') {
+          setError('Email ou senha inválidos');
+        } else {
+          setError('Ocorreu um erro ao tentar fazer login');
+        }
+      } else if (result?.url) {
+        router.push(result.url);
       } else {
-        router.push('/protected/dashboard');
+        router.push(callbackUrl);
       }
     } catch (error) {
-      setError('Ocorreu um erro ao tentar fazer login');
       console.error('Erro no login:', error);
+      setError('Ocorreu um erro ao tentar fazer login');
     } finally {
       setIsLoading(false);
     }
