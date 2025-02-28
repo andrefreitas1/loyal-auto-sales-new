@@ -5,44 +5,49 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Vehicle {
-  id              String    @id @default(uuid())
-  brand           String
-  model           String
-  year            Int
-  color           String
-  vin             String    @unique
-  mileage         Float
-  purchasePrice   Float
-  purchaseDate    DateTime  @default(now())
-  status          String    @default("acquired") // acquired, in_preparation, for_sale, sold
-  images          Image[]
-  expenses        Expense[]
-  marketPrices    MarketPrice?
-  saleInfo        SaleInfo?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id            String       @id @default(uuid())
+  brand         String
+  model         String
+  year          Int
+  color         String
+  vin           String       @unique
+  mileage       Float
+  purchasePrice Float
+  purchaseDate  DateTime     @default(now())
+  status        String       @default("acquired")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  expenses      Expense[]
+  images        Image[]
+  marketPrices  MarketPrice?
+  saleInfo      SaleInfo?
 }
 
 model Image {
   id        String   @id @default(uuid())
   url       String
   vehicleId String
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
   createdAt DateTime @default(now())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  @@index([vehicleId], map: "Image_vehicleId_fkey")
 }
 
 model Expense {
   id          String   @id @default(uuid())
-  type        String   // maintenance, fuel, washing, other
+  type        String
   description String
   amount      Float
   date        DateTime @default(now())
   vehicleId   String
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
   createdAt   DateTime @default(now())
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  @@index([vehicleId], map: "Expense_vehicleId_fkey")
 }
 
 model MarketPrice {
@@ -52,9 +57,9 @@ model MarketPrice {
   retail    Float
   repasse   Float
   vehicleId String   @unique
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
 }
 
 model SaleInfo {
@@ -62,8 +67,8 @@ model SaleInfo {
   salePrice Float
   saleDate  DateTime @default(now())
   vehicleId String   @unique
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
   createdAt DateTime @default(now())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
 }
 
 model User {
@@ -71,8 +76,8 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("operator") // operator, admin
+  role      String   @default("operator")
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-} 
+}
