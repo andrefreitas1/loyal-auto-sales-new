@@ -5,14 +5,19 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 declare module 'next-auth' {
-  interface Session extends DefaultSession {
+  interface Session {
     user: {
       id: string;
       role: string;
-    } & DefaultSession['user']
+      email: string;
+      name: string;
+    }
   }
 
   interface User {
+    id: string;
+    email: string;
+    name: string;
     role: string;
   }
 }
