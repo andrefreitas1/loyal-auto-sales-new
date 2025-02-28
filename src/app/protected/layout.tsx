@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { SessionProvider } from 'next-auth/react';
 import Navbar from '../components/Navbar';
 
 export default function ProtectedLayout({
@@ -9,15 +11,36 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
+  return (
+    <SessionProvider>
+      <ProtectedContent>{children}</ProtectedContent>
+    </SessionProvider>
+  );
+}
+
+function ProtectedContent({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    // Verificar se existe um token no localStorage
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
+    if (status === 'loading') return;
+
+    if (!session) {
+      router.replace('/login');
     }
-  }, [router]);
+  }, [session, status, router]);
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <>
