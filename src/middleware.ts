@@ -1,53 +1,25 @@
 import { NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'loyal-auto-sales-secret-key-2024';
-
-// Rotas que não precisam de autenticação
-const publicRoutes = ['/', '/api/auth/login'];
 
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  console.log('Middleware - Verificando rota:', path);
+  const token = await getToken({ req: request });
+  const isAuthPage = request.nextUrl.pathname.startsWith('/login');
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/protected');
 
-  // Verificar se é uma rota pública
-  if (publicRoutes.includes(path)) {
-    console.log('Rota pública detectada:', path);
-    return NextResponse.next();
+  // Se estiver tentando acessar uma página de autenticação e já estiver logado
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL('/protected/dashboard', request.url));
   }
 
-  // Verificar se é uma rota de API pública
-  if (path.startsWith('/api/auth/')) {
-    console.log('Rota de API pública detectada:', path);
-    return NextResponse.next();
+  // Se estiver tentando acessar uma rota protegida e não estiver logado
+  if (isProtectedRoute && !token) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Verificar token de autenticação
-  const token = request.cookies.get('auth_token')?.value;
-  console.log('Token encontrado:', token ? 'Sim' : 'Não');
-
-  if (!token) {
-    console.log('Token não encontrado, redirecionando para login');
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  try {
-    // Verificar se o token é válido usando jose
-    const secret = new TextEncoder().encode(JWT_SECRET);
-    const { payload } = await jwtVerify(token, secret);
-    console.log('Token válido para usuário:', payload.email);
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Erro ao validar token:', error);
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  return NextResponse.next();
 }
 
-// Configurar quais rotas devem ser protegidas
 export const config = {
-  matcher: [
-    '/protected/:path*',
-    '/api/:path*'
-  ],
+  matcher: ['/protected/:path*', '/login']
 }; 

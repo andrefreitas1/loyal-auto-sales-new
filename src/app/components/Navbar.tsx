@@ -4,29 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [userData, setUserData] = useState<{ name: string; email: string; role: string } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
-
-  useEffect(() => {
-    // Recuperar dados do usuário do localStorage
-    try {
-      const userDataStr = localStorage.getItem('userData');
-      console.log('UserData do localStorage:', userDataStr); // Debug
-      if (userDataStr) {
-        const parsedData = JSON.parse(userDataStr);
-        console.log('UserData parseado:', parsedData); // Debug
-        setUserData(parsedData);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar dados do usuário:', error);
-    }
-  }, []);
+  const { data: session } = useSession();
 
   useEffect(() => {
     // Fechar menu ao clicar fora
@@ -40,12 +26,9 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      // Limpar dados de autenticação
-      localStorage.removeItem('token');
-      localStorage.removeItem('userData');
-      // Redirecionar para login
+      await signOut({ redirect: false });
       router.push('/login');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
@@ -69,7 +52,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/dashboard" className="flex items-center">
+              <Link href="/protected/dashboard" className="flex items-center">
                 <Image
                   src="https://res.cloudinary.com/ds6tkgdjg/image/upload/v1740777207/loyal-auto-sales/logo.png"
                   alt="Loyal Auto Sales Logo"
@@ -117,13 +100,13 @@ export default function Navbar() {
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                   <div className="py-1">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
-                      <div className="font-medium">{userData?.name || 'Usuário'}</div>
-                      <div className="text-gray-500">{userData?.email || 'usuario@exemplo.com'}</div>
+                      <div className="font-medium">{session?.user?.name || 'Usuário'}</div>
+                      <div className="text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {userData?.role === 'admin' ? 'Administrador' : 'Operador'}
+                        {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
                       </div>
                     </div>
-                    {userData?.role === 'admin' && (
+                    {session?.user?.role === 'admin' && (
                       <Link
                         href="/protected/settings"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -192,15 +175,15 @@ export default function Navbar() {
                 </div>
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium text-gray-800">{userData?.name || 'Usuário'}</div>
-                <div className="text-sm font-medium text-gray-500">{userData?.email || 'usuario@exemplo.com'}</div>
+                <div className="text-base font-medium text-gray-800">{session?.user?.name || 'Usuário'}</div>
+                <div className="text-sm font-medium text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
                 <div className="text-xs text-gray-500">
-                  {userData?.role === 'admin' ? 'Administrador' : 'Operador'}
+                  {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
                 </div>
               </div>
             </div>
             <div className="mt-3 space-y-1">
-              {userData?.role === 'admin' && (
+              {session?.user?.role === 'admin' && (
                 <Link
                   href="/protected/settings"
                   className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
