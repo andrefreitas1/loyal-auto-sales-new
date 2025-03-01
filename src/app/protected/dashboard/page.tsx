@@ -349,7 +349,7 @@ export default function Dashboard() {
 
             {/* Ações Rápidas */}
             <div className="space-y-4">
-              <Link href="/vehicles/new" 
+              <Link href="/protected/vehicles/new" 
                 className="block bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-shadow transform hover:scale-105">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-primary-400/20">
@@ -362,7 +362,7 @@ export default function Dashboard() {
                 </div>
               </Link>
 
-              <Link href="/vehicles" 
+              <Link href="/protected/vehicles" 
                 className="block bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-shadow transform hover:scale-105">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-green-400/20">
@@ -375,7 +375,7 @@ export default function Dashboard() {
                 </div>
               </Link>
 
-              <Link href="/reports" 
+              <Link href="/protected/reports" 
                 className="block bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-shadow transform hover:scale-105">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-yellow-400/20">
