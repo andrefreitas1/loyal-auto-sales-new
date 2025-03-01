@@ -217,7 +217,7 @@ export default function VehicleDetails() {
       });
 
       if (response.ok) {
-        router.push('/vehicles');
+        router.push('/protected/vehicles');
       } else {
         alert('Erro ao excluir veículo. Tente novamente.');
       }
@@ -307,7 +307,7 @@ export default function VehicleDetails() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
               <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
-                <Link href="/vehicles" className="hover:text-primary-600 transition-colors">
+                <Link href="/protected/vehicles" className="hover:text-primary-600 transition-colors">
                   Veículos
                 </Link>
                 <span>/</span>

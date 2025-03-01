@@ -72,13 +72,13 @@ export default function SoldVehicles() {
         <h1 className="text-3xl font-bold">Veículos Vendidos</h1>
         <div className="flex gap-4">
           <Link
-            href="/vehicles"
+            href="/protected/vehicles"
             className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
           >
             Todos os Veículos
           </Link>
           <Link
-            href="/vehicles/new"
+            href="/protected/vehicles/new"
             className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
           >
             Novo Veículo
@@ -90,7 +90,7 @@ export default function SoldVehicles() {
         {vehicles.map((vehicle) => (
           <Link
             key={vehicle.id}
-            href={`/vehicles/${vehicle.id}`}
+            href={`/protected/vehicles/${vehicle.id}`}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
           >
             <div className="relative h-48">
@@ -138,7 +138,7 @@ export default function SoldVehicles() {
         <div className="text-center py-12">
           <p className="text-gray-600">Nenhum veículo vendido no momento.</p>
           <Link
-            href="/vehicles"
+            href="/protected/vehicles"
             className="text-primary-600 hover:text-primary-700 font-semibold mt-2 inline-block"
           >
             Ver todos os veículos

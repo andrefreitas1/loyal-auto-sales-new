@@ -149,7 +149,7 @@ export default function VehicleList() {
             </Link>
 
             <Link
-              href="/vehicles/for-sale"
+              href="/protected/vehicles/for-sale"
               className="flex items-center bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
             >
               <div className="flex-1">
@@ -166,7 +166,7 @@ export default function VehicleList() {
             </Link>
 
             <Link
-              href="/vehicles/sold"
+              href="/protected/vehicles/sold"
               className="flex items-center bg-gradient-to-br from-gray-500 to-gray-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
             >
               <div className="flex-1">
@@ -187,7 +187,7 @@ export default function VehicleList() {
             {vehicles.map((vehicle) => (
               <Link
                 key={vehicle.id}
-                href={`/vehicles/${vehicle.id}`}
+                href={`/protected/vehicles/${vehicle.id}`}
                 className="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden group"
               >
                 <div className="relative h-48">
