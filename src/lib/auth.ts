@@ -3,6 +3,7 @@ import { AdapterUser } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import type { Role } from '@/types/next-auth';
 
 const prisma = new PrismaClient();
 
@@ -39,11 +40,17 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          // Validar se o role é válido
+          if (user.role !== 'admin' && user.role !== 'operator') {
+            console.error('Role inválido:', user.role);
+            return null;
+          }
+
           return {
             id: user.id,
             email: user.email,
             name: user.name,
-            role: user.role,
+            role: user.role as Role,
             emailVerified: null,
           };
         } catch (error) {
