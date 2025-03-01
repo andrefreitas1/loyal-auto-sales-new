@@ -103,7 +103,7 @@ export default function VehicleList() {
               <p className="text-gray-600 mt-2">Gerencie seu inventário de veículos</p>
             </div>
             <Link
-              href="/vehicles/new"
+              href="/protected/vehicles/new"
               className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +115,7 @@ export default function VehicleList() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
-              href="/vehicles/acquired"
+              href="/protected/vehicles/acquired"
               className="flex items-center bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
             >
               <div className="flex-1">
@@ -132,7 +132,7 @@ export default function VehicleList() {
             </Link>
 
             <Link
-              href="/vehicles/in-preparation"
+              href="/protected/vehicles/in-preparation"
               className="flex items-center bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
             >
               <div className="flex-1">
@@ -257,7 +257,7 @@ export default function VehicleList() {
               <h3 className="text-lg font-medium text-gray-900 mb-1">Nenhum veículo cadastrado</h3>
               <p className="text-gray-500 mb-4">Comece adicionando seu primeiro veículo ao estoque.</p>
               <Link
-                href="/vehicles/new"
+                href="/protected/vehicles/new"
                 className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
