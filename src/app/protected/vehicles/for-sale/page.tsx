@@ -12,12 +12,17 @@ interface Vehicle {
   mileage: number;
   purchasePrice: number;
   purchaseDate: string;
-  salePrice: number;
   status: string;
   images: Array<{
     id: string;
     url: string;
   }>;
+  marketPrices?: {
+    wholesale: number;
+    mmr: number;
+    retail: number;
+    repasse: number;
+  } | null;
 }
 
 export default function ForSaleVehicles() {
@@ -121,7 +126,9 @@ export default function ForSaleVehicles() {
                 <p>Milhas: {vehicle.mileage.toLocaleString()}</p>
                 <p>Valor de Compra: ${vehicle.purchasePrice.toLocaleString()}</p>
                 <p>Data de Aquisição: {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}</p>
-                <p>Preço de Venda: ${vehicle.salePrice.toLocaleString()}</p>
+                {vehicle.marketPrices && (
+                  <p>Preço de Venda: ${vehicle.marketPrices.retail.toLocaleString()}</p>
+                )}
               </div>
             </div>
           </Link>
