@@ -114,11 +114,55 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const vehicles = await prisma.vehicle.findMany({
-      include: {
-        images: true,
-        expenses: true,
-        marketPrices: true,
-        saleInfo: true
+      select: {
+        id: true,
+        brand: true,
+        model: true,
+        year: true,
+        color: true,
+        vin: true,
+        mileage: true,
+        purchasePrice: true,
+        purchaseDate: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+        images: {
+          select: {
+            id: true,
+            url: true
+          }
+        },
+        expenses: {
+          select: {
+            id: true,
+            type: true,
+            description: true,
+            amount: true,
+            date: true
+          }
+        },
+        marketPrices: {
+          select: {
+            id: true,
+            wholesale: true,
+            mmr: true,
+            retail: true,
+            repasse: true
+          }
+        },
+        saleInfo: {
+          select: {
+            id: true,
+            salePrice: true,
+            saleDate: true
+          }
+        }
+      },
+      where: {
+        status: {
+          not: 'deleted'
+        }
       }
     });
 
