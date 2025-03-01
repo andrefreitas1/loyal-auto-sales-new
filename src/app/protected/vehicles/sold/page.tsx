@@ -123,7 +123,7 @@ export default function SoldVehicles() {
                 {vehicle.brand} {vehicle.model} ({vehicle.year})
               </h2>
               <div className="text-gray-600">
-                <p>Milhas: {vehicle.mileage.toLocaleString()}</p>
+                <p>Milhas: {vehicle.mileage.toLocaleString()} mi</p>
                 <p>Valor de Compra: ${vehicle.purchasePrice.toLocaleString()}</p>
                 <p>Data de Aquisição: {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}</p>
                 <p>Preço de Venda: ${vehicle.salePrice.toLocaleString()}</p>

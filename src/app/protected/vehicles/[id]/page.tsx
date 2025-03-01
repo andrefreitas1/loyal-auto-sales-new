@@ -509,8 +509,8 @@ export default function VehicleDetails() {
                       <p className="font-medium text-gray-900">{vehicle.color}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Quilometragem</p>
-                      <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} km</p>
+                      <p className="text-sm text-gray-600">Milhas</p>
+                      <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} mi</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Data de Aquisição</p>

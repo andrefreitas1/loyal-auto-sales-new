@@ -88,7 +88,7 @@ export default function NewVehicle() {
     }
 
     if (formData.mileage < 0) {
-      setError('A quilometragem não pode ser negativa');
+      setError('As milhas não podem ser negativas');
       return;
     }
 
@@ -237,7 +237,7 @@ export default function NewVehicle() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Odômetro (km)
+                    Odômetro (mi)
                   </label>
                   <input
                     type="number"
