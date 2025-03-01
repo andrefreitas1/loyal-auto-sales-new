@@ -58,6 +58,12 @@ export async function POST(request: NextRequest) {
     const purchasePrice = parseFloat(formData.get('purchasePrice') as string);
     const images = formData.getAll('images') as File[];
 
+    // Extrair preços de mercado
+    const wholesale = parseFloat(formData.get('wholesale') as string);
+    const mmr = parseFloat(formData.get('mmr') as string);
+    const retail = parseFloat(formData.get('retail') as string);
+    const repasse = parseFloat(formData.get('repasse') as string);
+
     // Upload das imagens
     const imageUrls = await Promise.all(
       images.map(image => uploadToCloudinary(image))
@@ -77,10 +83,19 @@ export async function POST(request: NextRequest) {
           create: imageUrls.map(url => ({
             url
           }))
+        },
+        marketPrices: {
+          create: {
+            wholesale,
+            mmr,
+            retail,
+            repasse
+          }
         }
       },
       include: {
-        images: true
+        images: true,
+        marketPrices: true
       }
     });
 
