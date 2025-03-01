@@ -126,7 +126,7 @@ export default function NewVehicle() {
         throw new Error(data.error || 'Erro ao cadastrar veículo');
       }
 
-      router.push('/vehicles');
+      router.push('/protected/vehicles');
     } catch (error) {
       console.error('Erro ao cadastrar veículo:', error);
       setError(error instanceof Error ? error.message : 'Erro ao cadastrar veículo');
