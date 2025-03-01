@@ -483,7 +483,7 @@ export default function Reports() {
                       <tr key={vehicle.id}>
                         <td className="px-6 py-4">
                           <Link 
-                            href={`/vehicles/${vehicle.id}`}
+                            href={`/protected/vehicles/${vehicle.id}`}
                             className="group"
                           >
                             <div className="text-sm font-medium text-gray-900 group-hover:text-primary-600">
@@ -624,7 +624,7 @@ export default function Reports() {
                   <tr key={vehicle.id}>
                     <td className="px-6 py-4">
                       <Link 
-                        href={`/vehicles/${vehicle.id}`}
+                        href={`/protected/vehicles/${vehicle.id}`}
                         className="group"
                       >
                         <div className="text-sm font-medium text-gray-900 group-hover:text-primary-600">
@@ -687,7 +687,7 @@ export default function Reports() {
                   <tr key={vehicle.id}>
                     <td className="px-6 py-4">
                       <Link 
-                        href={`/vehicles/${vehicle.id}`}
+                        href={`/protected/vehicles/${vehicle.id}`}
                         className="group"
                       >
                         <div className="text-sm font-medium text-gray-900 group-hover:text-primary-600">
@@ -756,7 +756,7 @@ export default function Reports() {
                     <tr key={vehicle.id}>
                       <td className="px-6 py-4">
                         <Link 
-                          href={`/vehicles/${vehicle.id}`}
+                          href={`/protected/vehicles/${vehicle.id}`}
                           className="group"
                         >
                           <div className="text-sm font-medium text-gray-900 group-hover:text-primary-600">
@@ -830,7 +830,7 @@ export default function Reports() {
                     <tr key={vehicle.id}>
                       <td className="px-6 py-4">
                         <Link 
-                          href={`/vehicles/${vehicle.id}`}
+                          href={`/protected/vehicles/${vehicle.id}`}
                           className="group"
                         >
                           <div className="text-sm font-medium text-gray-900 group-hover:text-primary-600">
