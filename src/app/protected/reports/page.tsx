@@ -95,12 +95,7 @@ export default function Reports() {
 
   const fetchReportData = async () => {
     try {
-      const response = await fetch('/protected/api/vehicles', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      });
+      const response = await fetch('/api/vehicles');
       if (response.ok) {
         const vehicles: Vehicle[] = await response.json();
         
