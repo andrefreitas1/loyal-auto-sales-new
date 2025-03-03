@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface Vehicle {
   id: string;
@@ -24,6 +25,7 @@ interface Vehicle {
 }
 
 export default function VehicleList() {
+  const router = useRouter();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
@@ -114,8 +116,8 @@ export default function VehicleList() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link
-              href="/protected/vehicles/acquired"
+            <div
+              onClick={() => router.push('/protected/vehicles/acquired')}
               className="flex items-center bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
@@ -129,10 +131,10 @@ export default function VehicleList() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/protected/vehicles/in-preparation"
+            <div
+              onClick={() => router.push('/protected/vehicles/in-preparation')}
               className="flex items-center bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
@@ -146,10 +148,10 @@ export default function VehicleList() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/protected/vehicles/for-sale"
+            <div
+              onClick={() => router.push('/protected/vehicles/for-sale')}
               className="flex items-center bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
@@ -163,10 +165,10 @@ export default function VehicleList() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/protected/vehicles/sold"
+            <div
+              onClick={() => router.push('/protected/vehicles/sold')}
               className="flex items-center bg-gradient-to-br from-gray-500 to-gray-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
@@ -180,7 +182,7 @@ export default function VehicleList() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-            </Link>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
