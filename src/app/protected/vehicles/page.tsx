@@ -116,7 +116,7 @@ export default function VehicleList() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link
               href="/protected/vehicles/acquired"
-              className="flex items-center bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
+              className="flex items-center bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">Adquiridos</h3>
@@ -133,7 +133,7 @@ export default function VehicleList() {
 
             <Link
               href="/protected/vehicles/in-preparation"
-              className="flex items-center bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
+              className="flex items-center bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">Em Preparação</h3>
@@ -150,7 +150,7 @@ export default function VehicleList() {
 
             <Link
               href="/protected/vehicles/for-sale"
-              className="flex items-center bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
+              className="flex items-center bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">À Venda</h3>
@@ -167,7 +167,7 @@ export default function VehicleList() {
 
             <Link
               href="/protected/vehicles/sold"
-              className="flex items-center bg-gradient-to-br from-gray-500 to-gray-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group"
+              className="flex items-center bg-gradient-to-br from-gray-500 to-gray-600 p-6 rounded-xl shadow-md hover:shadow-lg transition-all group cursor-pointer"
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-white text-lg group-hover:scale-105 transition-transform">Vendidos</h3>
