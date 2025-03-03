@@ -149,37 +149,49 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-8">
             {/* Cards de Estatísticas em Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+              <Link
+                href="/protected/vehicles/acquired"
+                className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <TruckIcon className="h-8 w-8 opacity-75" />
                   <span className="text-2xl font-bold">{stats.acquired}</span>
                 </div>
                 <p className="text-sm font-medium text-yellow-100">Adquiridos</p>
-              </div>
+              </Link>
 
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+              <Link
+                href="/protected/vehicles/in-preparation"
+                className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <WrenchScrewdriverIcon className="h-8 w-8 opacity-75" />
                   <span className="text-2xl font-bold">{stats.inPreparation}</span>
                 </div>
                 <p className="text-sm font-medium text-blue-100">Em Preparação</p>
-              </div>
+              </Link>
 
-              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+              <Link
+                href="/protected/vehicles/for-sale"
+                className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <ShoppingCartIcon className="h-8 w-8 opacity-75" />
                   <span className="text-2xl font-bold">{stats.forSale}</span>
                 </div>
                 <p className="text-sm font-medium text-green-100">À Venda</p>
-              </div>
+              </Link>
 
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform">
+              <Link
+                href="/protected/vehicles/sold"
+                className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-transform cursor-pointer"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <CheckCircleIcon className="h-8 w-8 opacity-75" />
                   <span className="text-2xl font-bold">{stats.sold}</span>
                 </div>
                 <p className="text-sm font-medium text-purple-100">Vendidos</p>
-              </div>
+              </Link>
             </div>
 
             {/* Carrossel de Imagens com Design Melhorado */}
