@@ -79,7 +79,7 @@ export default function VehiclesForSale() {
               <p className="text-gray-600 mb-2">{vehicle.mileage.toLocaleString()} milhas</p>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-lg font-bold text-primary-600">
-                  {formatCurrency(vehicle.retailPrice || 0)}
+                  {formatCurrency(vehicle.marketPrices?.retail || 0)}
                 </span>
               </div>
             </div>

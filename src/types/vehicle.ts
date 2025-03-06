@@ -46,6 +46,13 @@ export interface Vehicle {
     amount: number;
     date: string;
   }[];
+  marketPrices?: {
+    id: string;
+    wholesale: number;
+    mmr: number;
+    retail: number;
+    repasse: number;
+  };
   saleInfo?: {
     salePrice: number;
     saleDate: string;

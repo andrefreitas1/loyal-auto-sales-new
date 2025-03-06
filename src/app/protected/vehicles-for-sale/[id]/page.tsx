@@ -148,7 +148,7 @@ export default function VehicleForSaleDetails() {
                   <h2 className="text-xl font-semibold mb-4">Valor Sugerido de Venda</h2>
                   <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                     <div className="text-3xl font-bold text-green-600 mb-2">
-                      {formatCurrency(vehicle.retailPrice || 0)}
+                      {formatCurrency(vehicle.marketPrices?.retail || 0)}
                     </div>
                     <p className="text-green-700">
                       Valor baseado no preço de mercado (Retail)
