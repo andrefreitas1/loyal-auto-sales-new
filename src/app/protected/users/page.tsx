@@ -67,7 +67,7 @@ export default function UserList() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <Link
-          href="/users/new"
+          href="/protected/users/new"
           className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
         >
           Novo Usuário
@@ -142,7 +142,7 @@ export default function UserList() {
         <div className="text-center py-12">
           <p className="text-gray-600">Nenhum usuário cadastrado.</p>
           <Link
-            href="/users/new"
+            href="/protected/users/new"
             className="text-primary-600 hover:text-primary-700 font-semibold mt-2 inline-block"
           >
             Cadastrar primeiro usuário

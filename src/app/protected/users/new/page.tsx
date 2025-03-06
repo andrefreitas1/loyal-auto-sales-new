@@ -46,7 +46,7 @@ export default function NewUser() {
       });
 
       if (response.ok) {
-        router.push('/users');
+        router.push('/protected/users');
       } else {
         const data = await response.json();
         setError(data.error || 'Erro ao cadastrar usuário');
