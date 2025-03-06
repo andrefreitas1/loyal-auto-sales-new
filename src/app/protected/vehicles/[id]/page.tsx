@@ -487,33 +487,105 @@ export default function VehicleDetails() {
               </div>
 
               <div className="bg-white rounded-xl shadow-card p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Preços de Mercado</h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900">Preços de Mercado</h2>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    Editar
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {vehicle.marketPrices && (
+                  {vehicle.marketPrices && !isEditing && (
                     <>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <dt className="text-sm font-medium text-gray-500">Retail</dt>
                         <dd className="mt-1 text-lg font-semibold text-gray-900">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.retail)}
+                          ${vehicle.marketPrices.retail.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <dt className="text-sm font-medium text-gray-500">MMR</dt>
                         <dd className="mt-1 text-lg font-semibold text-gray-900">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.mmr)}
+                          ${vehicle.marketPrices.mmr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <dt className="text-sm font-medium text-gray-500">Repasse</dt>
                         <dd className="mt-1 text-lg font-semibold text-gray-900">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.repasse)}
+                          ${vehicle.marketPrices.repasse.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <dt className="text-sm font-medium text-gray-500">Wholesale</dt>
                         <dd className="mt-1 text-lg font-semibold text-gray-900">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.wholesale)}
+                          ${vehicle.marketPrices.wholesale.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
+                      </div>
+                    </>
+                  )}
+                  {vehicle.marketPrices && isEditing && (
+                    <>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Retail</dt>
+                        <input
+                          type="number"
+                          value={editedVehicle?.marketPrices?.retail || 0}
+                          onChange={(e) => setEditedVehicle(prev => ({
+                            ...prev!,
+                            marketPrices: {
+                              ...prev!.marketPrices!,
+                              retail: parseFloat(e.target.value)
+                            }
+                          }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">MMR</dt>
+                        <input
+                          type="number"
+                          value={editedVehicle?.marketPrices?.mmr || 0}
+                          onChange={(e) => setEditedVehicle(prev => ({
+                            ...prev!,
+                            marketPrices: {
+                              ...prev!.marketPrices!,
+                              mmr: parseFloat(e.target.value)
+                            }
+                          }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Repasse</dt>
+                        <input
+                          type="number"
+                          value={editedVehicle?.marketPrices?.repasse || 0}
+                          onChange={(e) => setEditedVehicle(prev => ({
+                            ...prev!,
+                            marketPrices: {
+                              ...prev!.marketPrices!,
+                              repasse: parseFloat(e.target.value)
+                            }
+                          }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Wholesale</dt>
+                        <input
+                          type="number"
+                          value={editedVehicle?.marketPrices?.wholesale || 0}
+                          onChange={(e) => setEditedVehicle(prev => ({
+                            ...prev!,
+                            marketPrices: {
+                              ...prev!.marketPrices!,
+                              wholesale: parseFloat(e.target.value)
+                            }
+                          }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
                       </div>
                     </>
                   )}
@@ -523,61 +595,182 @@ export default function VehicleDetails() {
                     </div>
                   )}
                 </div>
+                {isEditing && (
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setEditedVehicle(vehicle);
+                      }}
+                      className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSaveChanges}
+                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+                    >
+                      Salvar Alterações
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="space-y-6">
               <div className="bg-white rounded-xl shadow-card p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações do Veículo</h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900">Informações do Veículo</h2>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-primary-600 hover:text-primary-700 font-medium"
+                  >
+                    Editar
+                  </button>
+                </div>
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-600">Marca</p>
-                      <p className="font-medium text-gray-900">{vehicle.brand}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Modelo</p>
-                      <p className="font-medium text-gray-900">{vehicle.model}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Ano</p>
-                      <p className="font-medium text-gray-900">{vehicle.year}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Cor</p>
-                      <p className="font-medium text-gray-900">{vehicle.color}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Milhas</p>
-                      <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} mi</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Data de Aquisição</p>
-                      <p className="font-medium text-gray-900">
-                        {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
-                      </p>
-                    </div>
+                    {!isEditing ? (
+                      <>
+                        <div>
+                          <p className="text-sm text-gray-600">Marca</p>
+                          <p className="font-medium text-gray-900">{vehicle.brand}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Modelo</p>
+                          <p className="font-medium text-gray-900">{vehicle.model}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Ano</p>
+                          <p className="font-medium text-gray-900">{vehicle.year}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Cor</p>
+                          <p className="font-medium text-gray-900">{vehicle.color}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Milhas</p>
+                          <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} mi</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Data de Aquisição</p>
+                          <p className="font-medium text-gray-900">
+                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <label className="text-sm text-gray-600">Marca</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.brand || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, brand: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">Modelo</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.model || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, model: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">Ano</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.year || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, year: parseInt(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">Cor</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.color || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, color: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">Milhas</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.mileage || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, mileage: parseFloat(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">Data de Aquisição</label>
+                          <input
+                            type="date"
+                            value={editedVehicle?.purchaseDate ? new Date(editedVehicle.purchaseDate).toISOString().split('T')[0] : ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchaseDate: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="pt-4 border-t border-gray-200">
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-600">Valor de Compra</p>
-                        <p className="font-medium text-gray-900">
-                          ${vehicle.purchasePrice.toLocaleString()}
-                        </p>
-                      </div>
-                      {vehicle.status === 'for_sale' && (
+                      {!isEditing ? (
+                        <>
+                          <div>
+                            <p className="text-sm text-gray-600">Valor de Compra</p>
+                            <p className="font-medium text-gray-900">
+                              ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </p>
+                          </div>
+                          {vehicle.status === 'for_sale' && vehicle.saleInfo && (
+                            <div>
+                              <p className="text-sm text-gray-600">Preço de Venda</p>
+                              <p className="font-medium text-gray-900">
+                                ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      ) : (
                         <div>
-                          <p className="text-sm text-gray-600">Preço de Venda</p>
-                          <p className="font-medium text-gray-900">
-                            ${vehicle.saleInfo?.salePrice.toLocaleString()}
-                          </p>
+                          <label className="text-sm text-gray-600">Valor de Compra</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.purchasePrice || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
+                {isEditing && (
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setEditedVehicle(vehicle);
+                      }}
+                      className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSaveChanges}
+                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+                    >
+                      Salvar Alterações
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="bg-white rounded-xl shadow-card p-6">
@@ -678,7 +871,7 @@ export default function VehicleDetails() {
                     <div>
                       <p className="text-sm text-gray-600">Valor da Venda</p>
                       <p className="font-medium text-gray-900">
-                        ${vehicle.saleInfo.salePrice.toLocaleString()}
+                        ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </p>
                     </div>
                     <div className="pt-4 border-t border-gray-200">
@@ -689,7 +882,7 @@ export default function VehicleDetails() {
                             ? 'text-green-600' 
                             : 'text-red-600'
                         }`}>
-                          ${(vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses).toLocaleString()}
+                          ${(vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
                     </div>
