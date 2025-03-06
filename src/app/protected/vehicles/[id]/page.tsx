@@ -485,6 +485,45 @@ export default function VehicleDetails() {
                   <p className="text-gray-600">Nenhuma despesa registrada.</p>
                 )}
               </div>
+
+              <div className="bg-white rounded-xl shadow-card p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Preços de Mercado</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {vehicle.marketPrices && (
+                    <>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Retail</dt>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.retail)}
+                        </dd>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">MMR</dt>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.mmr)}
+                        </dd>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Repasse</dt>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.repasse)}
+                        </dd>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <dt className="text-sm font-medium text-gray-500">Wholesale</dt>
+                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vehicle.marketPrices.wholesale)}
+                        </dd>
+                      </div>
+                    </>
+                  )}
+                  {!vehicle.marketPrices && (
+                    <div className="col-span-4 text-center py-4 text-gray-500">
+                      Preços de mercado não definidos
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="space-y-6">
