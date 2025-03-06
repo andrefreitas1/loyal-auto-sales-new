@@ -23,19 +23,31 @@ export interface SaleInfo {
 
 export interface Vehicle {
   id: string;
-  code: string;
   brand: string;
   model: string;
   year: number;
   color: string;
   vin: string;
+  mileage: number;
   status: 'acquired' | 'in_preparation' | 'for_sale' | 'sold';
-  purchaseDate: Date;
   purchasePrice: number;
-  images: string[];
-  expenses: Expense[];
-  marketPrices?: MarketPrices;
-  saleInfo?: SaleInfo;
-  createdAt: Date;
-  updatedAt: Date;
+  retailPrice?: number;
+  wholesalePrice?: number;
+  mmrPrice?: number;
+  resalePrice?: number;
+  description?: string;
+  images: {
+    url: string;
+    id: string;
+  }[];
+  expenses?: {
+    id: string;
+    description: string;
+    amount: number;
+    date: string;
+  }[];
+  saleInfo?: {
+    salePrice: number;
+    saleDate: string;
+  };
 } 

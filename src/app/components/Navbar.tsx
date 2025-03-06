@@ -42,6 +42,7 @@ export default function Navbar() {
   const navItems = [
     { href: '/protected/dashboard', label: 'Dashboard' },
     { href: '/protected/vehicles', label: 'Veículos' },
+    { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
     { href: '/protected/reports', label: 'Relatórios' },
     { href: '/protected/users', label: 'Usuários' },
   ];
