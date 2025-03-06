@@ -9,7 +9,11 @@ export async function middleware(request: NextRequest) {
 
   // Se estiver tentando acessar uma página de autenticação e já estiver logado
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/protected/dashboard', request.url));
+    // Redireciona operadores para vehicles-for-sale e admins para dashboard
+    const redirectUrl = token.role === 'operator' 
+      ? '/protected/vehicles-for-sale' 
+      : '/protected/dashboard';
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
   // Se estiver tentando acessar uma rota protegida e não estiver logado

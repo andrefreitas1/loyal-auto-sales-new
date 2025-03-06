@@ -34,9 +34,19 @@ function LoginForm() {
           setError('Ocorreu um erro ao tentar fazer login');
         }
       } else if (result?.url) {
-        router.push(result.url);
+        // Verifica o papel do usuário para redirecionar
+        const session = await fetch('/api/auth/session').then(res => res.json());
+        const redirectUrl = session?.user?.role === 'operator' 
+          ? '/protected/vehicles-for-sale' 
+          : '/protected/dashboard';
+        router.push(redirectUrl);
       } else {
-        router.push(callbackUrl);
+        // Verifica o papel do usuário para redirecionar
+        const session = await fetch('/api/auth/session').then(res => res.json());
+        const redirectUrl = session?.user?.role === 'operator' 
+          ? '/protected/vehicles-for-sale' 
+          : '/protected/dashboard';
+        router.push(redirectUrl);
       }
     } catch (error) {
       console.error('Erro no login:', error);
