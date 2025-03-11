@@ -155,7 +155,7 @@ export default function VehicleForSaleDetails() {
               <div className="lg:col-span-1">
                 {/* Preço */}
                 <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-                  <h2 className="text-2xl font-semibold mb-4">Valor Sugerido de Venda</h2>
+                  <h2 className="text-2xl font-semibold mb-4">Valor de Venda</h2>
                   <div className="bg-green-50 p-6 rounded-xl border border-green-200">
                     <div className="text-4xl font-bold text-green-600">
                       {formatCurrency(vehicle.marketPrices?.retail || 0)}
