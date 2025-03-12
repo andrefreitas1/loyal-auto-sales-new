@@ -631,27 +631,13 @@ export default function VehicleDetails() {
                   </button>
                 </div>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 mb-4">
-                    {!isEditing ? (
-                      <div>
+                  {!isEditing ? (
+                    <>
+                      <div className="border-b border-gray-200 pb-4">
                         <p className="text-sm text-gray-600">VIN</p>
                         <p className="font-medium text-gray-900">{vehicle.vin}</p>
                       </div>
-                    ) : (
-                      <div>
-                        <label className="text-sm text-gray-600">VIN</label>
-                        <input
-                          type="text"
-                          value={editedVehicle?.vin || ''}
-                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    {!isEditing ? (
-                      <>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-gray-600">Marca</p>
                           <p className="font-medium text-gray-900">{vehicle.brand}</p>
@@ -678,9 +664,20 @@ export default function VehicleDetails() {
                             {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
                           </p>
                         </div>
-                      </>
-                    ) : (
-                      <>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="border-b border-gray-200 pb-4">
+                        <label className="text-sm text-gray-600">VIN</label>
+                        <input
+                          type="text"
+                          value={editedVehicle?.vin || ''}
+                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="text-sm text-gray-600">Marca</label>
                           <input
@@ -735,62 +732,43 @@ export default function VehicleDetails() {
                             className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                           />
                         </div>
-                      </>
-                    )}
-                  </div>
+                      </div>
+                    </>
+                  )}
+                </div>
 
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="grid grid-cols-2 gap-4">
-                      {!isEditing ? (
-                        <>
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="grid grid-cols-2 gap-4">
+                    {!isEditing ? (
+                      <>
+                        <div>
+                          <p className="text-sm text-gray-600">Valor de Compra</p>
+                          <p className="font-medium text-gray-900">
+                            ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                        {vehicle.status === 'for_sale' && vehicle.saleInfo && (
                           <div>
-                            <p className="text-sm text-gray-600">Valor de Compra</p>
+                            <p className="text-sm text-gray-600">Preço de Venda</p>
                             <p className="font-medium text-gray-900">
-                              ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                              ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </p>
                           </div>
-                          {vehicle.status === 'for_sale' && vehicle.saleInfo && (
-                            <div>
-                              <p className="text-sm text-gray-600">Preço de Venda</p>
-                              <p className="font-medium text-gray-900">
-                                ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </p>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div>
-                          <label className="text-sm text-gray-600">Valor de Compra</label>
-                          <input
-                            type="number"
-                            value={editedVehicle?.purchasePrice || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </>
+                    ) : (
+                      <div>
+                        <label className="text-sm text-gray-600">Valor de Compra</label>
+                        <input
+                          type="number"
+                          value={editedVehicle?.purchasePrice || ''}
+                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
-                {isEditing && (
-                  <div className="mt-4 flex justify-end gap-3">
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setEditedVehicle(vehicle);
-                      }}
-                      className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={handleSaveChanges}
-                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-                    >
-                      Salvar Alterações
-                    </button>
-                  </div>
-                )}
               </div>
 
               <div className="bg-white rounded-xl shadow-card p-6">
