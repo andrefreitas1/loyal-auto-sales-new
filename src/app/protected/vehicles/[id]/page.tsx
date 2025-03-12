@@ -631,13 +631,27 @@ export default function VehicleDetails() {
                   </button>
                 </div>
                 <div className="space-y-4">
+                  <div className="grid grid-cols-1 gap-4 mb-4">
+                    {!isEditing ? (
+                      <div>
+                        <p className="text-sm text-gray-600">VIN</p>
+                        <p className="font-medium text-gray-900">{vehicle.vin}</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="text-sm text-gray-600">VIN</label>
+                        <input
+                          type="text"
+                          value={editedVehicle?.vin || ''}
+                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
+                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    )}
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     {!isEditing ? (
                       <>
-                        <div>
-                          <p className="text-sm text-gray-600">VIN</p>
-                          <p className="font-medium text-gray-900">{vehicle.vin}</p>
-                        </div>
                         <div>
                           <p className="text-sm text-gray-600">Marca</p>
                           <p className="font-medium text-gray-900">{vehicle.brand}</p>
@@ -667,15 +681,6 @@ export default function VehicleDetails() {
                       </>
                     ) : (
                       <>
-                        <div>
-                          <label className="text-sm text-gray-600">VIN</label>
-                          <input
-                            type="text"
-                            value={editedVehicle?.vin || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
                         <div>
                           <label className="text-sm text-gray-600">Marca</label>
                           <input
