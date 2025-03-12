@@ -191,7 +191,9 @@ export default function VehicleDetails() {
           mileage: editedVehicle.mileage,
           purchasePrice: editedVehicle.purchasePrice,
           purchaseDate: editedVehicle.purchaseDate,
-          marketPrices: editedVehicle.marketPrices
+          marketPrices: editedVehicle.marketPrices,
+          color: editedVehicle.color,
+          vin: editedVehicle.vin
         }),
       });
 
@@ -649,6 +651,10 @@ export default function VehicleDetails() {
                           <p className="font-medium text-gray-900">{vehicle.color}</p>
                         </div>
                         <div>
+                          <p className="text-sm text-gray-600">VIN</p>
+                          <p className="font-medium text-gray-900">{vehicle.vin}</p>
+                        </div>
+                        <div>
                           <p className="text-sm text-gray-600">Milhas</p>
                           <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} mi</p>
                         </div>
@@ -694,6 +700,15 @@ export default function VehicleDetails() {
                             type="text"
                             value={editedVehicle?.color || ''}
                             onChange={(e) => setEditedVehicle(prev => ({ ...prev!, color: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-600">VIN</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.vin || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
                             className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                           />
                         </div>
