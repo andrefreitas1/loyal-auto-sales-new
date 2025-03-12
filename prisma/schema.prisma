@@ -25,6 +25,7 @@ model Vehicle {
   images        Image[]
   marketPrices  MarketPrice?
   saleInfo      SaleInfo?
+  customers     Customer[]
 }
 
 model Image {
@@ -72,12 +73,31 @@ model SaleInfo {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  role      String   @default("operator")
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      String     @default("operator")
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  customers Customer[]
+}
+
+model Customer {
+  id           String   @id @default(uuid())
+  fullName     String
+  birthDate    DateTime
+  phone        String
+  email        String?
+  passportUrl  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  operatorId   String
+  operator     User     @relation(fields: [operatorId], references: [id])
+  vehicleId    String
+  vehicle      Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  @@index([operatorId])
+  @@index([vehicleId])
 }
