@@ -2,6 +2,10 @@
 
 Sistema de gestão de veículos desenvolvido para a Loyal Auto Sales, especializada em compra e venda de veículos em Orlando, Florida.
 
+## ⚠️ Importante
+
+Esta aplicação utiliza **EXCLUSIVAMENTE** PostgreSQL como banco de dados. Para mais informações sobre o banco de dados, backups e migrações, consulte o arquivo [DATABASE.md](DATABASE.md).
+
 ## Funcionalidades
 
 ### Gestão de Veículos
@@ -50,7 +54,7 @@ Sistema de gestão de veículos desenvolvido para a Loyal Auto Sales, especializ
 ## Requisitos
 
 - Node.js 18.0 ou superior
-- MySQL 8.0 ou superior
+- PostgreSQL 15.0 ou superior
 - NPM ou Yarn
 
 ## Instalação
@@ -69,7 +73,7 @@ yarn install
 ```
 
 3. Configure o banco de dados:
-- Crie um banco de dados MySQL chamado `loyal_auto_sales`
+- Crie um banco de dados PostgreSQL chamado `loyal_auto_sales`
 - Copie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente:
   - DATABASE_URL
   - NEXTAUTH_SECRET
@@ -108,7 +112,7 @@ yarn dev
 - TypeScript
 - Tailwind CSS
 - Prisma ORM
-- MySQL
+- PostgreSQL (Neon)
 - NextAuth.js para autenticação
 - Cloudinary para armazenamento de imagens
 - jsPDF para geração de relatórios
@@ -124,4 +128,10 @@ yarn dev
 - Validação de dados com Zod
 - Upload seguro de imagens via Cloudinary
 - Sanitização de inputs
-- Proteção contra CSRF 
+- Proteção contra CSRF
+
+## Documentação
+
+- [Banco de Dados](DATABASE.md)
+- [API Routes](API.md)
+- [Autenticação](AUTH.md) 
