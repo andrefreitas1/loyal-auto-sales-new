@@ -1,0 +1,20 @@
+[
+  {
+    "id": "95b6d6e4-da76-42a6-af3f-c95d3bb08a7e",
+    "type": "fuel",
+    "description": "251",
+    "amount": 251,
+    "date": "2025-02-28T19:17:12.983Z",
+    "vehicleId": "59d4d61b-3557-44e7-9658-453a9f2da3ec",
+    "createdAt": "2025-02-28T19:17:12.983Z"
+  },
+  {
+    "id": "fd57162e-b0d0-4fad-8ed0-15af7725a540",
+    "type": "maintenance",
+    "description": "250",
+    "amount": 250,
+    "date": "2025-02-28T19:16:46.409Z",
+    "vehicleId": "59d4d61b-3557-44e7-9658-453a9f2da3ec",
+    "createdAt": "2025-02-28T19:16:46.409Z"
+  }
+]

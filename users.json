@@ -1,0 +1,22 @@
+[
+  {
+    "id": "798bed81-7392-4823-93fd-846d310aed22",
+    "name": "meireles",
+    "email": "meireles@loyal.com",
+    "password": "$2b$10$kds07/2Dhb2lr8yqQeyb7.7G2Pd7Iz5OI1wKfP/OvlQyx8dJ6Lwse",
+    "role": "admin",
+    "active": 1,
+    "createdAt": "2025-02-28T19:44:24.928Z",
+    "updatedAt": "2025-02-28T19:44:24.928Z"
+  },
+  {
+    "id": "dd39f313-b21e-43d3-be12-b91514eca84b",
+    "name": "Andre",
+    "email": "andre@loyal.com",
+    "password": "$2b$10$wVkNac1njfVZJQOtNRgg7.o5CPLKY1JtZ8na.rfH9rDCmjoxgX9dy",
+    "role": "admin",
+    "active": 1,
+    "createdAt": "2025-02-28T18:57:22.515Z",
+    "updatedAt": "2025-02-28T19:05:32.428Z"
+  }
+]
