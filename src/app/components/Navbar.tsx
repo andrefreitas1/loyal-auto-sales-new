@@ -5,6 +5,12 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
+import { 
+  UserPlusIcon, 
+  UsersIcon, 
+  UserGroupIcon,
+  TruckIcon,
+} from '@heroicons/react/24/outline';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,6 +51,8 @@ export default function Navbar() {
       { href: '/protected/vehicles', label: 'Veículos' },
     ] : []),
     { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
+    { href: '/protected/customers', label: 'Clientes' },
+    { href: '/protected/customers/new', label: 'Novo Cliente' },
     ...(session?.user?.role === 'admin' ? [
       { href: '/protected/reports', label: 'Relatórios' },
       { href: '/protected/users', label: 'Usuários' },
