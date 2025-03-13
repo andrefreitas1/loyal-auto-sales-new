@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import { formatCurrency } from '@/utils/format';
 
 interface Customer {
@@ -13,6 +14,7 @@ interface Customer {
   phone: string;
   email: string | null;
   passportUrl: string;
+  status: string;
   createdAt: string;
   operator: {
     id: string;
@@ -39,12 +41,21 @@ interface Customer {
   };
 }
 
+const statusOptions = [
+  { value: 'new', label: 'Novo Cliente' },
+  { value: 'analysis', label: 'Em Análise' },
+  { value: 'approved', label: 'Aprovado' },
+  { value: 'rejected', label: 'Reprovado' },
+];
+
 export default function CustomerDetails() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -66,6 +77,54 @@ export default function CustomerDetails() {
       setError('Erro ao carregar informações do cliente');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!customer || updating) return;
+    
+    try {
+      setUpdating(true);
+      const response = await fetch(`/api/customers/${customer.id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedCustomer = await response.json();
+        setCustomer(updatedCustomer);
+      } else {
+        throw new Error('Erro ao atualizar status');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+      setError('Erro ao atualizar status do cliente');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleDownloadPassport = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (!customer) return;
+
+    try {
+      const response = await fetch(customer.passportUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `passaporte_${customer.fullName.replace(/\s+/g, '_')}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Erro ao baixar passaporte:', error);
+      setError('Erro ao baixar passaporte');
     }
   };
 
@@ -119,6 +178,30 @@ export default function CustomerDetails() {
                 {new Date(customer.createdAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
+            {session?.user?.role === 'admin' && (
+              <div className="flex items-center gap-4">
+                <select
+                  value={customer.status || 'new'}
+                  onChange={(e) => handleStatusChange(e.target.value)}
+                  disabled={updating}
+                  className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                >
+                  {statusOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                  ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
+                  customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                  customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-gray-100 text-gray-800'}`}
+                >
+                  {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -127,6 +210,17 @@ export default function CustomerDetails() {
               <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações do Cliente</h2>
                 <div className="space-y-4">
+                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span className="text-gray-600">Status</span>
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                      ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
+                      customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                      customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'}`}
+                    >
+                      {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
+                    </span>
+                  </div>
                   <div className="flex justify-between items-center py-3 border-b border-gray-100">
                     <span className="text-gray-600">Data de Nascimento</span>
                     <span className="font-medium">
@@ -160,8 +254,8 @@ export default function CustomerDetails() {
                     </div>
                   </div>
                   <a
-                    href={customer.passportUrl}
-                    download="passaporte.jpg"
+                    href="#"
+                    onClick={handleDownloadPassport}
                     className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
