@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 interface Expense {
   id: string;
@@ -40,6 +41,7 @@ interface Vehicle {
 export default function VehicleDetails() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const [newExpense, setNewExpense] = useState({
@@ -56,6 +58,9 @@ export default function VehicleDetails() {
   const [expenseType, setExpenseType] = useState('');
   const [expenseDescription, setExpenseDescription] = useState('');
   const [expenseAmount, setExpenseAmount] = useState(0);
+  const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchVehicleDetails();
@@ -73,9 +78,12 @@ export default function VehicleDetails() {
       if (response.ok) {
         const data = await response.json();
         setVehicle(data);
+      } else {
+        throw new Error('Veículo não encontrado');
       }
     } catch (error) {
       console.error('Erro ao buscar detalhes do veículo:', error);
+      setError('Erro ao carregar informações do veículo');
     } finally {
       setLoading(false);
     }
@@ -282,20 +290,114 @@ export default function VehicleDetails() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      
+      // Criar FormData para upload
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload para o Cloudinary
+      const uploadResponse = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Erro ao fazer upload da imagem');
+      }
+
+      const { url } = await uploadResponse.json();
+
+      // Adicionar imagem ao veículo
+      const response = await fetch(`/api/vehicles/${params.id}/images`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ imageUrl: url }),
+      });
+
+      if (response.ok) {
+        fetchVehicleDetails();
+      } else {
+        throw new Error('Erro ao adicionar imagem');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer upload:', error);
+      alert('Erro ao fazer upload da imagem');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteImage = async (imageId: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta imagem?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/vehicles/${params.id}/images?imageId=${imageId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchVehicleDetails();
+      } else {
+        throw new Error('Erro ao excluir imagem');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir imagem:', error);
+      alert('Erro ao excluir imagem');
+    }
+  };
+
+  const handleDownloadImage = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `veiculo_${vehicle?.brand}_${vehicle?.model}_${new Date().getTime()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Erro ao baixar imagem:', error);
+      alert('Erro ao baixar imagem');
+    }
+  };
+
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     );
   }
 
-  if (!vehicle) {
+  if (error || !vehicle) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <p className="text-center text-gray-600">Veículo não encontrado.</p>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-4">
+              {error || 'Veículo não encontrado'}
+            </h1>
+            <Link
+              href="/protected/vehicles"
+              className="text-primary-600 hover:text-primary-700"
+            >
+              Voltar para lista de veículos
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -368,78 +470,77 @@ export default function VehicleDetails() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl shadow-card overflow-hidden">
-                {vehicle.images && vehicle.images.length > 0 ? (
-                  <div className="relative aspect-video">
-                    <div className="absolute inset-0">
-                      <Image
-                        src={vehicle.images[currentImageIndex].url}
-                        alt={`${vehicle.model} - Imagem ${currentImageIndex + 1}`}
-                        fill
-                        className="object-cover"
-                        onError={() => handleImageError(vehicle.images[currentImageIndex].id)}
-                        priority
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900">Imagens do Veículo</h2>
+                  {session?.user?.role === 'admin' && (
+                    <div>
+                      <input
+                        type="file"
+                        id="imageUpload"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={uploading}
                       />
+                      <label
+                        htmlFor="imageUpload"
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
+                      >
+                        {uploading ? 'Enviando...' : 'Adicionar Imagem'}
+                      </label>
                     </div>
-                    {vehicle.images.length > 1 && (
-                      <>
-                        <button
-                          onClick={previousImage}
-                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors"
-                        >
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={nextImage}
-                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/75 transition-colors"
-                        >
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </>
-                    )}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                      {vehicle.images.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                            index === currentImageIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/75'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="aspect-video bg-gray-100 flex items-center justify-center">
-                    <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
+                  )}
+                </div>
 
-                {vehicle.images && vehicle.images.length > 0 && (
-                  <div className="p-4 border-t border-gray-100">
-                    <div className="grid grid-cols-6 gap-2">
-                      {vehicle.images.map((image, index) => (
-                        <button
-                          key={image.id}
-                          onClick={() => setCurrentImageIndex(index)}
-                          className={`relative aspect-square rounded-lg overflow-hidden ${
-                            index === currentImageIndex ? 'ring-2 ring-primary-500' : 'hover:opacity-75'
-                          } transition-all`}
-                        >
-                          <Image
-                            src={image.url}
-                            alt={`${vehicle.model} - Miniatura ${index + 1}`}
-                            fill
-                            className="object-cover"
-                          />
-                        </button>
-                      ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {vehicle.images.map((image) => (
+                    <div
+                      key={image.id}
+                      className="relative group"
+                      onMouseEnter={() => setSelectedImage(image.id)}
+                      onMouseLeave={() => setSelectedImage(null)}
+                    >
+                      <div className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden">
+                        <Image
+                          src={image.url}
+                          alt={`${vehicle.brand} ${vehicle.model}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      
+                      {selectedImage === image.id && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => handleDownloadImage(image.url)}
+                            className="p-2 bg-white rounded-full hover:bg-gray-100"
+                            title="Baixar Imagem"
+                          >
+                            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                          </button>
+                          
+                          {session?.user?.role === 'admin' && (
+                            <button
+                              onClick={() => handleDeleteImage(image.id)}
+                              className="p-2 bg-white rounded-full hover:bg-gray-100"
+                              title="Excluir Imagem"
+                            >
+                              <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
+                  ))}
+                </div>
+
+                {vehicle.images.length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    Nenhuma imagem disponível
                   </div>
                 )}
               </div>
