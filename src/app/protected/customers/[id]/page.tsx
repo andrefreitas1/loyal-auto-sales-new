@@ -149,14 +149,24 @@ export default function CustomerDetails() {
               {/* Passaporte */}
               <div className="bg-white rounded-xl shadow-lg p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Passaporte</h2>
-                <div className="relative aspect-[3/2] rounded-lg overflow-hidden">
+                <div className="relative aspect-[3/2] rounded-lg overflow-hidden bg-gray-100">
                   <Image
                     src={customer.passportUrl}
                     alt="Passaporte"
                     fill
-                    className="object-cover"
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
                   />
                 </div>
+                <a 
+                  href={customer.passportUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-block text-primary-600 hover:text-primary-700"
+                >
+                  Ver imagem original
+                </a>
               </div>
             </div>
 

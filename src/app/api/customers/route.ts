@@ -51,7 +51,12 @@ export async function GET(request: NextRequest) {
         : { operatorId: session.user.id },
       include: {
         operator: true,
-        vehicle: true,
+        vehicle: {
+          include: {
+            marketPrices: true,
+            images: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
