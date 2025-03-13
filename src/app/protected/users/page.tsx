@@ -15,6 +15,7 @@ interface User {
 export default function UserList() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showNewPassword, setShowNewPassword] = useState<{ userId: string; password: string } | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -52,6 +53,28 @@ export default function UserList() {
     }
   };
 
+  const handleResetPassword = async (userId: string) => {
+    if (!confirm('Tem certeza que deseja redefinir a senha deste usuário?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/users/${userId}/reset-password`, {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setShowNewPassword({ userId, password: data.newPassword });
+      } else {
+        alert('Erro ao redefinir senha');
+      }
+    } catch (error) {
+      console.error('Erro ao redefinir senha:', error);
+      alert('Erro ao redefinir senha');
+    }
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -64,6 +87,32 @@ export default function UserList() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {showNewPassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Nova Senha Gerada</h3>
+            <p className="text-gray-500 mb-2">
+              A senha do usuário foi redefinida para:
+            </p>
+            <div className="bg-gray-100 p-3 rounded-md font-mono text-lg mb-4">
+              {showNewPassword.password}
+            </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Certifique-se de copiar esta senha e enviá-la ao usuário de forma segura.
+              Esta tela não será mostrada novamente.
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowNewPassword(null)}
+                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Usuários</h1>
         <Link
@@ -124,12 +173,18 @@ export default function UserList() {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                   <button
                     onClick={() => handleToggleActive(user.id, user.active)}
                     className={`text-${user.active ? 'red' : 'green'}-600 hover:text-${user.active ? 'red' : 'green'}-900`}
                   >
                     {user.active ? 'Desativar' : 'Ativar'}
+                  </button>
+                  <button
+                    onClick={() => handleResetPassword(user.id)}
+                    className="text-primary-600 hover:text-primary-900 ml-2"
+                  >
+                    Redefinir Senha
                   </button>
                 </td>
               </tr>
