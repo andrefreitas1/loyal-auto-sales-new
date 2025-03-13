@@ -112,8 +112,17 @@ export async function DELETE(
       );
     }
 
-    await prisma.customer.delete({
-      where: { id: params.id },
+    // Primeiro, excluir registros relacionados
+    await prisma.$transaction(async (prisma) => {
+      // Excluir histórico de status
+      await prisma.customerStatusHistory.deleteMany({
+        where: { customerId: params.id },
+      });
+
+      // Excluir o cliente
+      await prisma.customer.delete({
+        where: { id: params.id },
+      });
     });
 
     return NextResponse.json({ success: true });

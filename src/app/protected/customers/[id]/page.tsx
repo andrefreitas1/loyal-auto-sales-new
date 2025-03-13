@@ -374,7 +374,7 @@ export default function CustomerDetails() {
                       <div className="flex justify-between items-center py-3 border-b border-gray-100">
                         <span className="text-gray-600">Data de Nascimento</span>
                         <span className="font-medium">
-                          {new Date(customer.birthDate).toLocaleDateString('pt-BR')}
+                          {new Date(new Date(customer.birthDate).getTime() + new Date().getTimezoneOffset() * 60000).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
                       <div className="flex justify-between items-center py-3 border-b border-gray-100">
