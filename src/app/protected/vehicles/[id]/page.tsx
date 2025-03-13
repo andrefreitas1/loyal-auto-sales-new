@@ -61,6 +61,8 @@ export default function VehicleDetails() {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedImagesForDeletion, setSelectedImagesForDeletion] = useState<string[]>([]);
 
   useEffect(() => {
     if (vehicle) {
@@ -347,43 +349,36 @@ export default function VehicleDetails() {
     }
   };
 
-  const handleDeleteImage = async (imageId: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta imagem?')) {
+  const handleDeleteSelectedImages = async () => {
+    if (!confirm(`Tem certeza que deseja excluir ${selectedImagesForDeletion.length} imagem(ns)?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/vehicles/${params.id}/images?imageId=${imageId}`, {
-        method: 'DELETE',
-      });
+      const deletePromises = selectedImagesForDeletion.map(imageId =>
+        fetch(`/api/vehicles/${params.id}/images?imageId=${imageId}`, {
+          method: 'DELETE',
+        })
+      );
 
-      if (response.ok) {
-        fetchVehicleDetails();
-      } else {
-        throw new Error('Erro ao excluir imagem');
-      }
+      await Promise.all(deletePromises);
+      fetchVehicleDetails();
+      setShowDeleteModal(false);
+      setSelectedImagesForDeletion([]);
     } catch (error) {
-      console.error('Erro ao excluir imagem:', error);
-      alert('Erro ao excluir imagem');
+      console.error('Erro ao excluir imagens:', error);
+      alert('Erro ao excluir imagens. Tente novamente.');
     }
   };
 
-  const handleDownloadImage = async (imageUrl: string) => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `veiculo_${vehicle?.brand}_${vehicle?.model}_${new Date().getTime()}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Erro ao baixar imagem:', error);
-      alert('Erro ao baixar imagem');
-    }
+  const toggleImageSelection = (imageId: string) => {
+    setSelectedImagesForDeletion(prev => {
+      if (prev.includes(imageId)) {
+        return prev.filter(id => id !== imageId);
+      } else {
+        return [...prev, imageId];
+      }
+    });
   };
 
   if (loading) {
@@ -485,7 +480,7 @@ export default function VehicleDetails() {
                 <div className="flex justify-between items-center p-6">
                   <h2 className="text-xl font-semibold text-gray-900">Imagens do Veículo</h2>
                   {session?.user?.role === 'admin' && (
-                    <div>
+                    <div className="flex gap-3">
                       <input
                         type="file"
                         id="imageUpload"
@@ -500,6 +495,12 @@ export default function VehicleDetails() {
                       >
                         {uploading ? 'Enviando...' : 'Adicionar Imagem'}
                       </label>
+                      <button
+                        onClick={() => setShowDeleteModal(true)}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                      >
+                        Excluir Imagens
+                      </button>
                     </div>
                   )}
                 </div>
@@ -570,7 +571,7 @@ export default function VehicleDetails() {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDeleteImage(image.id);
+                                toggleImageSelection(image.id);
                               }}
                               className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
                             >
@@ -1034,6 +1035,93 @@ export default function VehicleDetails() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Exclusão de Imagens */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Selecione as imagens para excluir
+              </h3>
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedImagesForDeletion([]);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+              {vehicle.images.map((image) => (
+                <div
+                  key={image.id}
+                  className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer group ${
+                    selectedImagesForDeletion.includes(image.id)
+                      ? 'ring-2 ring-red-500'
+                      : ''
+                  }`}
+                  onClick={() => toggleImageSelection(image.id)}
+                >
+                  <Image
+                    src={image.url}
+                    alt={`${vehicle.brand} ${vehicle.model}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                  />
+                  <div className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity ${
+                    selectedImagesForDeletion.includes(image.id)
+                      ? 'opacity-100'
+                      : 'opacity-0 group-hover:opacity-100'
+                  }`}>
+                    <svg
+                      className={`w-8 h-8 ${
+                        selectedImagesForDeletion.includes(image.id)
+                          ? 'text-red-500'
+                          : 'text-white'
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      {selectedImagesForDeletion.includes(image.id) ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      )}
+                    </svg>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedImagesForDeletion([]);
+                }}
+                className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteSelectedImages}
+                disabled={selectedImagesForDeletion.length === 0}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Excluir {selectedImagesForDeletion.length} imagem(ns)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
