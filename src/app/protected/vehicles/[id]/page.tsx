@@ -555,7 +555,7 @@ export default function VehicleDetails() {
                         <button
                           key={image.id}
                           onClick={() => setCurrentImageIndex(index)}
-                          className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden ${
+                          className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden group ${
                             currentImageIndex === index ? 'ring-2 ring-primary-500' : ''
                           }`}
                         >
@@ -572,7 +572,7 @@ export default function VehicleDetails() {
                                 e.stopPropagation();
                                 handleDeleteImage(image.id);
                               }}
-                              className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
