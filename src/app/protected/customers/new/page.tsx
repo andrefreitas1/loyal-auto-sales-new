@@ -81,8 +81,11 @@ export default function NewCustomer() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
+          fullName: formData.fullName,
           birthDate: new Date(formData.birthDate).toISOString(),
+          phone: formData.phone,
+          email: formData.email,
+          vehicleId: formData.vehicleId,
           passportUrl,
         }),
       });
