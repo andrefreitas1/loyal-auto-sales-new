@@ -18,16 +18,50 @@ export async function GET(
 
     const vehicle = await prisma.vehicle.findUnique({
       where: { id: params.id },
-      include: {
-        images: true,
-        expenses: {
-          orderBy: {
-            date: 'desc',
-          },
+      select: {
+        id: true,
+        brand: true,
+        model: true,
+        year: true,
+        mileage: true,
+        purchasePrice: true,
+        purchaseDate: true,
+        status: true,
+        color: true,
+        vin: true,
+        images: {
+          select: {
+            id: true,
+            url: true
+          }
         },
-        marketPrices: true,
-        saleInfo: true,
-      },
+        expenses: {
+          select: {
+            id: true,
+            type: true,
+            description: true,
+            amount: true,
+            date: true
+          },
+          orderBy: {
+            date: 'desc'
+          }
+        },
+        marketPrices: {
+          select: {
+            wholesale: true,
+            mmr: true,
+            retail: true,
+            repasse: true
+          }
+        },
+        saleInfo: {
+          select: {
+            salePrice: true,
+            saleDate: true
+          }
+        }
+      }
     });
 
     if (!vehicle) {
