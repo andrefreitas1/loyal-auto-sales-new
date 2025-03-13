@@ -8,11 +8,23 @@ import { Vehicle } from '@/types/vehicle';
 import { formatCurrency } from '@/utils/format';
 
 interface CustomerFormData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   birthDate: string;
   phone: string;
   email: string;
   passportFile: File | null;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  isRental: boolean;
+  residenceYears: number;
+  residenceMonths: number;
+  profession: string;
+  monthlyIncome: number;
+  jobYears: number;
+  jobMonths: number;
   vehicleId: string;
 }
 
@@ -23,11 +35,23 @@ export default function NewCustomer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState<CustomerFormData>({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     birthDate: '',
     phone: '',
     email: '',
     passportFile: null,
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    isRental: false,
+    residenceYears: 0,
+    residenceMonths: 0,
+    profession: '',
+    monthlyIncome: 0,
+    jobYears: 0,
+    jobMonths: 0,
     vehicleId: '',
   });
 
@@ -81,12 +105,24 @@ export default function NewCustomer() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          fullName: formData.fullName,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           birthDate: new Date(formData.birthDate).toISOString(),
           phone: formData.phone,
           email: formData.email,
-          vehicleId: formData.vehicleId,
           passportUrl,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+          isRental: formData.isRental,
+          residenceYears: formData.residenceYears,
+          residenceMonths: formData.residenceMonths,
+          profession: formData.profession,
+          monthlyIncome: formData.monthlyIncome,
+          jobYears: formData.jobYears,
+          jobMonths: formData.jobMonths,
+          vehicleId: formData.vehicleId,
         }),
       });
 
@@ -125,19 +161,32 @@ export default function NewCustomer() {
               </div>
             )}
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Dados Pessoais */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Dados Pessoais</h2>
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nome Completo
+                      Primeiro Nome
                     </label>
                     <input
                       type="text"
-                      value={formData.fullName}
-                      onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                      value={formData.firstName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Último Nome
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       required
                     />
@@ -163,13 +212,19 @@ export default function NewCustomer() {
                     <input
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        if (value.length <= 10) {
+                          setFormData(prev => ({ ...prev, phone: value }));
+                        }
+                      }}
+                      placeholder="(XXX) XXX-XXXX"
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       required
                     />
                   </div>
 
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email
                     </label>
@@ -181,7 +236,7 @@ export default function NewCustomer() {
                     />
                   </div>
 
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Passaporte (Upload)
                     </label>
@@ -196,6 +251,184 @@ export default function NewCustomer() {
                 </div>
               </div>
 
+              {/* Dados de Residência */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Dados de Residência</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Endereço Completo
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Cidade
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Estado
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.state}
+                      onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      ZIP Code
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.zipCode}
+                      onChange={(e) => setFormData(prev => ({ ...prev, zipCode: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Casa de Aluguel ou Hipoteca?
+                    </label>
+                    <div className="mt-2">
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          checked={formData.isRental}
+                          onChange={() => setFormData(prev => ({ ...prev, isRental: true }))}
+                          className="form-radio h-4 w-4 text-primary-600"
+                        />
+                        <span className="ml-2">Aluguel</span>
+                      </label>
+                      <label className="inline-flex items-center ml-6">
+                        <input
+                          type="radio"
+                          checked={!formData.isRental}
+                          onChange={() => setFormData(prev => ({ ...prev, isRental: false }))}
+                          className="form-radio h-4 w-4 text-primary-600"
+                        />
+                        <span className="ml-2">Hipoteca</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Anos de Residência
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={formData.residenceYears}
+                        onChange={(e) => setFormData(prev => ({ ...prev, residenceYears: parseInt(e.target.value) || 0 }))}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        required
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Meses
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="11"
+                        value={formData.residenceMonths}
+                        onChange={(e) => setFormData(prev => ({ ...prev, residenceMonths: parseInt(e.target.value) || 0 }))}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dados Profissionais */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Dados Profissionais</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Profissão
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.profession}
+                      onChange={(e) => setFormData(prev => ({ ...prev, profession: e.target.value }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Renda Bruta Mensal
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.monthlyIncome}
+                      onChange={(e) => setFormData(prev => ({ ...prev, monthlyIncome: parseFloat(e.target.value) || 0 }))}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-4 md:col-span-2">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Anos no Emprego Atual
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={formData.jobYears}
+                        onChange={(e) => setFormData(prev => ({ ...prev, jobYears: parseInt(e.target.value) || 0 }))}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        required
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Meses
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="11"
+                        value={formData.jobMonths}
+                        onChange={(e) => setFormData(prev => ({ ...prev, jobMonths: parseInt(e.target.value) || 0 }))}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Veículo de Interesse */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Veículo de Interesse</h2>
@@ -203,17 +436,35 @@ export default function NewCustomer() {
                   {vehicles.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {vehicles.map((vehicle) => (
-                        <div
+                        <label
                           key={vehicle.id}
-                          className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                          className={`relative flex flex-col bg-white p-4 rounded-lg border-2 cursor-pointer transition-colors ${
                             formData.vehicleId === vehicle.id
                               ? 'border-primary-500 bg-primary-50'
-                              : 'border-gray-200 hover:border-primary-300'
+                              : 'border-gray-200 hover:border-primary-200'
                           }`}
-                          onClick={() => setFormData(prev => ({ ...prev, vehicleId: vehicle.id }))}
                         >
+                          <input
+                            type="radio"
+                            name="vehicle"
+                            value={vehicle.id}
+                            checked={formData.vehicleId === vehicle.id}
+                            onChange={(e) => setFormData(prev => ({ ...prev, vehicleId: e.target.value }))}
+                            className="sr-only"
+                          />
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h3 className="font-medium text-gray-900">
+                                {vehicle.brand} {vehicle.model}
+                              </h3>
+                              <p className="text-sm text-gray-500">{vehicle.year}</p>
+                            </div>
+                            <div className="text-primary-600 font-medium">
+                              {formatCurrency(vehicle.marketPrices?.retail || 0)}
+                            </div>
+                          </div>
                           {vehicle.images && vehicle.images.length > 0 && (
-                            <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
+                            <div className="relative mt-2 aspect-[16/9] rounded-lg overflow-hidden">
                               <Image
                                 src={vehicle.images[0].url}
                                 alt={`${vehicle.brand} ${vehicle.model}`}
@@ -222,16 +473,7 @@ export default function NewCustomer() {
                               />
                             </div>
                           )}
-                          <div className="space-y-2">
-                            <h3 className="font-medium text-gray-900">
-                              {vehicle.brand} {vehicle.model} ({vehicle.year})
-                            </h3>
-                            <p className="text-sm text-gray-600">VIN: {vehicle.vin}</p>
-                            <p className="text-sm font-medium text-primary-600">
-                              {formatCurrency(vehicle.marketPrices?.retail || 0)}
-                            </p>
-                          </div>
-                        </div>
+                        </label>
                       ))}
                     </div>
                   ) : (

@@ -86,11 +86,23 @@ model User {
 
 model Customer {
   id             String                 @id @default(uuid())
-  fullName       String
+  firstName      String
+  lastName       String
   birthDate      DateTime
   phone          String
   email          String?
   passportUrl    String
+  address        String
+  city           String
+  state          String
+  zipCode        String
+  isRental       Boolean
+  residenceYears Int
+  residenceMonths Int
+  profession     String
+  monthlyIncome  Float
+  jobYears       Int
+  jobMonths      Int
   status         String                 @default("new")
   statusUpdatedAt DateTime?
   createdAt      DateTime               @default(now())
