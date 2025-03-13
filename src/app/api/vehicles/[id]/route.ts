@@ -1,18 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import prisma from '@/lib/prisma';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
+
     const vehicle = await prisma.vehicle.findUnique({
       where: { id: params.id },
       include: {
         images: true,
-        expenses: true,
+        expenses: {
+          orderBy: {
+            date: 'desc',
+          },
+        },
         marketPrices: true,
         saleInfo: true,
       },
@@ -40,66 +52,60 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const body = await request.json();
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
+
+    const data = await request.json();
     const {
       brand,
       model,
       year,
-      color,
-      vin,
       mileage,
       purchasePrice,
       purchaseDate,
-      marketPrices
-    } = body;
+      marketPrices,
+      color,
+      vin,
+    } = data;
 
-    // Atualizar o veículo
-    const updatedVehicle = await prisma.vehicle.update({
+    const vehicle = await prisma.vehicle.update({
       where: { id: params.id },
       data: {
         brand,
         model,
         year,
-        color,
-        vin,
         mileage,
         purchasePrice,
-        purchaseDate: new Date(purchaseDate),
+        purchaseDate,
+        color,
+        vin,
+        marketPrices: marketPrices
+          ? {
+              upsert: {
+                create: marketPrices,
+                update: marketPrices,
+              },
+            }
+          : undefined,
       },
-    });
-
-    // Atualizar ou criar preços de mercado
-    if (marketPrices) {
-      await prisma.marketPrice.upsert({
-        where: { vehicleId: params.id },
-        create: {
-          vehicleId: params.id,
-          wholesale: marketPrices.wholesale || 0,
-          mmr: marketPrices.mmr || 0,
-          retail: marketPrices.retail || 0,
-          repasse: marketPrices.repasse || 0,
-        },
-        update: {
-          wholesale: marketPrices.wholesale || 0,
-          mmr: marketPrices.mmr || 0,
-          retail: marketPrices.retail || 0,
-          repasse: marketPrices.repasse || 0,
-        },
-      });
-    }
-
-    // Buscar veículo atualizado com todos os detalhes
-    const vehicleWithDetails = await prisma.vehicle.findUnique({
-      where: { id: params.id },
       include: {
         images: true,
-        expenses: true,
+        expenses: {
+          orderBy: {
+            date: 'desc',
+          },
+        },
         marketPrices: true,
         saleInfo: true,
       },
     });
 
-    return NextResponse.json(vehicleWithDetails);
+    return NextResponse.json(vehicle);
   } catch (error) {
     console.error('Erro ao atualizar veículo:', error);
     return NextResponse.json(
@@ -114,28 +120,34 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
+
     // Primeiro, excluir todos os registros relacionados
-    await Promise.all([
+    await prisma.$transaction([
       prisma.expense.deleteMany({
         where: { vehicleId: params.id },
       }),
       prisma.image.deleteMany({
         where: { vehicleId: params.id },
       }),
-      prisma.marketPrice.delete({
+      prisma.marketPrice.deleteMany({
         where: { vehicleId: params.id },
-      }).catch(() => {}), // Ignora erro se não existir
-      prisma.saleInfo.delete({
+      }),
+      prisma.saleInfo.deleteMany({
         where: { vehicleId: params.id },
-      }).catch(() => {}), // Ignora erro se não existir
+      }),
+      prisma.vehicle.delete({
+        where: { id: params.id },
+      }),
     ]);
 
-    // Depois, excluir o veículo
-    await prisma.vehicle.delete({
-      where: { id: params.id },
-    });
-
-    return NextResponse.json({ message: 'Veículo excluído com sucesso' });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Erro ao excluir veículo:', error);
     return NextResponse.json(
