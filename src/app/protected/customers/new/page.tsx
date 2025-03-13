@@ -82,6 +82,7 @@ export default function NewCustomer() {
         },
         body: JSON.stringify({
           ...formData,
+          birthDate: new Date(formData.birthDate).toISOString(),
           passportUrl,
         }),
       });
