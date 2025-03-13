@@ -32,7 +32,7 @@ export async function POST(
       );
     }
 
-    const image = await prisma.vehicleImage.create({
+    const image = await prisma.image.create({
       data: {
         url: imageUrl,
         vehicleId: params.id,
@@ -73,7 +73,7 @@ export async function DELETE(
       );
     }
 
-    const image = await prisma.vehicleImage.findFirst({
+    const image = await prisma.image.findFirst({
       where: {
         id: imageId,
         vehicleId: params.id,
@@ -87,7 +87,7 @@ export async function DELETE(
       );
     }
 
-    await prisma.vehicleImage.delete({
+    await prisma.image.delete({
       where: { id: imageId },
     });
 
