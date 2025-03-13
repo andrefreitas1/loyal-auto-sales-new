@@ -126,19 +126,28 @@ export default function CustomerDetails() {
     if (!customer) return;
 
     try {
-      const response = await fetch(customer.passportUrl);
+      const response = await fetch(`/api/customers/${customer.id}/passport`);
+      if (!response.ok) {
+        throw new Error('Erro ao baixar passaporte');
+      }
+
+      // Obter o nome do arquivo do header Content-Disposition
+      const contentDisposition = response.headers.get('content-disposition');
+      const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
+      const filename = filenameMatch ? filenameMatch[1] : `passaporte_${customer.fullName.replace(/\s+/g, '_')}.pdf`;
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `passaporte_${customer.fullName.replace(/\s+/g, '_')}.jpg`;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error('Erro ao baixar passaporte:', error);
-      setError('Erro ao baixar passaporte');
+      alert('Não foi possível baixar o passaporte. Por favor, tente novamente.');
     }
   };
 
