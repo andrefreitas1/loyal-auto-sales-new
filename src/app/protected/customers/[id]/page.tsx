@@ -56,12 +56,26 @@ export default function CustomerDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedCustomer, setEditedCustomer] = useState<Partial<Customer> | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (params.id) {
       fetchCustomer();
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (customer && !editedCustomer) {
+      setEditedCustomer({
+        fullName: customer.fullName,
+        birthDate: customer.birthDate.split('T')[0],
+        phone: customer.phone,
+        email: customer.email,
+      });
+    }
+  }, [customer]);
 
   const fetchCustomer = async () => {
     try {
@@ -128,6 +142,71 @@ export default function CustomerDetails() {
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedCustomer(customer ? {
+      fullName: customer.fullName,
+      birthDate: customer.birthDate.split('T')[0],
+      phone: customer.phone,
+      email: customer.email,
+    } : null);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!customer || !editedCustomer) return;
+
+    try {
+      setUpdating(true);
+      const response = await fetch(`/api/customers/${customer.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editedCustomer),
+      });
+
+      if (response.ok) {
+        const updatedCustomer = await response.json();
+        setCustomer(updatedCustomer);
+        setIsEditing(false);
+      } else {
+        throw new Error('Erro ao atualizar cliente');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar cliente:', error);
+      setError('Erro ao atualizar informações do cliente');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!customer) return;
+
+    try {
+      setUpdating(true);
+      const response = await fetch(`/api/customers/${customer.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        router.push('/protected/customers');
+      } else {
+        throw new Error('Erro ao excluir cliente');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir cliente:', error);
+      setError('Erro ao excluir cliente');
+    } finally {
+      setUpdating(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -169,7 +248,7 @@ export default function CustomerDetails() {
             <span>{customer.fullName}</span>
           </div>
 
-          {/* Cabeçalho */}
+          {/* Cabeçalho com Ações */}
           <div className="flex justify-between items-start mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.fullName}</h1>
@@ -178,30 +257,51 @@ export default function CustomerDetails() {
                 {new Date(customer.createdAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
-            {session?.user?.role === 'admin' && (
-              <div className="flex items-center gap-4">
-                <select
-                  value={customer.status || 'new'}
-                  onChange={(e) => handleStatusChange(e.target.value)}
-                  disabled={updating}
-                  className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
-                >
-                  {statusOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                  ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
-                  customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                  customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'}`}
-                >
-                  {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
-                </span>
-              </div>
-            )}
+            <div className="flex items-center gap-4">
+              {session?.user?.role === 'admin' && (
+                <>
+                  {!isEditing ? (
+                    <button
+                      onClick={handleEdit}
+                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Editar
+                    </button>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        disabled={updating}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Salvar
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Excluir
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -210,32 +310,75 @@ export default function CustomerDetails() {
               <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações do Cliente</h2>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600">Status</span>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                      ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
-                      customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                      customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'}`}
-                    >
-                      {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600">Data de Nascimento</span>
-                    <span className="font-medium">
-                      {new Date(customer.birthDate).toLocaleDateString('pt-BR')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <span className="text-gray-600">Telefone</span>
-                    <span className="font-medium">{customer.phone}</span>
-                  </div>
-                  {customer.email && (
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <span className="text-gray-600">Email</span>
-                      <span className="font-medium">{customer.email}</span>
-                    </div>
+                  {isEditing ? (
+                    <>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
+                        <input
+                          type="text"
+                          value={editedCustomer?.fullName || ''}
+                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, fullName: e.target.value }))}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                        <input
+                          type="date"
+                          value={editedCustomer?.birthDate || ''}
+                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, birthDate: e.target.value }))}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Telefone</label>
+                        <input
+                          type="tel"
+                          value={editedCustomer?.phone || ''}
+                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, phone: e.target.value }))}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                        <input
+                          type="email"
+                          value={editedCustomer?.email || ''}
+                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, email: e.target.value }))}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span className="text-gray-600">Status</span>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
+                          customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'}`}
+                        >
+                          {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span className="text-gray-600">Data de Nascimento</span>
+                        <span className="font-medium">
+                          {new Date(customer.birthDate).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <span className="text-gray-600">Telefone</span>
+                        <span className="font-medium">{customer.phone}</span>
+                      </div>
+                      {customer.email && (
+                        <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                          <span className="text-gray-600">Email</span>
+                          <span className="font-medium">{customer.email}</span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -351,6 +494,33 @@ export default function CustomerDetails() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Confirmar Exclusão</h3>
+            <p className="text-gray-500 mb-6">
+              Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={updating}
+                className="px-4 py-2 border border-transparent rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                {updating ? 'Excluindo...' : 'Confirmar Exclusão'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

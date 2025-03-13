@@ -52,4 +52,76 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
+
+    const data = await request.json();
+    const { fullName, birthDate, phone, email } = data;
+
+    const customer = await prisma.customer.update({
+      where: { id: params.id },
+      data: { 
+        fullName,
+        birthDate: new Date(birthDate),
+        phone,
+        email,
+      },
+      include: {
+        operator: true,
+        vehicle: {
+          include: {
+            marketPrices: true,
+            images: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(customer);
+  } catch (error) {
+    console.error('Erro ao atualizar cliente:', error);
+    return NextResponse.json(
+      { error: 'Erro ao atualizar cliente' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
+
+    await prisma.customer.delete({
+      where: { id: params.id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao excluir cliente:', error);
+    return NextResponse.json(
+      { error: 'Erro ao excluir cliente' },
+      { status: 500 }
+    );
+  }
 } 
