@@ -79,6 +79,10 @@ export default function VehicleDetails() {
     }
   }, [vehicle]);
 
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [vehicle]);
+
   const fetchVehicleDetails = async () => {
     try {
       const response = await fetch(`/api/vehicles/${params.id}`);
@@ -478,7 +482,7 @@ export default function VehicleDetails() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl shadow-card overflow-hidden">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center p-6">
                   <h2 className="text-xl font-semibold text-gray-900">Imagens do Veículo</h2>
                   {session?.user?.role === 'admin' && (
                     <div>
@@ -500,67 +504,42 @@ export default function VehicleDetails() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {/* Imagem Principal */}
+                <div className="relative aspect-[16/9] w-full">
                   {vehicle.images && vehicle.images.length > 0 ? (
-                    vehicle.images.map((image) => (
-                      <div
-                        key={image.id}
-                        className="relative group"
-                        onMouseEnter={() => setSelectedImage(image.id)}
-                        onMouseLeave={() => setSelectedImage(null)}
-                      >
-                        <div className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden bg-gray-100">
-                          {!imageErrors[image.id] && (
-                            <Image
-                              src={image.url}
-                              alt={`${vehicle.brand} ${vehicle.model}`}
-                              fill
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              className="object-cover"
-                              priority={currentImageIndex === 0}
-                              quality={75}
-                              onError={() => handleImageError(image.id)}
-                              loading={currentImageIndex === 0 ? "eager" : "lazy"}
-                            />
-                          )}
-                          {imageErrors[image.id] && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                              </svg>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {selectedImage === image.id && (
-                          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2">
-                            <button
-                              onClick={() => handleDownloadImage(image.url)}
-                              className="p-2 bg-white rounded-full hover:bg-gray-100"
-                              title="Baixar Imagem"
-                            >
-                              <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                              </svg>
-                            </button>
-                            
-                            {session?.user?.role === 'admin' && (
-                              <button
-                                onClick={() => handleDeleteImage(image.id)}
-                                className="p-2 bg-white rounded-full hover:bg-gray-100"
-                                title="Excluir Imagem"
-                              >
-                                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))
+                    <>
+                      <Image
+                        src={vehicle.images[currentImageIndex].url}
+                        alt={`${vehicle.brand} ${vehicle.model}`}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        priority
+                      />
+                      {/* Botões de navegação */}
+                      {vehicle.images.length > 1 && (
+                        <>
+                          <button
+                            onClick={previousImage}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={nextImage}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </>
+                      )}
+                    </>
                   ) : (
-                    <div className="w-full h-48 bg-gray-100 flex items-center justify-center rounded-lg">
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                       <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
@@ -568,9 +547,41 @@ export default function VehicleDetails() {
                   )}
                 </div>
 
-                {vehicle.images.length === 0 && (
-                  <div className="text-center py-12 text-gray-500">
-                    Nenhuma imagem disponível
+                {/* Miniaturas */}
+                {vehicle.images && vehicle.images.length > 1 && (
+                  <div className="p-4 border-t">
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {vehicle.images.map((image, index) => (
+                        <button
+                          key={image.id}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden ${
+                            currentImageIndex === index ? 'ring-2 ring-primary-500' : ''
+                          }`}
+                        >
+                          <Image
+                            src={image.url}
+                            alt={`${vehicle.brand} ${vehicle.model} - Imagem ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                          {session?.user?.role === 'admin' && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteImage(image.id);
+                              }}
+                              className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
