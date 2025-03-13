@@ -15,6 +15,14 @@ import {
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -58,6 +66,49 @@ export default function Navbar() {
       { href: '/protected/users', label: 'Usuários' },
     ] : []),
   ];
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError('As novas senhas não coincidem');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/users/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
+
+      if (response.ok) {
+        setSuccess('Senha alterada com sucesso!');
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+        setTimeout(() => {
+          setShowChangePassword(false);
+          setSuccess('');
+        }, 2000);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Erro ao alterar senha');
+      }
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      setError('Erro ao alterar senha');
+    }
+  };
 
   return (
     <nav className="bg-white shadow-sm">
@@ -119,6 +170,15 @@ export default function Navbar() {
                         {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
                       </div>
                     </div>
+                    <button
+                      onClick={() => {
+                        setShowChangePassword(true);
+                        setIsUserMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Alterar Senha
+                    </button>
                     {session?.user?.role === 'admin' && (
                       <Link
                         href="/protected/settings"
@@ -211,6 +271,89 @@ export default function Navbar() {
                 Sair
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Alteração de Senha */}
+      {showChangePassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Alterar Senha</h3>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {error}
+              </div>
+            )}
+            
+            {success && (
+              <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+                {success}
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Senha Atual
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                    required
+                    minLength={6}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Nova Senha
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                    required
+                    minLength={6}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Confirmar Nova Senha
+                  </label>
+                  <input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                    required
+                    minLength={6}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowChangePassword(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                >
+                  Salvar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
