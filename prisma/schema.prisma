@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Vehicle {
@@ -82,22 +81,39 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   customers Customer[]
+  statusHistoryUpdates CustomerStatusHistory[] @relation("StatusUpdater")
 }
 
 model Customer {
-  id           String   @id @default(uuid())
-  fullName     String
-  birthDate    DateTime
-  phone        String
-  email        String?
-  passportUrl  String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  operatorId   String
-  operator     User     @relation(fields: [operatorId], references: [id])
-  vehicleId    String
-  vehicle      Vehicle  @relation(fields: [vehicleId], references: [id])
+  id             String                 @id @default(uuid())
+  fullName       String
+  birthDate      DateTime
+  phone          String
+  email          String?
+  passportUrl    String
+  status         String                 @default("new")
+  statusUpdatedAt DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  operatorId     String
+  operator       User                   @relation(fields: [operatorId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle                @relation(fields: [vehicleId], references: [id])
+  statusHistory  CustomerStatusHistory[]
 
   @@index([operatorId])
   @@index([vehicleId])
+}
+
+model CustomerStatusHistory {
+  id         String   @id @default(uuid())
+  customerId String
+  status     String
+  updatedBy  String
+  createdAt  DateTime @default(now())
+  customer   Customer @relation(fields: [customerId], references: [id])
+  updatedByUser User  @relation("StatusUpdater", fields: [updatedBy], references: [id])
+
+  @@index([customerId])
+  @@index([updatedBy])
 }
