@@ -52,6 +52,7 @@ export default function Navbar() {
     ] : []),
     { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
     { href: '/protected/customers', label: 'Clientes' },
+    { href: '/protected/customer-status', label: 'Status dos Clientes' },
     ...(session?.user?.role === 'admin' ? [
       { href: '/protected/reports', label: 'Relatórios' },
       { href: '/protected/users', label: 'Usuários' },

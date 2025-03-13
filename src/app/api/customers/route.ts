@@ -17,11 +17,27 @@ export async function POST(request: NextRequest) {
     const customer = await prisma.customer.create({
       data: {
         ...data,
+        status: 'new',
+        statusUpdatedAt: new Date(),
         operatorId: session.user.id,
       },
       include: {
         operator: true,
-        vehicle: true,
+        vehicle: {
+          include: {
+            marketPrices: true,
+            images: true,
+          },
+        },
+      },
+    });
+
+    // Criar o primeiro registro no histórico
+    await prisma.customerStatusHistory.create({
+      data: {
+        customerId: customer.id,
+        status: 'new',
+        updatedBy: session.user.id,
       },
     });
 
