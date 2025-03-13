@@ -493,49 +493,58 @@ export default function VehicleDetails() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {vehicle.images.map((image) => (
-                    <div
-                      key={image.id}
-                      className="relative group"
-                      onMouseEnter={() => setSelectedImage(image.id)}
-                      onMouseLeave={() => setSelectedImage(null)}
-                    >
-                      <div className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden">
-                        <Image
-                          src={image.url}
-                          alt={`${vehicle.brand} ${vehicle.model}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      
-                      {selectedImage === image.id && (
-                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => handleDownloadImage(image.url)}
-                            className="p-2 bg-white rounded-full hover:bg-gray-100"
-                            title="Baixar Imagem"
-                          >
-                            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                          </button>
-                          
-                          {session?.user?.role === 'admin' && (
+                  {vehicle.images && vehicle.images.length > 0 ? (
+                    vehicle.images.map((image) => (
+                      <div
+                        key={image.id}
+                        className="relative group"
+                        onMouseEnter={() => setSelectedImage(image.id)}
+                        onMouseLeave={() => setSelectedImage(null)}
+                      >
+                        <div className="aspect-w-16 aspect-h-9 relative rounded-lg overflow-hidden">
+                          <Image
+                            src={image.url}
+                            alt={`${vehicle.brand} ${vehicle.model}`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-contain"
+                          />
+                        </div>
+                        
+                        {selectedImage === image.id && (
+                          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2">
                             <button
-                              onClick={() => handleDeleteImage(image.id)}
+                              onClick={() => handleDownloadImage(image.url)}
                               className="p-2 bg-white rounded-full hover:bg-gray-100"
-                              title="Excluir Imagem"
+                              title="Baixar Imagem"
                             >
-                              <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                               </svg>
                             </button>
-                          )}
-                        </div>
-                      )}
+                            
+                            {session?.user?.role === 'admin' && (
+                              <button
+                                onClick={() => handleDeleteImage(image.id)}
+                                className="p-2 bg-white rounded-full hover:bg-gray-100"
+                                title="Excluir Imagem"
+                              >
+                                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full h-48 bg-gray-100 flex items-center justify-center rounded-lg">
+                      <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
                     </div>
-                  ))}
+                  )}
                 </div>
 
                 {vehicle.images.length === 0 && (
