@@ -66,33 +66,33 @@ export default function AcquiredVehicles() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Veículos Adquiridos</h1>
-        <div className="flex gap-4">
+    <div className="container mx-auto px-4 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold">Veículos Adquiridos</h1>
+        <div className="flex w-full sm:w-auto gap-2 sm:gap-4">
           <Link
             href="/protected/vehicles"
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+            className="flex-1 sm:flex-none text-center bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base"
           >
             Todos os Veículos
           </Link>
           <Link
             href="/protected/vehicles/new"
-            className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
+            className="flex-1 sm:flex-none text-center bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base"
           >
             Novo Veículo
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {vehicles.map((vehicle) => (
           <Link
             key={vehicle.id}
             href={`/protected/vehicles/${vehicle.id}`}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
           >
-            <div className="relative h-48">
+            <div className="relative aspect-[4/3] sm:h-48">
               {vehicle.images?.length > 0 && !imageErrors[vehicle.id] ? (
                 <div className="relative w-full h-full">
                   <Image
@@ -107,21 +107,21 @@ export default function AcquiredVehicles() {
                 </div>
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400">Sem imagem</span>
+                  <span className="text-sm sm:text-base text-gray-400">Sem imagem</span>
                 </div>
               )}
               <div className="absolute top-0 right-0 m-2">
-                <span className="px-2 py-1 rounded text-sm font-semibold bg-yellow-500 text-white">
+                <span className="px-2 py-1 rounded text-xs sm:text-sm font-semibold bg-yellow-500 text-white">
                   Adquirido
                 </span>
               </div>
             </div>
 
-            <div className="p-4">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            <div className="p-3 sm:p-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                 {vehicle.brand} {vehicle.model} ({vehicle.year})
               </h2>
-              <div className="text-gray-600">
+              <div className="text-sm sm:text-base text-gray-600 space-y-1">
                 <p>Milhas: {vehicle.mileage.toLocaleString()} mi</p>
                 <p>Valor de Compra: ${vehicle.purchasePrice.toLocaleString()}</p>
                 <p>Data de Aquisição: {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}</p>
@@ -132,11 +132,11 @@ export default function AcquiredVehicles() {
       </div>
 
       {vehicles.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-600">Nenhum veículo adquirido no momento.</p>
+        <div className="text-center py-8 sm:py-12">
+          <p className="text-sm sm:text-base text-gray-600">Nenhum veículo adquirido no momento.</p>
           <Link
             href="/protected/vehicles"
-            className="text-primary-600 hover:text-primary-700 font-semibold mt-2 inline-block"
+            className="text-primary-600 hover:text-primary-700 font-semibold mt-2 inline-block text-sm sm:text-base"
           >
             Ver todos os veículos
           </Link>
