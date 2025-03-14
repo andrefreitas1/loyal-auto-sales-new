@@ -449,74 +449,74 @@ export default function VehicleDetails() {
   const totalExpenses = vehicle.expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-col gap-4 mb-4 sm:mb-8">
             <div>
-              <div className="flex items-center gap-3 text-sm text-gray-600 mb-2">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-2">
                 <Link href="/protected/vehicles" className="hover:text-primary-600 transition-colors">
                   Veículos
                 </Link>
                 <span>/</span>
-                <span>{vehicle.brand} {vehicle.model}</span>
+                <span className="truncate">{vehicle.brand} {vehicle.model}</span>
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">
                 {vehicle.brand} {vehicle.model} {vehicle.year}
               </h1>
-              <div className="flex items-center gap-2">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium text-white ${getStatusColor(vehicle.status)}`}>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium text-white ${getStatusColor(vehicle.status)}`}>
                   {getStatusText(vehicle.status)}
                 </span>
                 <span className="text-gray-500">•</span>
-                <span className="text-gray-600">VIN: {vehicle.vin}</span>
+                <span className="text-xs sm:text-sm text-gray-600">VIN: {vehicle.vin}</span>
               </div>
             </div>
             
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {vehicle.status === 'acquired' && (
                 <button
                   onClick={() => handleStatusChange('in_preparation')}
-                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
-                  Mover para Preparação
+                  <span className="sm:inline">Mover para Preparação</span>
                 </button>
               )}
               
               {vehicle.status === 'in_preparation' && (
                 <button
                   onClick={() => handleStatusChange('for_sale')}
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors text-sm sm:text-base"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Disponibilizar para Venda
+                  <span className="sm:inline">Disponibilizar para Venda</span>
                 </button>
               )}
               
               <button
                 onClick={handleDeleteVehicle}
                 disabled={isDeleting}
-                className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-lg transition-colors disabled:opacity-50 text-sm sm:text-base"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                {isDeleting ? 'Excluindo...' : 'Excluir Veículo'}
+                <span className="sm:inline">{isDeleting ? 'Excluindo...' : 'Excluir'}</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               <div className="bg-white rounded-xl shadow-card overflow-hidden">
-                <div className="flex justify-between items-center p-6">
-                  <h2 className="text-xl font-semibold text-gray-900">Imagens do Veículo</h2>
-                  <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-6 gap-3">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Imagens do Veículo</h2>
+                  <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
                     <input
                       type="file"
                       id="imageUpload"
@@ -527,20 +527,20 @@ export default function VehicleDetails() {
                     />
                     <label
                       htmlFor="imageUpload"
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer"
                     >
                       {uploading ? 'Enviando...' : 'Adicionar Imagem'}
                     </label>
                     <button
                       onClick={() => setShowDownloadModal(true)}
-                      className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      className="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       Baixar Imagens
                     </button>
                     {session?.user?.role === 'admin' && (
                       <button
                         onClick={() => setShowDeleteModal(true)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        className="flex-1 sm:flex-none inline-flex items-center justify-center px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-xs sm:text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                       >
                         Excluir Imagens
                       </button>
@@ -548,8 +548,7 @@ export default function VehicleDetails() {
                   </div>
                 </div>
 
-                {/* Imagem Principal */}
-                <div className="relative aspect-[16/9] w-full">
+                <div className="relative aspect-[4/3] sm:aspect-[16/9] w-full">
                   {vehicle.images && vehicle.images.length > 0 ? (
                     <>
                       <Image
@@ -560,22 +559,21 @@ export default function VehicleDetails() {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         priority
                       />
-                      {/* Botões de navegação */}
                       {vehicle.images.length > 1 && (
                         <>
                           <button
                             onClick={previousImage}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
+                            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
                           >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                             </svg>
                           </button>
                           <button
                             onClick={nextImage}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
+                            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-opacity"
                           >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                             </svg>
                           </button>
@@ -584,22 +582,21 @@ export default function VehicleDetails() {
                     </>
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                     </div>
                   )}
                 </div>
 
-                {/* Miniaturas */}
                 {vehicle.images && vehicle.images.length > 1 && (
-                  <div className="p-4 border-t">
-                    <div className="flex gap-2 overflow-x-auto pb-2">
+                  <div className="p-3 sm:p-4 border-t">
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                       {vehicle.images.map((image, index) => (
                         <button
                           key={image.id}
                           onClick={() => setCurrentImageIndex(index)}
-                          className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden group ${
+                          className={`relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-lg overflow-hidden group ${
                             currentImageIndex === index ? 'ring-2 ring-primary-500' : ''
                           }`}
                         >
@@ -618,7 +615,7 @@ export default function VehicleDetails() {
                               }}
                               className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                               </svg>
                             </button>
@@ -630,30 +627,30 @@ export default function VehicleDetails() {
                 )}
               </div>
 
-              <div className="bg-white rounded-xl shadow-card p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Despesas</h2>
+              <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Despesas</h2>
                 {vehicle.expenses.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {vehicle.expenses.map((expense) => (
                       <div
                         key={expense.id}
-                        className="flex items-start justify-between p-4 bg-gray-50 rounded-lg"
+                        className="flex flex-col sm:flex-row sm:items-start justify-between p-3 sm:p-4 bg-gray-50 rounded-lg gap-2 sm:gap-4"
                       >
                         <div>
-                          <p className="font-medium text-gray-900">{expense.description}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{expense.description}</p>
+                          <p className="text-xs sm:text-sm text-gray-600">
                             {new Date(expense.date).toLocaleDateString('pt-BR')} • {expense.type}
                           </p>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="font-medium text-gray-900">
+                        <div className="flex items-center justify-between sm:justify-end gap-3">
+                          <span className="font-medium text-gray-900 text-sm sm:text-base">
                             ${expense.amount.toLocaleString()}
                           </span>
                           <button
                             onClick={() => handleDeleteExpense(expense.id)}
                             className="text-red-600 hover:text-red-700 transition-colors"
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                           </button>
@@ -662,52 +659,52 @@ export default function VehicleDetails() {
                     ))}
                     <div className="mt-4 pt-4 border-t border-gray-200">
                       <div className="flex justify-between items-center">
-                        <span className="font-medium text-gray-900">Total de Despesas</span>
-                        <span className="text-lg font-semibold text-gray-900">
+                        <span className="font-medium text-gray-900 text-sm sm:text-base">Total de Despesas</span>
+                        <span className="text-base sm:text-lg font-semibold text-gray-900">
                           ${totalExpenses.toLocaleString()}
                         </span>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-600">Nenhuma despesa registrada.</p>
+                  <p className="text-sm sm:text-base text-gray-600">Nenhuma despesa registrada.</p>
                 )}
               </div>
 
-              <div className="bg-white rounded-xl shadow-card p-6">
+              <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Preços de Mercado</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Preços de Mercado</h2>
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="text-primary-600 hover:text-primary-700 font-medium"
+                    className="text-primary-600 hover:text-primary-700 font-medium text-sm sm:text-base"
                   >
                     Editar
                   </button>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {vehicle.marketPrices && !isEditing && (
                     <>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Retail</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Retail</dt>
+                        <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
                           ${vehicle.marketPrices.retail.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">MMR</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">MMR</dt>
+                        <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
                           ${vehicle.marketPrices.mmr.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Repasse</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Repasse</dt>
+                        <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
                           ${vehicle.marketPrices.repasse.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Wholesale</dt>
-                        <dd className="mt-1 text-lg font-semibold text-gray-900">
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Wholesale</dt>
+                        <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
                           ${vehicle.marketPrices.wholesale.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </dd>
                       </div>
@@ -715,8 +712,8 @@ export default function VehicleDetails() {
                   )}
                   {vehicle.marketPrices && isEditing && (
                     <>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Retail</dt>
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Retail</dt>
                         <input
                           type="number"
                           value={editedVehicle?.marketPrices?.retail || 0}
@@ -727,11 +724,11 @@ export default function VehicleDetails() {
                               retail: parseFloat(e.target.value)
                             }
                           }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">MMR</dt>
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">MMR</dt>
                         <input
                           type="number"
                           value={editedVehicle?.marketPrices?.mmr || 0}
@@ -742,11 +739,11 @@ export default function VehicleDetails() {
                               mmr: parseFloat(e.target.value)
                             }
                           }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Repasse</dt>
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Repasse</dt>
                         <input
                           type="number"
                           value={editedVehicle?.marketPrices?.repasse || 0}
@@ -757,11 +754,11 @@ export default function VehicleDetails() {
                               repasse: parseFloat(e.target.value)
                             }
                           }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <dt className="text-sm font-medium text-gray-500">Wholesale</dt>
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <dt className="text-xs sm:text-sm font-medium text-gray-500">Wholesale</dt>
                         <input
                           type="number"
                           value={editedVehicle?.marketPrices?.wholesale || 0}
@@ -772,314 +769,18 @@ export default function VehicleDetails() {
                               wholesale: parseFloat(e.target.value)
                             }
                           }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
                     </>
                   )}
-                  {!vehicle.marketPrices && (
-                    <div className="col-span-4 text-center py-4 text-gray-500">
-                      Preços de mercado não definidos
-                    </div>
-                  )}
-                </div>
-                {isEditing && (
-                  <div className="mt-4 flex justify-end gap-3">
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setEditedVehicle(vehicle);
-                      }}
-                      className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={handleSaveChanges}
-                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-                    >
-                      Salvar Alterações
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="bg-white rounded-xl shadow-card p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Informações do Veículo</h2>
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-primary-600 hover:text-primary-700 font-medium"
-                  >
-                    Editar
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  {!isEditing ? (
-                    <>
-                      <div className="border-b border-gray-200 pb-4">
-                        <p className="text-sm text-gray-600">VIN</p>
-                        <p className="font-medium text-gray-900">{vehicle.vin}</p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-gray-600">Marca</p>
-                          <p className="font-medium text-gray-900">{vehicle.brand}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Modelo</p>
-                          <p className="font-medium text-gray-900">{vehicle.model}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Ano</p>
-                          <p className="font-medium text-gray-900">{vehicle.year}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Cor</p>
-                          <p className="font-medium text-gray-900">{vehicle.color}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Milhas</p>
-                          <p className="font-medium text-gray-900">{vehicle.mileage.toLocaleString()} mi</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Data de Aquisição</p>
-                          <p className="font-medium text-gray-900">
-                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="border-b border-gray-200 pb-4">
-                        <label className="text-sm text-gray-600">VIN</label>
-                        <input
-                          type="text"
-                          value={editedVehicle?.vin || ''}
-                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm text-gray-600">Marca</label>
-                          <input
-                            type="text"
-                            value={editedVehicle?.brand || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, brand: e.target.value }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm text-gray-600">Modelo</label>
-                          <input
-                            type="text"
-                            value={editedVehicle?.model || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, model: e.target.value }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm text-gray-600">Ano</label>
-                          <input
-                            type="number"
-                            value={editedVehicle?.year || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, year: parseInt(e.target.value) }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm text-gray-600">Cor</label>
-                          <input
-                            type="text"
-                            value={editedVehicle?.color || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, color: e.target.value }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm text-gray-600">Milhas</label>
-                          <input
-                            type="number"
-                            value={editedVehicle?.mileage || ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, mileage: parseFloat(e.target.value) }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-sm text-gray-600">Data de Aquisição</label>
-                          <input
-                            type="date"
-                            value={editedVehicle?.purchaseDate ? new Date(editedVehicle.purchaseDate).toISOString().split('T')[0] : ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchaseDate: e.target.value }))}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="grid grid-cols-2 gap-4">
-                    {!isEditing ? (
-                      <>
-                        <div>
-                          <p className="text-sm text-gray-600">Valor de Compra</p>
-                          <p className="font-medium text-gray-900">
-                            ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
-                        </div>
-                        {vehicle.status === 'for_sale' && vehicle.saleInfo && (
-                          <div>
-                            <p className="text-sm text-gray-600">Preço de Venda</p>
-                            <p className="font-medium text-gray-900">
-                              ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div>
-                        <label className="text-sm text-gray-600">Valor de Compra</label>
-                        <input
-                          type="number"
-                          value={editedVehicle?.purchasePrice || ''}
-                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
-                          className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        />
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-xl shadow-card p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Adicionar Despesa</h2>
-                <form onSubmit={handleAddExpense} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Tipo de Despesa
-                    </label>
-                    <select
-                      value={expenseType}
-                      onChange={(e) => setExpenseType(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    >
-                      <option value="">Selecione um tipo</option>
-                      <option value="maintenance">Manutenção</option>
-                      <option value="fuel">Combustível</option>
-                      <option value="washing">Lavagem</option>
-                      <option value="other">Outro</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Descrição
-                    </label>
-                    <input
-                      type="text"
-                      value={expenseDescription}
-                      onChange={(e) => setExpenseDescription(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Valor
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={expenseAmount}
-                      onChange={(e) => setExpenseAmount(parseFloat(e.target.value))}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Adicionar Despesa
-                  </button>
-                </form>
-              </div>
-
-              {vehicle.status === 'for_sale' && (
-                <div className="bg-white rounded-xl shadow-card p-6 mt-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Registrar Venda</h2>
-                  <form onSubmit={handleSellVehicle} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Valor da Venda ($)
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={salePrice}
-                        onChange={(e) => setSalePrice(parseFloat(e.target.value))}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        required
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                    >
-                      Registrar Venda
-                    </button>
-                  </form>
-                </div>
-              )}
-
-              {vehicle.status === 'sold' && vehicle.saleInfo && (
-                <div className="bg-white rounded-xl shadow-card p-6 mt-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações da Venda</h2>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-gray-600">Data da Venda</p>
-                      <p className="font-medium text-gray-900">
-                        {new Date(vehicle.saleInfo.saleDate).toLocaleDateString('pt-BR')}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Valor da Venda</p>
-                      <p className="font-medium text-gray-900">
-                        ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                    <div className="pt-4 border-t border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Lucro</span>
-                        <span className={`font-medium ${
-                          vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses >= 0 
-                            ? 'text-green-600' 
-                            : 'text-red-600'
-                        }`}>
-                          ${(vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal de Exclusão de Imagens */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
@@ -1166,7 +867,6 @@ export default function VehicleDetails() {
         </div>
       )}
 
-      {/* Modal de Download de Imagens */}
       {showDownloadModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
