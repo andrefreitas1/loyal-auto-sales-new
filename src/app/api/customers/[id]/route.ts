@@ -68,12 +68,13 @@ export async function PATCH(
     }
 
     const data = await request.json();
-    const { fullName, birthDate, phone, email } = data;
+    const { firstName, lastName, birthDate, phone, email } = data;
 
     const customer = await prisma.customer.update({
       where: { id: params.id },
-      data: { 
-        fullName,
+      data: {
+        firstName,
+        lastName,
         birthDate: new Date(birthDate),
         phone,
         email,
