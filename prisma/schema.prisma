@@ -84,6 +84,12 @@ model User {
   statusHistoryUpdates CustomerStatusHistory[] @relation("StatusUpdater")
 }
 
+enum ResidenceType {
+  RENTAL
+  MORTGAGE
+  OWNED
+}
+
 model Customer {
   id             String                 @id @default(uuid())
   firstName      String
@@ -92,17 +98,17 @@ model Customer {
   phone          String
   email          String?
   passportUrl    String
-  address        String
-  city           String
-  state          String
-  zipCode        String
-  isRental       Boolean
-  residenceYears Int
-  residenceMonths Int
-  profession     String
-  monthlyIncome  Float
-  jobYears       Int
-  jobMonths      Int
+  address        String                 @default("")
+  city           String                 @default("")
+  state          String                 @default("")
+  zipCode        String                 @default("")
+  residenceType  String                 @default("RENTAL")
+  residenceYears Int                    @default(0)
+  residenceMonths Int                   @default(0)
+  profession     String                 @default("")
+  monthlyIncome  Float                  @default(0)
+  jobYears       Int                    @default(0)
+  jobMonths      Int                    @default(0)
   status         String                 @default("new")
   statusUpdatedAt DateTime?
   createdAt      DateTime               @default(now())
