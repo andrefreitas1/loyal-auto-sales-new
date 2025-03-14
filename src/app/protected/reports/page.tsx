@@ -300,51 +300,51 @@ export default function Reports() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Relatórios</h1>
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-8">
+        <h1 className="text-xl sm:text-3xl font-bold">Relatórios</h1>
         <button
           onClick={exportToPDF}
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+          className="w-full sm:w-auto bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center space-x-2"
         >
           <span>Exportar PDF</span>
         </button>
       </div>
 
-      <div className="mb-8">
-        <div className="flex space-x-4 border-b">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-nowrap overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0 pb-2 sm:pb-0 border-b scrollbar-none">
           <button
-            className={`py-2 px-4 ${activeTab === 'overview' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'overview' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('overview')}
           >
             Visão Geral
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'price_analysis' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'price_analysis' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('price_analysis')}
           >
             Análise de Preços
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'acquired' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'acquired' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('acquired')}
           >
             Adquiridos
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'in_preparation' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'in_preparation' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('in_preparation')}
           >
             Em Preparação
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'for_sale' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'for_sale' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('for_sale')}
           >
             À Venda
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'sold' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
+            className={`py-2 px-3 sm:px-4 whitespace-nowrap text-sm sm:text-base ${activeTab === 'sold' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('sold')}
           >
             Vendidos
@@ -354,9 +354,9 @@ export default function Reports() {
 
       {activeTab === 'overview' && (
         <>
-          <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 className="text-xl font-bold mb-4">Filtrar por Período</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md mb-4 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">Filtrar por Período</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Data Inicial
@@ -365,7 +365,7 @@ export default function Reports() {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
               <div>
@@ -376,25 +376,25 @@ export default function Reports() {
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
             </div>
-            <div className="mt-4 flex space-x-4">
+            <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
                 onClick={handleFilter}
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                className="w-full sm:w-auto bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 transition-colors text-sm sm:text-base"
               >
                 Filtrar
               </button>
               <button
                 onClick={clearFilter}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                className="w-full sm:w-auto bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base"
               >
                 Limpar Filtro
               </button>
             </div>
-            <div className="mt-4 text-sm text-gray-600">
+            <div className="mt-3 text-xs sm:text-sm text-gray-600">
               {isFiltered ? (
                 <p>
                   Mostrando dados de {new Date(startDate).toLocaleDateString('pt-BR')} até {new Date(endDate).toLocaleDateString('pt-BR')}
@@ -405,40 +405,40 @@ export default function Reports() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Total de Veículos</h3>
-              <p className="text-3xl font-bold text-primary-600">{reportData.totalVehicles}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Total de Veículos</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-primary-600">{reportData.totalVehicles}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Investimento Total</h3>
-              <p className="text-3xl font-bold text-primary-600">{formatCurrency(reportData.totalInvestment)}</p>
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Investimento Total</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-primary-600">{formatCurrency(reportData.totalInvestment)}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Total em Vendas</h3>
-              <p className="text-3xl font-bold text-primary-600">{formatCurrency(reportData.totalSales)}</p>
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Total em Vendas</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-primary-600">{formatCurrency(reportData.totalSales)}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Lucro Total</h3>
-              <p className={`text-3xl font-bold ${reportData.totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-2">Lucro Total</h3>
+              <p className={`text-2xl sm:text-3xl font-bold ${reportData.totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {formatCurrency(reportData.totalProfit)}
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 className="text-xl font-bold mb-4">Despesas por Tipo</h2>
-            <div className="space-y-4">
+          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-4">Despesas por Tipo</h2>
+            <div className="space-y-3 sm:space-y-4">
               {Object.entries(reportData.expensesByType).map(([type, amount]) => (
                 <div key={type} className="flex justify-between items-center">
-                  <span className="text-gray-700 capitalize">{type}</span>
-                  <span className="font-medium text-gray-900">{formatCurrency(amount)}</span>
+                  <span className="text-sm sm:text-base text-gray-700 capitalize">{type}</span>
+                  <span className="text-sm sm:text-base font-medium text-gray-900">{formatCurrency(amount)}</span>
                 </div>
               ))}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-3 sm:pt-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-gray-900">Total de Despesas</span>
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-sm sm:text-base font-semibold text-gray-900">Total de Despesas</span>
+                  <span className="text-base sm:text-lg font-bold text-gray-900">
                     {formatCurrency(reportData.totalExpenses)}
                   </span>
                 </div>
