@@ -777,6 +777,296 @@ export default function VehicleDetails() {
                 </div>
               </div>
             </div>
+
+            <div className="space-y-4 sm:space-y-6">
+              <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Informações do Veículo</h2>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-primary-600 hover:text-primary-700 font-medium text-sm sm:text-base"
+                  >
+                    Editar
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {!isEditing ? (
+                    <>
+                      <div className="border-b border-gray-200 pb-4">
+                        <p className="text-xs sm:text-sm text-gray-600">VIN</p>
+                        <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.vin}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Marca</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.brand}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Modelo</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.model}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Ano</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.year}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Cor</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.color}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Milhas</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">{vehicle.mileage.toLocaleString()} mi</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Data de Aquisição</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">
+                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="border-b border-gray-200 pb-4">
+                        <label className="text-xs sm:text-sm text-gray-600">VIN</label>
+                        <input
+                          type="text"
+                          value={editedVehicle?.vin || ''}
+                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, vin: e.target.value }))}
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Marca</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.brand || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, brand: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Modelo</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.model || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, model: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Ano</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.year || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, year: parseInt(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Cor</label>
+                          <input
+                            type="text"
+                            value={editedVehicle?.color || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, color: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Milhas</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.mileage || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, mileage: parseFloat(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Data de Aquisição</label>
+                          <input
+                            type="date"
+                            value={editedVehicle?.purchaseDate ? new Date(editedVehicle.purchaseDate).toISOString().split('T')[0] : ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchaseDate: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-gray-200 mt-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    {!isEditing ? (
+                      <>
+                        <div>
+                          <p className="text-xs sm:text-sm text-gray-600">Valor de Compra</p>
+                          <p className="font-medium text-gray-900 text-sm sm:text-base">
+                            ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                        {vehicle.status === 'for_sale' && vehicle.saleInfo && (
+                          <div>
+                            <p className="text-xs sm:text-sm text-gray-600">Preço de Venda</p>
+                            <p className="font-medium text-gray-900 text-sm sm:text-base">
+                              ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div>
+                        <label className="text-xs sm:text-sm text-gray-600">Valor de Compra</label>
+                        <input
+                          type="number"
+                          value={editedVehicle?.purchasePrice || ''}
+                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
+                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {isEditing && (
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setEditedVehicle(vehicle);
+                      }}
+                      className="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSaveChanges}
+                      className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+                    >
+                      Salvar Alterações
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Adicionar Despesa</h2>
+                <form onSubmit={handleAddExpense} className="space-y-4">
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      Tipo de Despesa
+                    </label>
+                    <select
+                      value={expenseType}
+                      onChange={(e) => setExpenseType(e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    >
+                      <option value="">Selecione um tipo</option>
+                      <option value="maintenance">Manutenção</option>
+                      <option value="fuel">Combustível</option>
+                      <option value="washing">Lavagem</option>
+                      <option value="other">Outro</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      Descrição
+                    </label>
+                    <input
+                      type="text"
+                      value={expenseDescription}
+                      onChange={(e) => setExpenseDescription(e.target.value)}
+                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      Valor
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={expenseAmount}
+                      onChange={(e) => setExpenseAmount(parseFloat(e.target.value))}
+                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 text-sm sm:text-base rounded-lg transition-colors"
+                  >
+                    Adicionar Despesa
+                  </button>
+                </form>
+              </div>
+
+              {vehicle.status === 'for_sale' && (
+                <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Registrar Venda</h2>
+                  <form onSubmit={handleSellVehicle} className="space-y-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                        Valor da Venda ($)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={salePrice}
+                        onChange={(e) => setSalePrice(parseFloat(e.target.value))}
+                        className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        required
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 text-sm sm:text-base rounded-lg transition-colors"
+                    >
+                      Registrar Venda
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {vehicle.status === 'sold' && vehicle.saleInfo && (
+                <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Informações da Venda</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Data da Venda</p>
+                      <p className="font-medium text-gray-900 text-sm sm:text-base">
+                        {new Date(vehicle.saleInfo.saleDate).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Valor da Venda</p>
+                      <p className="font-medium text-gray-900 text-sm sm:text-base">
+                        ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs sm:text-sm text-gray-600">Lucro</span>
+                        <span className={`font-medium text-sm sm:text-base ${
+                          vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses >= 0 
+                            ? 'text-green-600' 
+                            : 'text-red-600'
+                        }`}>
+                          ${(vehicle.saleInfo.salePrice - vehicle.purchasePrice - totalExpenses).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
