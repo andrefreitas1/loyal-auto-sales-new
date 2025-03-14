@@ -26,6 +26,7 @@ interface CustomerFormData {
   jobYears: number;
   jobMonths: number;
   vehicleId: string;
+  residenceType: string;
 }
 
 export default function NewCustomer() {
@@ -53,6 +54,7 @@ export default function NewCustomer() {
     jobYears: 0,
     jobMonths: 0,
     vehicleId: '',
+    residenceType: 'RENTAL',
   });
 
   useEffect(() => {
@@ -123,6 +125,7 @@ export default function NewCustomer() {
           jobYears: formData.jobYears,
           jobMonths: formData.jobMonths,
           vehicleId: formData.vehicleId,
+          residenceType: formData.residenceType,
         }),
       });
 
@@ -146,6 +149,14 @@ export default function NewCustomer() {
         passportFile: e.target.files![0]
       }));
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   return (
@@ -307,28 +318,43 @@ export default function NewCustomer() {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Casa de Aluguel ou Hipoteca?
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tipo de Imóvel
                     </label>
-                    <div className="mt-2">
+                    <div className="flex gap-4">
                       <label className="inline-flex items-center">
                         <input
                           type="radio"
-                          checked={formData.isRental}
-                          onChange={() => setFormData(prev => ({ ...prev, isRental: true }))}
-                          className="form-radio h-4 w-4 text-primary-600"
+                          name="residenceType"
+                          value="RENTAL"
+                          checked={formData.residenceType === 'RENTAL'}
+                          onChange={handleInputChange}
+                          className="form-radio h-4 w-4 text-blue-600"
                         />
-                        <span className="ml-2">Aluguel</span>
+                        <span className="ml-2">Casa de Aluguel</span>
                       </label>
-                      <label className="inline-flex items-center ml-6">
+                      <label className="inline-flex items-center">
                         <input
                           type="radio"
-                          checked={!formData.isRental}
-                          onChange={() => setFormData(prev => ({ ...prev, isRental: false }))}
-                          className="form-radio h-4 w-4 text-primary-600"
+                          name="residenceType"
+                          value="MORTGAGE"
+                          checked={formData.residenceType === 'MORTGAGE'}
+                          onChange={handleInputChange}
+                          className="form-radio h-4 w-4 text-blue-600"
                         />
                         <span className="ml-2">Hipoteca</span>
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="radio"
+                          name="residenceType"
+                          value="OWNED"
+                          checked={formData.residenceType === 'OWNED'}
+                          onChange={handleInputChange}
+                          className="form-radio h-4 w-4 text-blue-600"
+                        />
+                        <span className="ml-2">Imóvel Próprio</span>
                       </label>
                     </div>
                   </div>
