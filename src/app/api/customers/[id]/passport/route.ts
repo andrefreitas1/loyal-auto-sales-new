@@ -17,7 +17,9 @@ export async function GET(
     }
 
     const customer = await prisma.customer.findUnique({
-      where: { id: params.id },
+      where: {
+        id: params.id,
+      },
       select: {
         passportUrl: true,
         fullName: true,
@@ -32,7 +34,7 @@ export async function GET(
       );
     }
 
-    // Verificar se o usuário tem permissão para ver este cliente
+    // Verificar se o usuário é admin ou o operador do cliente
     if (session.user.role !== 'admin' && customer.operatorId !== session.user.id) {
       return NextResponse.json(
         { error: 'Não autorizado' },
