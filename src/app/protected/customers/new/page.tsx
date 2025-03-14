@@ -18,7 +18,7 @@ interface CustomerFormData {
   city: string;
   state: string;
   zipCode: string;
-  isRental: boolean;
+  residenceType: string;
   residenceYears: number;
   residenceMonths: number;
   profession: string;
@@ -26,7 +26,6 @@ interface CustomerFormData {
   jobYears: number;
   jobMonths: number;
   vehicleId: string;
-  residenceType: string;
 }
 
 export default function NewCustomer() {
@@ -46,7 +45,7 @@ export default function NewCustomer() {
     city: '',
     state: '',
     zipCode: '',
-    isRental: false,
+    residenceType: 'RENTAL',
     residenceYears: 0,
     residenceMonths: 0,
     profession: '',
@@ -54,7 +53,6 @@ export default function NewCustomer() {
     jobYears: 0,
     jobMonths: 0,
     vehicleId: '',
-    residenceType: 'RENTAL',
   });
 
   useEffect(() => {
@@ -117,7 +115,7 @@ export default function NewCustomer() {
           city: formData.city,
           state: formData.state,
           zipCode: formData.zipCode,
-          isRental: formData.isRental,
+          residenceType: formData.residenceType,
           residenceYears: formData.residenceYears,
           residenceMonths: formData.residenceMonths,
           profession: formData.profession,
@@ -125,7 +123,6 @@ export default function NewCustomer() {
           jobYears: formData.jobYears,
           jobMonths: formData.jobMonths,
           vehicleId: formData.vehicleId,
-          residenceType: formData.residenceType,
         }),
       });
 
