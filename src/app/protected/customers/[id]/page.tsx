@@ -9,7 +9,8 @@ import { formatCurrency } from '@/utils/format';
 
 interface Customer {
   id: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   birthDate: string;
   phone: string;
   email: string | null;
@@ -39,13 +40,11 @@ interface Customer {
       url: string;
     }[];
   };
-  firstName: string;
-  lastName: string;
   address: string;
   city: string;
   state: string;
   zipCode: string;
-  isRental: boolean;
+  residenceType: 'RENTAL' | 'MORTGAGE' | 'OWNED';
   residenceYears: number;
   residenceMonths: number;
   profession: string;
@@ -82,7 +81,8 @@ export default function CustomerDetails() {
   useEffect(() => {
     if (customer && !editedCustomer) {
       setEditedCustomer({
-        fullName: customer.fullName,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
         birthDate: customer.birthDate.split('T')[0],
         phone: customer.phone,
         email: customer.email,
@@ -147,7 +147,7 @@ export default function CustomerDetails() {
       // Obter o nome do arquivo do header Content-Disposition
       const contentDisposition = response.headers.get('content-disposition');
       const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
-      const filename = filenameMatch ? filenameMatch[1] : `passaporte_${customer.fullName.replace(/\s+/g, '_')}.pdf`;
+      const filename = filenameMatch ? filenameMatch[1] : `passaporte_${customer.firstName.replace(/\s+/g, '_')}_${customer.lastName.replace(/\s+/g, '_')}.pdf`;
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -171,7 +171,8 @@ export default function CustomerDetails() {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedCustomer(customer ? {
-      fullName: customer.fullName,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
       birthDate: customer.birthDate.split('T')[0],
       phone: customer.phone,
       email: customer.email,
@@ -267,13 +268,13 @@ export default function CustomerDetails() {
               Clientes
             </Link>
             <span>/</span>
-            <span>{customer.fullName}</span>
+            <span>{`${customer.firstName} ${customer.lastName}`}</span>
           </div>
 
           {/* Cabeçalho com Ações */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{customer.fullName}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{`${customer.firstName} ${customer.lastName}`}</h1>
               <p className="text-gray-500">
                 Cadastrado por {customer.operator.name} em{' '}
                 {new Date(customer.createdAt).toLocaleDateString('pt-BR')}
@@ -326,82 +327,99 @@ export default function CustomerDetails() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Coluna da Esquerda - Informações do Cliente */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Informações do Cliente</h2>
-                <div className="space-y-4">
-                  {isEditing ? (
-                    <>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
-                        <input
-                          type="text"
-                          value={editedCustomer?.fullName || ''}
-                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, fullName: e.target.value }))}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                        />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Dados Pessoais */}
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">Dados Pessoais</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Nome</span>
+                        <span className="font-medium">{customer.firstName}</span>
                       </div>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                        <input
-                          type="date"
-                          value={editedCustomer?.birthDate || ''}
-                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, birthDate: e.target.value }))}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                        />
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Sobrenome</span>
+                        <span className="font-medium">{customer.lastName}</span>
                       </div>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Telefone</label>
-                        <input
-                          type="tel"
-                          value={editedCustomer?.phone || ''}
-                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, phone: e.target.value }))}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                          type="email"
-                          value={editedCustomer?.email || ''}
-                          onChange={(e) => setEditedCustomer(prev => ({ ...prev!, email: e.target.value }))}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">Status</span>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${customer.status === 'approved' ? 'bg-green-100 text-green-800' :
-                          customer.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          customer.status === 'analysis' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'}`}
-                        >
-                          {statusOptions.find(opt => opt.value === customer.status)?.label || 'Novo Cliente'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600">Data de Nascimento</span>
                         <span className="font-medium">
-                          {new Date(new Date(customer.birthDate).getTime() + new Date().getTimezoneOffset() * 60000).toLocaleDateString('pt-BR')}
+                          {new Date(customer.birthDate).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600">Telefone</span>
                         <span className="font-medium">{customer.phone}</span>
                       </div>
                       {customer.email && (
-                        <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <div className="flex justify-between items-center py-2 border-b border-gray-100">
                           <span className="text-gray-600">Email</span>
                           <span className="font-medium">{customer.email}</span>
                         </div>
                       )}
-                    </>
-                  )}
+                    </div>
+                  </div>
+
+                  {/* Dados de Residência */}
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">Dados de Residência</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Endereço</span>
+                        <span className="font-medium">{customer.address}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Cidade</span>
+                        <span className="font-medium">{customer.city}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Estado</span>
+                        <span className="font-medium">{customer.state}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">CEP</span>
+                        <span className="font-medium">{customer.zipCode}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Tipo de Imóvel</span>
+                        <span className="font-medium">
+                          {customer.residenceType === 'RENTAL' ? 'Casa de Aluguel' :
+                           customer.residenceType === 'MORTGAGE' ? 'Hipoteca' : 'Imóvel Próprio'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Tempo de Residência</span>
+                        <span className="font-medium">
+                          {customer.residenceYears} anos e {customer.residenceMonths} meses
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dados Profissionais */}
+                  <div className="md:col-span-2">
+                    <h3 className="text-lg font-medium text-gray-900 mb-3">Dados Profissionais</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Profissão</span>
+                        <span className="font-medium">{customer.profession}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Renda Mensal</span>
+                        <span className="font-medium">{formatCurrency(customer.monthlyIncome)}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <span className="text-gray-600">Tempo no Emprego</span>
+                        <span className="font-medium">
+                          {customer.jobYears} anos e {customer.jobMonths} meses
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -433,7 +451,7 @@ export default function CustomerDetails() {
             </div>
 
             {/* Coluna da Direita - Informações do Veículo */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                 {/* Imagem Principal do Veículo */}
                 {customer.vehicle.images && customer.vehicle.images.length > 0 && (
@@ -453,35 +471,36 @@ export default function CustomerDetails() {
                     Veículo de Interesse
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">Marca</span>
-                        <span className="font-medium">{customer.vehicle.brand}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">Modelo</span>
-                        <span className="font-medium">{customer.vehicle.model}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">Ano</span>
-                        <span className="font-medium">{customer.vehicle.year}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">Cor</span>
-                        <span className="font-medium">{customer.vehicle.color}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600">VIN</span>
-                        <span className="font-medium">{customer.vehicle.vin}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3">
-                        <span className="text-gray-600">Quilometragem</span>
-                        <span className="font-medium">{customer.vehicle.mileage.toLocaleString()} milhas</span>
-                      </div>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <span className="text-gray-600">Marca</span>
+                      <span className="font-medium">{customer.vehicle.brand}</span>
                     </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <span className="text-gray-600">Modelo</span>
+                      <span className="font-medium">{customer.vehicle.model}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <span className="text-gray-600">Ano</span>
+                      <span className="font-medium">{customer.vehicle.year}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <span className="text-gray-600">Cor</span>
+                      <span className="font-medium">{customer.vehicle.color}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <span className="text-gray-600">VIN</span>
+                      <span className="font-medium">{customer.vehicle.vin}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-gray-600">Quilometragem</span>
+                      <span className="font-medium">{customer.vehicle.mileage.toLocaleString()} milhas</span>
+                    </div>
+                  </div>
 
-                    {customer.vehicle.marketPrices && (
+                  {customer.vehicle.marketPrices && (
+                    <div className="mt-6 pt-6 border-t border-gray-100">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Preços</h3>
                       <div className="space-y-4">
                         <div className="flex justify-between items-center py-3 border-b border-gray-100">
                           <span className="text-gray-600">Valor de Venda</span>
@@ -508,8 +527,8 @@ export default function CustomerDetails() {
                           </span>
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
