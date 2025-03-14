@@ -22,7 +22,7 @@ export async function GET(
       },
       select: {
         passportUrl: true,
-        fullName: true,
+        firstName: true,
         operatorId: true,
       },
     });
@@ -49,7 +49,7 @@ export async function GET(
 
     const blob = await response.blob();
     const headers = new Headers(response.headers);
-    headers.set('Content-Disposition', `attachment; filename="passaporte_${customer.fullName.replace(/\s+/g, '_')}.${headers.get('content-type')?.includes('jpeg') ? 'jpg' : headers.get('content-type')?.includes('png') ? 'png' : 'pdf'}`);
+    headers.set('Content-Disposition', `attachment; filename="passaporte_${customer.firstName.replace(/\s+/g, '_')}.${headers.get('content-type')?.includes('jpeg') ? 'jpg' : headers.get('content-type')?.includes('png') ? 'png' : 'pdf'}`);
 
     return new NextResponse(blob, {
       status: 200,
