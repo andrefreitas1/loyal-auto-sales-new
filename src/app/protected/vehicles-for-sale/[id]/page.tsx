@@ -177,13 +177,15 @@ export default function VehicleForSaleDetails() {
                   )}
                 </div>
 
-                {/* Descrição */}
+                {/* Descrição do Veículo */}
                 {vehicle.description && (
                   <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
-                    <h2 className="text-2xl font-semibold mb-4">Descrição</h2>
-                    <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                      {vehicle.description}
-                    </p>
+                    <h2 className="text-2xl font-semibold mb-4">Descrição do Veículo</h2>
+                    <div className="prose max-w-none">
+                      <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                        {vehicle.description}
+                      </p>
+                    </div>
                   </div>
                 )}
 

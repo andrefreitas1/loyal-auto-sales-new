@@ -36,6 +36,7 @@ interface Vehicle {
   saleInfo: { salePrice: number; saleDate: string } | null;
   color: string;
   vin: string;
+  description?: string;
 }
 
 export default function VehicleDetails() {
@@ -1239,6 +1240,18 @@ export default function VehicleDetails() {
                 Baixar {selectedImagesForDownload.length} imagem(ns)
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Descrição do Veículo */}
+      {vehicle.description && (
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+          <h2 className="text-2xl font-semibold mb-4">Descrição do Veículo</h2>
+          <div className="prose max-w-none">
+            <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+              {vehicle.description}
+            </p>
           </div>
         </div>
       )}
