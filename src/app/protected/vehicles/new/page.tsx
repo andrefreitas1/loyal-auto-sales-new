@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 
-interface VehicleFormData {
+interface FormData {
   brand: string;
   model: string;
   year: number;
@@ -13,6 +13,7 @@ interface VehicleFormData {
   mileage: number;
   purchasePrice: number;
   purchaseDate: string;
+  description: string;
   images: File[];
   marketPrices: {
     wholesale: number;
@@ -25,7 +26,7 @@ interface VehicleFormData {
 export default function NewVehicle() {
   const router = useRouter();
   const [error, setError] = useState<string>('');
-  const [formData, setFormData] = useState<VehicleFormData>({
+  const [formData, setFormData] = useState<FormData>({
     brand: '',
     model: '',
     year: new Date().getFullYear(),
@@ -34,6 +35,7 @@ export default function NewVehicle() {
     mileage: 0,
     purchasePrice: 0,
     purchaseDate: new Date().toISOString().split('T')[0],
+    description: '',
     images: [],
     marketPrices: {
       wholesale: 0,
@@ -111,6 +113,7 @@ export default function NewVehicle() {
       formDataToSend.append('mmr', formData.marketPrices.mmr.toString());
       formDataToSend.append('retail', formData.marketPrices.retail.toString());
       formDataToSend.append('repasse', formData.marketPrices.repasse.toString());
+      formDataToSend.append('description', formData.description);
       
       formData.images.forEach((image) => {
         formDataToSend.append('images', image);
@@ -131,6 +134,13 @@ export default function NewVehicle() {
       console.error('Erro ao cadastrar veículo:', error);
       setError(error instanceof Error ? error.message : 'Erro ao cadastrar veículo');
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      description: e.target.value
+    }));
   };
 
   return (
@@ -347,6 +357,20 @@ export default function NewVehicle() {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Descrição do Veículo
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={10}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Insira uma descrição detalhada do veículo..."
+              />
             </div>
 
             <div className="mb-8">
