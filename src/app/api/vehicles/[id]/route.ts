@@ -105,6 +105,7 @@ export async function PUT(
       marketPrices,
       color,
       vin,
+      description,
     } = data;
 
     const vehicle = await prisma.vehicle.update({
@@ -118,6 +119,7 @@ export async function PUT(
         purchaseDate,
         color,
         vin,
+        description,
         marketPrices: marketPrices
           ? {
               upsert: {
