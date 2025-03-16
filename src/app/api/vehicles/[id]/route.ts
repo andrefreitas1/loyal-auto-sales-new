@@ -29,6 +29,7 @@ export async function GET(
         status: true,
         color: true,
         vin: true,
+        description: true,
         images: {
           select: {
             id: true,
