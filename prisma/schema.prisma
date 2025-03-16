@@ -18,6 +18,7 @@ model Vehicle {
   purchasePrice Float
   purchaseDate  DateTime     @default(now())
   status        String       @default("acquired")
+  description   String?      @db.Text
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   expenses      Expense[]
