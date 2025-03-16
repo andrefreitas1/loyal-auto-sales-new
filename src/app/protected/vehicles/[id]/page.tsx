@@ -218,7 +218,8 @@ export default function VehicleDetails() {
           purchaseDate: editedVehicle.purchaseDate,
           marketPrices: editedVehicle.marketPrices,
           color: editedVehicle.color,
-          vin: editedVehicle.vin
+          vin: editedVehicle.vin,
+          description: editedVehicle.description
         }),
       });
 
@@ -1245,16 +1246,54 @@ export default function VehicleDetails() {
       )}
 
       {/* Descrição do Veículo */}
-      {vehicle.description && (
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-2xl font-semibold mb-4">Descrição do Veículo</h2>
+      <div className="mt-8 bg-white rounded-xl shadow-lg p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Descrição do Veículo</h2>
+          {!isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              {vehicle.description ? 'Editar' : 'Adicionar'} Descrição
+            </button>
+          )}
+        </div>
+        
+        {isEditing ? (
+          <div className="space-y-4">
+            <textarea
+              value={editedVehicle?.description || ''}
+              onChange={(e) => setEditedVehicle(prev => prev ? { ...prev, description: e.target.value } : null)}
+              rows={10}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              placeholder="Insira uma descrição detalhada do veículo..."
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditedVehicle(vehicle);
+                }}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveChanges}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                Salvar
+              </button>
+            </div>
+          </div>
+        ) : (
           <div className="prose max-w-none">
             <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-              {vehicle.description}
+              {vehicle.description || 'Nenhuma descrição cadastrada. Clique em "Adicionar Descrição" para incluir os detalhes do veículo.'}
             </p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 } 
