@@ -698,19 +698,52 @@ export default function VehicleDetails() {
                           <p className="text-xs sm:text-sm text-gray-600">
                             {new Date(expense.date).toLocaleDateString('pt-BR')} • {expense.type}
                           </p>
+                          {expense.receipts && expense.receipts.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {expense.receipts.map((receipt) => (
+                                <a
+                                  key={receipt.id}
+                                  href={receipt.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700"
+                                >
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  Ver comprovante
+                                </a>
+                              ))}
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center justify-between sm:justify-end gap-3">
                           <span className="font-medium text-gray-900 text-sm sm:text-base">
                             ${expense.amount.toLocaleString()}
                           </span>
-                          <button
-                            onClick={() => handleDeleteExpense(expense.id)}
-                            className="text-red-600 hover:text-red-700 transition-colors"
-                          >
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <label className="cursor-pointer text-primary-600 hover:text-primary-700 transition-colors">
+                              <input
+                                type="file"
+                                multiple
+                                accept="image/*,.pdf"
+                                className="hidden"
+                                onChange={(e) => e.target.files && handleReceiptUpload(expense.id, e.target.files)}
+                              />
+                              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                              </svg>
+                            </label>
+                            <button
+                              onClick={() => handleDeleteExpense(expense.id)}
+                              className="text-red-600 hover:text-red-700 transition-colors"
+                            >
+                              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
