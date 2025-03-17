@@ -110,14 +110,17 @@ export default function VehicleDetails() {
     }
   };
 
-  const handleAddExpense = async () => {
+  const handleAddExpense = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vehicle) return;
+
     if (!expenseType || !expenseDescription || expenseAmount <= 0) {
       setError('Preencha todos os campos da despesa');
       return;
     }
 
     try {
-      const response = await fetch(`/api/vehicles/${params.id}/expenses`, {
+      const response = await fetch(`/api/vehicles/${vehicle.id}/expenses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,11 +136,8 @@ export default function VehicleDetails() {
         throw new Error('Erro ao adicionar despesa');
       }
 
-      const newExpense = await response.json();
-      setVehicle((prev) => ({
-        ...prev!,
-        expenses: [...prev!.expenses, newExpense],
-      }));
+      const data = await response.json();
+      setVehicle(data.vehicle);
       setExpenseType('');
       setExpenseDescription('');
       setExpenseAmount(0);
@@ -1011,53 +1011,61 @@ export default function VehicleDetails() {
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Adicionar Despesa</h2>
                 <form onSubmit={handleAddExpense} className="space-y-4">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                      Tipo de Despesa
+                    <label
+                      htmlFor="expenseType"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Tipo
                     </label>
                     <select
+                      id="expenseType"
                       value={expenseType}
                       onChange={(e) => setExpenseType(e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     >
                       <option value="">Selecione um tipo</option>
-                      <option value="maintenance">Manutenção</option>
-                      <option value="fuel">Combustível</option>
-                      <option value="washing">Lavagem</option>
-                      <option value="other">Outro</option>
+                      <option value="manutencao">Manutenção</option>
+                      <option value="documentacao">Documentação</option>
+                      <option value="combustivel">Combustível</option>
+                      <option value="outros">Outros</option>
                     </select>
                   </div>
-
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="expenseDescription"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Descrição
                     </label>
                     <input
                       type="text"
+                      id="expenseDescription"
                       value={expenseDescription}
                       onChange={(e) => setExpenseDescription(e.target.value)}
-                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="expenseAmount"
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Valor
                     </label>
                     <input
                       type="number"
-                      step="0.01"
+                      id="expenseAmount"
                       value={expenseAmount}
-                      onChange={(e) => setExpenseAmount(parseFloat(e.target.value))}
-                      className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      required
+                      onChange={(e) => setExpenseAmount(Number(e.target.value))}
+                      step="0.01"
+                      min="0"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                     />
                   </div>
-
+                  {error && <p className="text-sm text-red-600">{error}</p>}
                   <button
                     type="submit"
-                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 text-sm sm:text-base rounded-lg transition-colors"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
                     Adicionar Despesa
                   </button>
