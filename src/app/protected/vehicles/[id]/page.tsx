@@ -1010,13 +1010,6 @@ export default function VehicleDetails() {
                             ${vehicle.commissionValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </dd>
                         </div>
-
-                        <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                          <dt className="text-xs sm:text-sm font-medium text-gray-500">Data de Aquisição</dt>
-                          <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
-                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
-                          </dd>
-                        </div>
                       </>
                     ) : (
                       <>
@@ -1035,15 +1028,6 @@ export default function VehicleDetails() {
                             type="number"
                             value={editedVehicle?.commissionValue || ''}
                             onChange={(e) => setEditedVehicle(prev => ({ ...prev!, commissionValue: parseFloat(e.target.value) }))}
-                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-xs sm:text-sm text-gray-600">Data de Aquisição</label>
-                          <input
-                            type="date"
-                            value={editedVehicle?.purchaseDate ? new Date(editedVehicle.purchaseDate).toISOString().split('T')[0] : ''}
-                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchaseDate: e.target.value }))}
                             className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                           />
                         </div>
