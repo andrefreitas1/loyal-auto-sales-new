@@ -264,6 +264,7 @@ export default function VehicleDetails() {
           year: editedVehicle.year,
           mileage: editedVehicle.mileage,
           purchasePrice: editedVehicle.purchasePrice,
+          commissionValue: editedVehicle.commissionValue,
           purchaseDate: editedVehicle.purchaseDate,
           marketPrices: editedVehicle.marketPrices,
           color: editedVehicle.color,
@@ -1013,15 +1014,35 @@ export default function VehicleDetails() {
                         </div>
                       </>
                     ) : (
-                      <div>
-                        <label className="text-xs sm:text-sm text-gray-600">Valor de Compra</label>
-                        <input
-                          type="number"
-                          value={editedVehicle?.purchasePrice || ''}
-                          onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
-                          className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        />
-                      </div>
+                      <>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Valor de Compra</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.purchasePrice || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchasePrice: parseFloat(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Valor da Comissão</label>
+                          <input
+                            type="number"
+                            value={editedVehicle?.commissionValue || ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, commissionValue: parseFloat(e.target.value) }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs sm:text-sm text-gray-600">Data de Aquisição</label>
+                          <input
+                            type="date"
+                            value={editedVehicle?.purchaseDate ? new Date(editedVehicle.purchaseDate).toISOString().split('T')[0] : ''}
+                            onChange={(e) => setEditedVehicle(prev => ({ ...prev!, purchaseDate: e.target.value }))}
+                            className="mt-1 w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
