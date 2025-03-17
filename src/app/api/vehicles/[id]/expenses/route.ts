@@ -76,6 +76,14 @@ export async function DELETE(
       );
     }
 
+    // Primeiro excluir os comprovantes da despesa
+    await prisma.expenseReceipt.deleteMany({
+      where: {
+        expenseId: expenseId,
+      },
+    });
+
+    // Depois excluir a despesa
     await prisma.expense.delete({
       where: {
         id: expenseId,
