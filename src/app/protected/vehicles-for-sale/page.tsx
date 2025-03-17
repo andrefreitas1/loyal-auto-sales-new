@@ -106,12 +106,6 @@ export default function VehiclesForSale() {
                   {vehicle.marketPrices && (
                     <div className="pt-2 border-t border-gray-100">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-500">Valor Retail</span>
-                        <span className="text-sm font-medium text-gray-900">
-                          ${vehicle.marketPrices.retail.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-gray-500">Comissão</span>
                         <span className="text-sm font-medium text-blue-600">
                           ${(vehicle.commissionValue || 0).toLocaleString()}
@@ -120,7 +114,7 @@ export default function VehiclesForSale() {
                       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                         <span className="text-sm font-medium text-gray-900">Preço de Venda</span>
                         <span className="text-lg font-bold text-green-600">
-                          ${((vehicle.marketPrices.retail || 0) + (vehicle.commissionValue || 0)).toLocaleString()}
+                          ${(vehicle.marketPrices.retail || 0).toLocaleString()}
                         </span>
                       </div>
                     </div>
