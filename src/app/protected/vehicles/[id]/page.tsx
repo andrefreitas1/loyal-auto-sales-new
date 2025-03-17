@@ -309,45 +309,40 @@ export default function VehicleDetails() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    setUploading(true);
+    setError('');
 
     try {
-      setUploading(true);
-      
-      // Criar FormData para upload
       const formData = new FormData();
-      formData.append('file', file);
-      
-      // Upload para o Cloudinary
-      const uploadResponse = await fetch('/api/upload', {
+      Array.from(e.target.files).forEach((file) => {
+        formData.append('files', file);
+      });
+
+      const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
 
-      if (!uploadResponse.ok) {
-        throw new Error('Erro ao fazer upload da imagem');
+      if (!response.ok) {
+        throw new Error('Erro ao fazer upload das imagens');
       }
 
-      const { url } = await uploadResponse.json();
+      const data = await response.json();
+      const newImages = data.urls.map((url: string) => ({ id: '', url }));
 
-      // Adicionar imagem ao veículo
-      const response = await fetch(`/api/vehicles/${params.id}/images`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ imageUrl: url }),
-      });
+      // Atualizar o veículo com as novas imagens
+      const updatedVehicle = {
+        ...vehicle!,
+        images: [...vehicle!.images, ...newImages],
+      };
 
-      if (response.ok) {
-        fetchVehicleDetails();
-      } else {
-        throw new Error('Erro ao adicionar imagem');
-      }
+      setVehicle(updatedVehicle);
+      setEditedVehicle(updatedVehicle);
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      alert('Erro ao fazer upload da imagem');
+      setError('Erro ao fazer upload das imagens. Tente novamente.');
     } finally {
       setUploading(false);
     }
@@ -521,11 +516,10 @@ export default function VehicleDetails() {
                   <div className="flex flex-wrap gap-2 sm:gap-3 w-full sm:w-auto">
                     <input
                       type="file"
-                      id="imageUpload"
                       accept="image/*"
-                      className="hidden"
                       onChange={handleImageUpload}
-                      disabled={uploading}
+                      className="hidden"
+                      multiple
                     />
                     <label
                       htmlFor="imageUpload"
