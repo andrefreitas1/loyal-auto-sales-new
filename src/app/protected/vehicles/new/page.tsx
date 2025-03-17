@@ -12,6 +12,7 @@ interface FormData {
   vin: string;
   mileage: number;
   purchasePrice: number;
+  commissionValue: number;
   purchaseDate: string;
   description: string;
   images: File[];
@@ -34,6 +35,7 @@ export default function NewVehicle() {
     vin: '',
     mileage: 0,
     purchasePrice: 0,
+    commissionValue: 0,
     purchaseDate: new Date().toISOString().split('T')[0],
     description: '',
     images: [],
@@ -108,6 +110,7 @@ export default function NewVehicle() {
       formDataToSend.append('vin', formData.vin.trim().toUpperCase());
       formDataToSend.append('mileage', formData.mileage.toString());
       formDataToSend.append('purchasePrice', formData.purchasePrice.toString());
+      formDataToSend.append('commissionValue', formData.commissionValue.toString());
       formDataToSend.append('purchaseDate', formData.purchaseDate);
       formDataToSend.append('wholesale', formData.marketPrices.wholesale.toString());
       formDataToSend.append('mmr', formData.marketPrices.mmr.toString());
@@ -248,26 +251,42 @@ export default function NewVehicle() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Odômetro (mi)
+                    Preço de Compra
                   </label>
                   <input
                     type="number"
-                    value={formData.mileage}
-                    onChange={(e) => setFormData(prev => ({ ...prev, mileage: parseFloat(e.target.value) }))}
+                    value={formData.purchasePrice}
+                    onChange={(e) => setFormData(prev => ({ ...prev, purchasePrice: parseFloat(e.target.value) }))}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                     required
+                    min="0"
+                    step="0.01"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Valor de Compra ($)
+                    Valor da Comissão
                   </label>
                   <input
                     type="number"
+                    value={formData.commissionValue}
+                    onChange={(e) => setFormData(prev => ({ ...prev, commissionValue: parseFloat(e.target.value) }))}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    required
+                    min="0"
                     step="0.01"
-                    value={formData.purchasePrice}
-                    onChange={(e) => setFormData(prev => ({ ...prev, purchasePrice: parseFloat(e.target.value || '0') }))}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Milhagem
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.mileage}
+                    onChange={(e) => setFormData(prev => ({ ...prev, mileage: parseFloat(e.target.value) }))}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                     required
                   />
