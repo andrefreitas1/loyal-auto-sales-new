@@ -39,16 +39,27 @@ model Image {
 }
 
 model Expense {
-  id          String   @id @default(uuid())
+  id          String           @id @default(uuid())
   type        String
   description String
   amount      Float
-  date        DateTime @default(now())
+  date        DateTime         @default(now())
   vehicleId   String
-  createdAt   DateTime @default(now())
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  createdAt   DateTime         @default(now())
+  vehicle     Vehicle          @relation(fields: [vehicleId], references: [id])
+  receipts    ExpenseReceipt[]
 
   @@index([vehicleId])
+}
+
+model ExpenseReceipt {
+  id        String   @id @default(uuid())
+  url       String
+  expenseId String
+  createdAt DateTime @default(now())
+  expense   Expense  @relation(fields: [expenseId], references: [id])
+
+  @@index([expenseId])
 }
 
 model MarketPrice {

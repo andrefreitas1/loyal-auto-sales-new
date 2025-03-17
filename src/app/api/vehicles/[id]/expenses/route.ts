@@ -28,6 +28,9 @@ export async function POST(
           amount,
           vehicleId: params.id,
         },
+        include: {
+          receipts: true,
+        },
       }),
       prisma.vehicle.update({
         where: { id: params.id },

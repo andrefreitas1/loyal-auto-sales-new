@@ -13,6 +13,10 @@ interface Expense {
   description: string;
   amount: number;
   date: string;
+  receipts: {
+    id: string;
+    url: string;
+  }[];
 }
 
 interface MarketPrice {
@@ -106,12 +110,14 @@ export default function VehicleDetails() {
     }
   };
 
-  const handleAddExpense = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!vehicle) return;
+  const handleAddExpense = async () => {
+    if (!expenseType || !expenseDescription || expenseAmount <= 0) {
+      setError('Preencha todos os campos da despesa');
+      return;
+    }
 
     try {
-      const response = await fetch(`/api/vehicles/${vehicle.id}/expenses`, {
+      const response = await fetch(`/api/vehicles/${params.id}/expenses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,14 +133,55 @@ export default function VehicleDetails() {
         throw new Error('Erro ao adicionar despesa');
       }
 
-      const data = await response.json();
-      setVehicle(data.vehicle);
+      const newExpense = await response.json();
+      setVehicle((prev) => ({
+        ...prev!,
+        expenses: [...prev!.expenses, newExpense],
+      }));
       setExpenseType('');
       setExpenseDescription('');
       setExpenseAmount(0);
+      toast.success('Despesa adicionada com sucesso!');
     } catch (error) {
       console.error('Erro ao adicionar despesa:', error);
-      alert('Erro ao adicionar despesa. Tente novamente.');
+      setError('Erro ao adicionar despesa');
+      toast.error('Erro ao adicionar despesa');
+    }
+  };
+
+  const handleReceiptUpload = async (expenseId: string, files: FileList) => {
+    if (!files || files.length === 0) return;
+
+    try {
+      const formData = new FormData();
+      Array.from(files).forEach((file) => {
+        formData.append('files', file);
+      });
+
+      const response = await fetch(`/api/expenses/${expenseId}/receipts`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao fazer upload dos comprovantes');
+      }
+
+      const { receipts } = await response.json();
+      
+      setVehicle((prev) => ({
+        ...prev!,
+        expenses: prev!.expenses.map((expense) =>
+          expense.id === expenseId
+            ? { ...expense, receipts: [...expense.receipts, ...receipts] }
+            : expense
+        ),
+      }));
+
+      toast.success('Comprovantes adicionados com sucesso!');
+    } catch (error) {
+      console.error('Erro ao fazer upload dos comprovantes:', error);
+      toast.error('Erro ao fazer upload dos comprovantes');
     }
   };
 
