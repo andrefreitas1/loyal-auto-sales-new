@@ -107,6 +107,7 @@ export async function PUT(
       color,
       vin,
       description,
+      images,
     } = data;
 
     const vehicle = await prisma.vehicle.update({
@@ -127,6 +128,11 @@ export async function PUT(
                 create: marketPrices,
                 update: marketPrices,
               },
+            }
+          : undefined,
+        images: images
+          ? {
+              create: images.map((url: string) => ({ url })),
             }
           : undefined,
       },
