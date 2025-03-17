@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
 
 interface Expense {
   id: string;
@@ -59,7 +60,7 @@ export default function VehicleDetails() {
   const [expenseType, setExpenseType] = useState('');
   const [expenseDescription, setExpenseDescription] = useState('');
   const [expenseAmount, setExpenseAmount] = useState(0);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -312,7 +313,7 @@ export default function VehicleDetails() {
     if (!e.target.files || e.target.files.length === 0) return;
 
     setUploading(true);
-    setError('');
+    setError(null);
 
     try {
       const formData = new FormData();
@@ -320,29 +321,41 @@ export default function VehicleDetails() {
         formData.append('files', file);
       });
 
-      const response = await fetch('/api/upload', {
+      const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) {
+      if (!uploadResponse.ok) {
         throw new Error('Erro ao fazer upload das imagens');
       }
 
-      const data = await response.json();
-      const newImages = data.urls.map((url: string) => ({ id: '', url }));
+      const { urls } = await uploadResponse.json();
 
       // Atualizar o veículo com as novas imagens
-      const updatedVehicle = {
-        ...vehicle!,
-        images: [...vehicle!.images, ...newImages],
-      };
+      const response = await fetch(`/api/vehicles/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...editedVehicle,
+          images: urls,
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar o veículo');
+      }
+
+      const updatedVehicle = await response.json();
       setVehicle(updatedVehicle);
       setEditedVehicle(updatedVehicle);
+      toast.success('Imagens adicionadas com sucesso!');
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
-      setError('Erro ao fazer upload das imagens. Tente novamente.');
+      setError('Erro ao fazer upload das imagens');
+      toast.error('Erro ao fazer upload das imagens');
     } finally {
       setUploading(false);
     }
@@ -933,7 +946,7 @@ export default function VehicleDetails() {
                         setIsEditing(false);
                         setEditedVehicle(vehicle);
                       }}
-                      className="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 transition-colors"
+                      className="px-3 sm:px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
                     >
                       Cancelar
                     </button>
