@@ -82,18 +82,47 @@ export default function VehiclesForSale() {
 
               {/* Informações do Veículo */}
               <div className="p-3 sm:p-4">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
                   {vehicle.brand} {vehicle.model} ({vehicle.year})
                 </h2>
-                <div className="text-sm sm:text-base text-gray-600 space-y-1">
-                  <p>Milhas: {vehicle.mileage.toLocaleString()} mi</p>
-                  <p>Valor de Compra: ${vehicle.purchasePrice.toLocaleString()}</p>
-                  <p>Data de Aquisição: {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}</p>
+                <div className="space-y-3">
+                  {/* Milhagem */}
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span className="text-sm sm:text-base">{vehicle.mileage.toLocaleString()} milhas</span>
+                  </div>
+
+                  {/* Cor */}
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                    <span className="text-sm sm:text-base">{vehicle.color}</span>
+                  </div>
+
+                  {/* Valores */}
                   {vehicle.marketPrices && (
-                    <div className="space-y-1">
-                      <p>Valor Retail: ${vehicle.marketPrices.retail.toLocaleString()}</p>
-                      <p>Comissão: ${(vehicle.commissionValue || 0).toLocaleString()}</p>
-                      <p className="font-semibold text-green-600">Valor Total: ${((vehicle.marketPrices.retail || 0) + (vehicle.commissionValue || 0)).toLocaleString()}</p>
+                    <div className="pt-2 border-t border-gray-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-gray-500">Valor Retail</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          ${vehicle.marketPrices.retail.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-gray-500">Comissão</span>
+                        <span className="text-sm font-medium text-blue-600">
+                          ${(vehicle.commissionValue || 0).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <span className="text-sm font-medium text-gray-900">Valor Total</span>
+                        <span className="text-lg font-bold text-green-600">
+                          ${((vehicle.marketPrices.retail || 0) + (vehicle.commissionValue || 0)).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
