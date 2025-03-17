@@ -10,7 +10,7 @@ export async function POST(
 ) {
   try {
     const body = await request.json();
-    const { salePrice } = body;
+    const { salePrice, hasCommission, commissionValue } = body;
 
     const [saleInfo, vehicle] = await Promise.all([
       prisma.saleInfo.create({
@@ -25,6 +25,19 @@ export async function POST(
         data: { status: 'sold' },
       }),
     ]);
+
+    if (hasCommission && commissionValue > 0) {
+      await prisma.expense.create({
+        data: {
+          id: uuidv4(),
+          type: 'other',
+          description: 'Comissão de Vendas',
+          amount: commissionValue,
+          date: new Date(),
+          vehicleId: params.id,
+        },
+      });
+    }
 
     return NextResponse.json({ saleInfo, vehicle }, { status: 200 });
   } catch (error) {

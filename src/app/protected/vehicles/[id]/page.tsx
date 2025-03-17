@@ -57,6 +57,7 @@ export default function VehicleDetails() {
     amount: 0,
   });
   const [salePrice, setSalePrice] = useState(0);
+  const [hasCommission, setHasCommission] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
@@ -194,7 +195,11 @@ export default function VehicleDetails() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ salePrice }),
+        body: JSON.stringify({ 
+          salePrice,
+          hasCommission,
+          commissionValue: vehicle?.commissionValue || 0
+        }),
       });
 
       if (response.ok) {
@@ -1134,26 +1139,36 @@ export default function VehicleDetails() {
               </div>
 
               {vehicle.status === 'for_sale' && (
-                <div className="bg-white rounded-xl shadow-card p-4 sm:p-6">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Registrar Venda</h2>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Registrar Venda</h3>
                   <form onSubmit={handleSellVehicle} className="space-y-4">
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                        Valor da Venda ($)
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700">Preço de Venda</label>
                       <input
                         type="number"
-                        step="0.01"
                         value={salePrice}
                         onChange={(e) => setSalePrice(parseFloat(e.target.value))}
-                        className="w-full px-3 py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                         required
+                        min="0"
+                        step="0.01"
                       />
                     </div>
-
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="hasCommission"
+                        checked={hasCommission}
+                        onChange={(e) => setHasCommission(e.target.checked)}
+                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor="hasCommission" className="ml-2 block text-sm text-gray-900">
+                        Possui comissão de vendedor?
+                      </label>
+                    </div>
                     <button
                       type="submit"
-                      className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 text-sm sm:text-base rounded-lg transition-colors"
+                      className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                     >
                       Registrar Venda
                     </button>
