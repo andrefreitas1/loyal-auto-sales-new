@@ -272,7 +272,7 @@ export default function VehicleForSaleDetails() {
                       <span className="font-medium">{vehicle.year}</span>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <span className="text-gray-600">Quilometragem</span>
+                      <span className="text-gray-600">Milhagem</span>
                       <span className="font-medium">{vehicle.mileage.toLocaleString()} milhas</span>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b border-gray-100">
