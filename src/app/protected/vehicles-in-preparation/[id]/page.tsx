@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Vehicle } from '@/types';
+import { Vehicle } from '@/types/vehicle';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -76,9 +76,9 @@ export default function VehicleInPreparationDetails() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {vehicle.make} {vehicle.model}
+              {vehicle.brand} {vehicle.model}
             </h1>
-            <p className="text-gray-600">Placa: {vehicle.plate}</p>
+            <p className="text-gray-600">Placa: {vehicle.vin}</p>
           </div>
           <div className="flex items-center space-x-2">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
@@ -131,7 +131,7 @@ export default function VehicleInPreparationDetails() {
                 {new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'USD'
-                }).format(vehicle.retailPrice)}
+                }).format(vehicle.retailPrice || 0)}
               </span>
             </div>
             <div>
@@ -140,7 +140,7 @@ export default function VehicleInPreparationDetails() {
                 {new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'USD'
-                }).format(vehicle.commission)}
+                }).format(vehicle.commissionValue || 0)}
               </span>
             </div>
             <div>
@@ -149,7 +149,7 @@ export default function VehicleInPreparationDetails() {
                 {new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'USD'
-                }).format(vehicle.retailPrice - vehicle.purchasePrice - vehicle.commission)}
+                }).format((vehicle.retailPrice || 0) - vehicle.purchasePrice - (vehicle.commissionValue || 0))}
               </span>
             </div>
           </div>
@@ -165,15 +165,15 @@ export default function VehicleInPreparationDetails() {
       )}
 
       {/* Fotos */}
-      {vehicle.photos && vehicle.photos.length > 0 && (
+      {vehicle.images && vehicle.images.length > 0 && (
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Fotos do Veículo</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {vehicle.photos.map((photo, index) => (
-              <div key={index} className="relative aspect-square">
+            {vehicle.images.map((image) => (
+              <div key={image.id} className="relative aspect-square">
                 <Image
-                  src={photo}
-                  alt={`Foto ${index + 1} do veículo`}
+                  src={image.url}
+                  alt={`Foto do veículo`}
                   fill
                   className="object-cover rounded-lg"
                 />
