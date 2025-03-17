@@ -11,14 +11,18 @@ interface Vehicle {
   year: number;
   mileage: number;
   purchasePrice: number;
+  commissionValue: number;
   purchaseDate: string;
-  salePrice: number;
-  saleDate: string;
   status: string;
   images: Array<{
     id: string;
     url: string;
   }>;
+  saleInfo: {
+    id: string;
+    salePrice: number;
+    saleDate: string;
+  } | null;
 }
 
 export default function SoldVehicles() {
@@ -35,8 +39,8 @@ export default function SoldVehicles() {
       const response = await fetch('/api/vehicles');
       if (response.ok) {
         const data = await response.json();
-        // Filtrar apenas veículos com status 'sold'
-        setVehicles(data.filter((v: Vehicle) => v.status === 'sold'));
+        // Filtrar apenas veículos com status 'sold' e que tenham saleInfo
+        setVehicles(data.filter((v: Vehicle) => v.status === 'sold' && v.saleInfo));
       }
     } catch (error) {
       console.error('Erro ao buscar veículos:', error);
@@ -126,8 +130,8 @@ export default function SoldVehicles() {
                 <p>Milhas: {vehicle.mileage.toLocaleString()} mi</p>
                 <p>Valor de Compra: ${vehicle.purchasePrice.toLocaleString()}</p>
                 <p>Data de Aquisição: {formatDate(vehicle.purchaseDate)}</p>
-                <p>Preço de Venda: ${vehicle.salePrice.toLocaleString()}</p>
-                <p>Data de Venda: {formatDate(vehicle.saleDate)}</p>
+                <p>Preço de Venda: ${vehicle.saleInfo?.salePrice.toLocaleString()}</p>
+                <p>Data de Venda: {formatDate(vehicle.saleInfo?.saleDate || '')}</p>
               </div>
             </div>
           </Link>
