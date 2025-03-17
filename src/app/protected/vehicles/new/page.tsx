@@ -125,10 +125,11 @@ export default function NewVehicle() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Erro ao cadastrar veículo');
+        const errorData = await response.json().catch(() => ({ error: 'Erro ao cadastrar veículo' }));
+        throw new Error(errorData.error || 'Erro ao cadastrar veículo');
       }
 
+      const data = await response.json();
       router.push('/protected/vehicles');
     } catch (error) {
       console.error('Erro ao cadastrar veículo:', error);
