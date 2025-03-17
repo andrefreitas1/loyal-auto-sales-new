@@ -118,7 +118,7 @@ export default function VehiclesForSale() {
                         </span>
                       </div>
                       <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                        <span className="text-sm font-medium text-gray-900">Valor Total</span>
+                        <span className="text-sm font-medium text-gray-900">Preço de Venda</span>
                         <span className="text-lg font-bold text-green-600">
                           ${((vehicle.marketPrices.retail || 0) + (vehicle.commissionValue || 0)).toLocaleString()}
                         </span>
