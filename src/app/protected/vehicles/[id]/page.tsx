@@ -520,6 +520,7 @@ export default function VehicleDetails() {
                       onChange={handleImageUpload}
                       className="hidden"
                       multiple
+                      id="imageUpload"
                     />
                     <label
                       htmlFor="imageUpload"
