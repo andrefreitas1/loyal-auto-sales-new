@@ -4,6 +4,10 @@ export interface Expense {
   description: string;
   date: Date;
   type: string;
+  receipts: {
+    id: string;
+    url: string;
+  }[];
 }
 
 export interface MarketPrices {
@@ -45,6 +49,11 @@ export interface Vehicle {
     description: string;
     amount: number;
     date: string;
+    type: string;
+    receipts: {
+      id: string;
+      url: string;
+    }[];
   }[];
   marketPrices?: {
     id: string;

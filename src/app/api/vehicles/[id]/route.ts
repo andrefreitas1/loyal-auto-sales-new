@@ -42,7 +42,13 @@ export async function GET(
             type: true,
             description: true,
             amount: true,
-            date: true
+            date: true,
+            receipts: {
+              select: {
+                id: true,
+                url: true
+              }
+            }
           },
           orderBy: {
             date: 'desc'
