@@ -35,6 +35,7 @@ export interface Vehicle {
   mileage: number;
   status: 'acquired' | 'in_preparation' | 'for_sale' | 'sold';
   purchasePrice: number;
+  commissionValue?: number;
   retailPrice?: number;
   wholesalePrice?: number;
   mmrPrice?: number;

@@ -16,6 +16,7 @@ model Vehicle {
   vin           String       @unique
   mileage       Float
   purchasePrice Float
+  commissionValue Float?     @default(0)
   purchaseDate  DateTime     @default(now())
   status        String       @default("acquired")
   description   String?      @db.Text
