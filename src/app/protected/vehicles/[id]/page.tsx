@@ -33,6 +33,7 @@ interface Vehicle {
   year: number;
   mileage: number;
   purchasePrice: number;
+  commissionValue: number;
   purchaseDate: string;
   status: string;
   images: Array<{ id: string; url: string }>;
@@ -990,20 +991,26 @@ export default function VehicleDetails() {
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {!isEditing ? (
                       <>
-                        <div>
-                          <p className="text-xs sm:text-sm text-gray-600">Valor de Compra</p>
-                          <p className="font-medium text-gray-900 text-sm sm:text-base">
+                        <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                          <dt className="text-xs sm:text-sm font-medium text-gray-500">Valor de Compra</dt>
+                          <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
                             ${vehicle.purchasePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
+                          </dd>
                         </div>
-                        {vehicle.status === 'for_sale' && vehicle.saleInfo && (
-                          <div>
-                            <p className="text-xs sm:text-sm text-gray-600">Preço de Venda</p>
-                            <p className="font-medium text-gray-900 text-sm sm:text-base">
-                              ${vehicle.saleInfo.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </p>
-                          </div>
-                        )}
+
+                        <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                          <dt className="text-xs sm:text-sm font-medium text-gray-500">Valor da Comissão</dt>
+                          <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
+                            ${vehicle.commissionValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </dd>
+                        </div>
+
+                        <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                          <dt className="text-xs sm:text-sm font-medium text-gray-500">Data de Aquisição</dt>
+                          <dd className="mt-1 text-base sm:text-lg font-semibold text-gray-900">
+                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
+                          </dd>
+                        </div>
                       </>
                     ) : (
                       <div>
