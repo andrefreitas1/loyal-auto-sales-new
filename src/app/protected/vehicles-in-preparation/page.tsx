@@ -5,19 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Vehicle } from '@/types/vehicle';
 import { formatCurrency } from '@/utils/format';
-import { useRouter } from 'next/navigation';
 
 interface VehicleWithPurchaseDate extends Vehicle {
   purchaseDate: string;
-  plate: string;
-  commission: number;
-  retailPrice: number;
 }
 
 export default function VehiclesInPreparation() {
   const [vehicles, setVehicles] = useState<VehicleWithPurchaseDate[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     fetchVehicles();
@@ -38,10 +33,6 @@ export default function VehiclesInPreparation() {
     }
   };
 
-  const handleRowClick = (id: string) => {
-    router.push(`/protected/vehicles-in-preparation/${id}`);
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -59,83 +50,84 @@ export default function VehiclesInPreparation() {
             Veículos em Preparação
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Confira os veículos que estão sendo preparados para venda. 
-            Estes veículos precisam passar por inspeção e preparação antes de serem disponibilizados para venda.
+            Veículos que estão passando por preparação para venda. 
+            Em breve estarão disponíveis para compra.
           </p>
         </div>
 
         {/* Grid de Veículos */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Placa
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Marca/Modelo
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Ano
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Data de Entrada
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Valor de Compra
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Valor de Venda
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Comissão
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Lucro
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {vehicles.map((vehicle) => (
-                <tr
-                  key={vehicle.id}
-                  onClick={() => handleRowClick(vehicle.id)}
-                  className="hover:bg-gray-50 cursor-pointer"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {vehicle.plate}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {vehicle.brand} {vehicle.model}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {vehicle.year}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {vehicle.status}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {vehicle.purchaseDate}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ${(vehicle.purchasePrice || 0).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ${(vehicle.retailPrice || 0).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ${(vehicle.commission || 0).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ${((vehicle.retailPrice || 0) - (vehicle.purchasePrice || 0) - (vehicle.commission || 0)).toLocaleString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {vehicles.map((vehicle) => (
+            <Link
+              key={vehicle.id}
+              href={`/protected/vehicles-in-preparation/${vehicle.id}`}
+              className="group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+            >
+              {/* Imagem do Veículo */}
+              <div className="relative aspect-[4/3]">
+                {vehicle.images && vehicle.images.length > 0 ? (
+                  <Image
+                    src={vehicle.images[0].url}
+                    alt={`${vehicle.brand} ${vehicle.model}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">Sem imagem</span>
+                  </div>
+                )}
+                {/* Badge de Status */}
+                <div className="absolute top-4 right-4">
+                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                    Em Preparação
+                  </span>
+                </div>
+              </div>
+
+              {/* Informações do Veículo */}
+              <div className="p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
+                  {vehicle.brand} {vehicle.model} ({vehicle.year})
+                </h2>
+                <div className="space-y-3">
+                  {/* Milhagem */}
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span className="text-sm sm:text-base">{vehicle.mileage.toLocaleString()} km</span>
+                  </div>
+
+                  {/* Cor */}
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                    <span className="text-sm sm:text-base">{vehicle.color}</span>
+                  </div>
+
+                  {/* Data de Aquisição */}
+                  <div className="flex items-center text-gray-600">
+                    <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-sm sm:text-base">
+                      {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
+                    </span>
+                  </div>
+
+                  {/* Mensagem de Status */}
+                  <div className="mt-4 p-3 bg-red-50 rounded-lg">
+                    <p className="text-sm text-red-700 font-medium">
+                      Veículo em preparação para venda
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
 
         {vehicles.length === 0 && (
