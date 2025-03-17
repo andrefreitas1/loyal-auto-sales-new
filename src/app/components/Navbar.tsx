@@ -70,6 +70,7 @@ export default function Navbar() {
       { href: '/protected/dashboard', label: 'Dashboard' },
       { href: '/protected/vehicles', label: 'Veículos' },
     ] : []),
+    { href: '/protected/vehicles-in-preparation', label: 'Veículos em Preparação' },
     { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
     { href: '/protected/customers', label: 'Clientes' },
     { href: '/protected/customer-status', label: 'Status dos Clientes' },
