@@ -254,6 +254,14 @@ export default function VehicleDetails() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   const handleSaveChanges = async () => {
     if (!editedVehicle) return;
 
@@ -710,7 +718,7 @@ export default function VehicleDetails() {
                         <div>
                           <p className="font-medium text-gray-900 text-sm sm:text-base">{expense.description}</p>
                           <p className="text-xs sm:text-sm text-gray-600">
-                            {new Date(expense.date).toLocaleDateString('pt-BR')} • {expense.type}
+                            {formatDate(expense.date)} • {expense.type}
                           </p>
                           {expense.receipts && expense.receipts.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -924,7 +932,7 @@ export default function VehicleDetails() {
                         <div>
                           <p className="text-xs sm:text-sm text-gray-600">Data de Aquisição</p>
                           <p className="font-medium text-gray-900 text-sm sm:text-base">
-                            {new Date(vehicle.purchaseDate).toLocaleDateString('pt-BR')}
+                            {formatDate(vehicle.purchaseDate)}
                           </p>
                         </div>
                       </div>
@@ -1174,7 +1182,7 @@ export default function VehicleDetails() {
                     <div>
                       <p className="text-xs sm:text-sm text-gray-600">Data da Venda</p>
                       <p className="font-medium text-gray-900 text-sm sm:text-base">
-                        {new Date(vehicle.saleInfo.saleDate).toLocaleDateString('pt-BR')}
+                        {formatDate(vehicle.saleInfo.saleDate)}
                       </p>
                     </div>
                     <div>
