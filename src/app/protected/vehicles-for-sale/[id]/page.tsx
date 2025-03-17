@@ -209,7 +209,7 @@ export default function VehicleForSaleDetails() {
                   <h2 className="text-2xl font-semibold mb-4">Valor de Venda</h2>
                   <div className="bg-green-50 p-6 rounded-xl border border-green-200">
                     <div className="text-4xl font-bold text-green-600">
-                      {formatCurrency((vehicle.marketPrices?.retail || 0) + (vehicle.commissionValue || 0))}
+                      {formatCurrency(vehicle.marketPrices?.retail || 0)}
                     </div>
                   </div>
                   <div className="mt-4 space-y-3">
@@ -229,7 +229,7 @@ export default function VehicleForSaleDetails() {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-900 font-medium">Valor Total</span>
                         <span className="text-lg font-semibold text-green-600">
-                          {formatCurrency((vehicle.marketPrices?.retail || 0) + (vehicle.commissionValue || 0))}
+                          {formatCurrency(vehicle.marketPrices?.retail || 0)}
                         </span>
                       </div>
                     </div>
