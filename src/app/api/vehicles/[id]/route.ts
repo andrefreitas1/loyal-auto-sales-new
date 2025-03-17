@@ -182,18 +182,31 @@ export async function DELETE(
 
     // Primeiro, excluir todos os registros relacionados
     await prisma.$transaction([
+      // Primeiro excluir os comprovantes das despesas
+      prisma.expenseReceipt.deleteMany({
+        where: {
+          expense: {
+            vehicleId: params.id
+          }
+        }
+      }),
+      // Depois excluir as despesas
       prisma.expense.deleteMany({
         where: { vehicleId: params.id },
       }),
+      // Excluir imagens
       prisma.image.deleteMany({
         where: { vehicleId: params.id },
       }),
+      // Excluir preços de mercado
       prisma.marketPrice.deleteMany({
         where: { vehicleId: params.id },
       }),
+      // Excluir informações de venda
       prisma.saleInfo.deleteMany({
         where: { vehicleId: params.id },
       }),
+      // Por fim, excluir o veículo
       prisma.vehicle.delete({
         where: { id: params.id },
       }),
