@@ -214,24 +214,10 @@ export default function VehicleForSaleDetails() {
                   </div>
                   <div className="mt-4 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Valor Retail</span>
-                      <span className="text-lg font-semibold text-gray-900">
-                        {formatCurrency(vehicle.marketPrices?.retail || 0)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Comissão do Vendedor</span>
                       <span className="text-lg font-semibold text-blue-600">
                         {formatCurrency(vehicle.commissionValue || 0)}
                       </span>
-                    </div>
-                    <div className="pt-3 border-t border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-900 font-medium">Valor Total</span>
-                        <span className="text-lg font-semibold text-green-600">
-                          {formatCurrency(vehicle.marketPrices?.retail || 0)}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
