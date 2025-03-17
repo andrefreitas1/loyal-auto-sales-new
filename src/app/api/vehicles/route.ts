@@ -123,6 +123,7 @@ export async function GET() {
         vin: true,
         mileage: true,
         purchasePrice: true,
+        commissionValue: true,
         purchaseDate: true,
         status: true,
         createdAt: true,
