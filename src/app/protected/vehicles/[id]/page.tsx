@@ -258,6 +258,13 @@ export default function VehicleDetails() {
     if (!editedVehicle) return;
 
     try {
+      // Converter a data do formato americano para ISO se necessário
+      let purchaseDate = editedVehicle.purchaseDate;
+      if (purchaseDate.includes('/')) {
+        const [month, day, year] = purchaseDate.split('/');
+        purchaseDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      }
+
       const response = await fetch(`/api/vehicles/${params.id}`, {
         method: 'PUT',
         headers: {
@@ -270,7 +277,7 @@ export default function VehicleDetails() {
           mileage: editedVehicle.mileage,
           purchasePrice: editedVehicle.purchasePrice,
           commissionValue: editedVehicle.commissionValue,
-          purchaseDate: editedVehicle.purchaseDate,
+          purchaseDate: purchaseDate,
           marketPrices: editedVehicle.marketPrices,
           color: editedVehicle.color,
           vin: editedVehicle.vin,
