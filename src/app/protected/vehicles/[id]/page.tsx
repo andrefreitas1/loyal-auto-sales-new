@@ -273,6 +273,9 @@ export default function VehicleDetails() {
         purchaseDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       }
 
+      // Adicionar a hora à data para satisfazer o formato ISO-8601
+      purchaseDate = `${purchaseDate}T00:00:00.000Z`;
+
       // Garantir que os valores numéricos sejam números
       const data = {
         brand: editedVehicle.brand,
