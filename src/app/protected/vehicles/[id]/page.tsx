@@ -440,12 +440,23 @@ export default function VehicleDetails() {
     }
   };
 
-  const handleDeleteSelectedImages = async () => {
+  const handleDeleteImages = async () => {
     if (!confirm(`Tem certeza que deseja excluir ${selectedImagesForDeletion.length} imagem(ns)?`)) {
       return;
     }
 
     try {
+      // Atualizar o estado local primeiro
+      setVehicle(prev => ({
+        ...prev!,
+        images: prev!.images.filter(img => !selectedImagesForDeletion.includes(img.id))
+      }));
+      setEditedVehicle(prev => ({
+        ...prev!,
+        images: prev!.images.filter(img => !selectedImagesForDeletion.includes(img.id))
+      }));
+
+      // Fazer as chamadas à API
       const deletePromises = selectedImagesForDeletion.map(imageId =>
         fetch(`/api/vehicles/${params.id}/images?imageId=${imageId}`, {
           method: 'DELETE',
@@ -453,12 +464,14 @@ export default function VehicleDetails() {
       );
 
       await Promise.all(deletePromises);
-      fetchVehicleDetails();
       setShowDeleteModal(false);
       setSelectedImagesForDeletion([]);
+      toast.success('Imagens excluídas com sucesso!');
     } catch (error) {
       console.error('Erro ao excluir imagens:', error);
-      alert('Erro ao excluir imagens. Tente novamente.');
+      // Em caso de erro, recarregar os dados do veículo
+      fetchVehicleDetails();
+      toast.error('Erro ao excluir imagens. Tente novamente.');
     }
   };
 
@@ -1298,7 +1311,7 @@ export default function VehicleDetails() {
                 Cancelar
               </button>
               <button
-                onClick={handleDeleteSelectedImages}
+                onClick={handleDeleteImages}
                 disabled={selectedImagesForDeletion.length === 0}
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
