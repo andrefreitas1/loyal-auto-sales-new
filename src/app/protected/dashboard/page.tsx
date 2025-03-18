@@ -16,9 +16,6 @@ import {
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
 import { Vehicle } from '@/types';
-import { useLanguage } from '@/hooks/useLanguage';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { TranslationKey } from '@/types/translations';
 
 interface DashboardStats {
   acquired: number;
@@ -48,7 +45,6 @@ export default function Dashboard() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
-  const { t } = useLanguage();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -138,13 +134,12 @@ export default function Dashboard() {
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
-                  {t('welcome')}
+                  Bem-vindo à Loyal Auto Sales
                 </h1>
                 <p className="text-sm sm:text-base text-primary-100">
-                  {t('subtitle')}
+                  Sistema de gestão de veículos - Orlando, Florida
                 </p>
               </div>
-              <LanguageSelector />
             </div>
           </div>
           <div className="absolute right-0 top-0 w-32 sm:w-64 h-full opacity-10">
@@ -166,7 +161,7 @@ export default function Dashboard() {
                   <TruckIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.acquired}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-yellow-100">{t('acquired')}</p>
+                <p className="text-xs sm:text-sm font-medium text-yellow-100">Adquiridos</p>
               </Link>
 
               <Link
@@ -177,7 +172,7 @@ export default function Dashboard() {
                   <WrenchScrewdriverIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.inPreparation}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-blue-100">{t('inPreparation')}</p>
+                <p className="text-xs sm:text-sm font-medium text-blue-100">Em Preparação</p>
               </Link>
 
               <Link
@@ -188,7 +183,7 @@ export default function Dashboard() {
                   <ShoppingCartIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.forSale}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-green-100">{t('forSale')}</p>
+                <p className="text-xs sm:text-sm font-medium text-green-100">À Venda</p>
               </Link>
 
               <Link
@@ -199,7 +194,7 @@ export default function Dashboard() {
                   <CheckCircleIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.sold}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-purple-100">{t('sold')}</p>
+                <p className="text-xs sm:text-sm font-medium text-purple-100">Vendidos</p>
               </Link>
             </div>
 
@@ -207,7 +202,7 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                {t('featuredVehicles')}
+                Veículos em Destaque
               </h2>
               {recentVehicles.length > 0 ? (
                 <div className="relative">
@@ -256,7 +251,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8 sm:py-12 text-gray-400 text-sm sm:text-base">
-                  {t('noVehicles')}
+                  Nenhum veículo com imagens disponível
                 </div>
               )}
             </div>
@@ -268,30 +263,30 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                {t('financialSummary')}
+                Resumo Financeiro
               </h2>
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">{t('totalRevenue')}</span>
+                  <span className="text-gray-300">Receita Total</span>
                   <span className="text-green-400 font-semibold">
                     ${stats.totalRevenue.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">{t('totalExpenses')}</span>
+                  <span className="text-gray-300">Despesas Totais</span>
                   <span className="text-red-400 font-semibold">
                     ${stats.totalExpenses.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">{t('totalInvestment')}</span>
+                  <span className="text-gray-300">Investimento Total</span>
                   <span className="text-blue-400 font-semibold">
                     ${stats.totalInvestment.toLocaleString()}
                   </span>
                 </div>
                 <div className="pt-2 sm:pt-3 border-t border-gray-700">
                   <div className="flex justify-between items-center">
-                    <span className="text-white font-semibold">{t('netProfit')}</span>
+                    <span className="text-white font-semibold">Lucro Líquido</span>
                     <span className={`font-bold ${stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       ${stats.totalProfit.toLocaleString()}
                     </span>
@@ -304,28 +299,28 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <PlusCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                {t('quickActions')}
+                Ações Rápidas
               </h2>
               <div className="space-y-3 sm:space-y-4">
                 <Link
                   href="/protected/vehicles/new"
                   className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <span className="text-gray-200">{t('addNewVehicle')}</span>
+                  <span className="text-gray-200">Adicionar Novo Veículo</span>
                   <PlusCircleIcon className="h-5 w-5 text-primary-400" />
                 </Link>
                 <Link
                   href="/protected/vehicles"
                   className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <span className="text-gray-200">{t('viewAllVehicles')}</span>
+                  <span className="text-gray-200">Ver Todos os Veículos</span>
                   <TruckIcon className="h-5 w-5 text-primary-400" />
                 </Link>
                 <Link
                   href="/protected/reports"
                   className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <span className="text-gray-200">{t('viewReports')}</span>
+                  <span className="text-gray-200">Ver Relatórios</span>
                   <DocumentChartBarIcon className="h-5 w-5 text-primary-400" />
                 </Link>
               </div>
