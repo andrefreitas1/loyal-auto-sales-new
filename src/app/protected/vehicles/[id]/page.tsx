@@ -426,8 +426,8 @@ export default function VehicleDetails() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...editedVehicle,
-          images: urls,
+          ...vehicle,
+          images: [...(vehicle?.images || []), ...urls],
         }),
       });
 
