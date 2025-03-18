@@ -131,16 +131,12 @@ export default function Dashboard() {
         {/* Cabeçalho com Gradiente */}
         <div className="relative mb-4 sm:mb-8 bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl sm:rounded-2xl p-4 sm:p-8 overflow-hidden">
           <div className="relative z-10">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
-                  Bem-vindo à Loyal Auto Sales
-                </h1>
-                <p className="text-sm sm:text-base text-primary-100">
-                  Sistema de gestão de veículos - Orlando, Florida
-                </p>
-              </div>
-            </div>
+            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
+              Bem-vindo à Loyal Auto Sales
+            </h1>
+            <p className="text-sm sm:text-base text-primary-100">
+              Sistema de gestão de veículos - Orlando, Florida
+            </p>
           </div>
           <div className="absolute right-0 top-0 w-32 sm:w-64 h-full opacity-10">
             <TruckIcon className="w-full h-full" />
@@ -257,71 +253,71 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Coluna da Direita */}
+          {/* Coluna da Direita - Resumo Financeiro */}
           <div className="space-y-4 sm:space-y-8">
-            {/* Card de Resumo Financeiro */}
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
                 Resumo Financeiro
               </h2>
               <div className="space-y-3 sm:space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Receita Total</span>
-                  <span className="text-green-400 font-semibold">
-                    ${stats.totalRevenue.toLocaleString()}
-                  </span>
+                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Receita Total</p>
+                  <p className="text-lg sm:text-xl font-bold text-green-400">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'USD'
+                    }).format(stats.totalRevenue)}
+                  </p>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Despesas Totais</span>
-                  <span className="text-red-400 font-semibold">
-                    ${stats.totalExpenses.toLocaleString()}
-                  </span>
+                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Investimento Total</p>
+                  <p className="text-lg sm:text-xl font-bold text-blue-400">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'USD'
+                    }).format(stats.totalInvestment)}
+                  </p>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Investimento Total</span>
-                  <span className="text-blue-400 font-semibold">
-                    ${stats.totalInvestment.toLocaleString()}
-                  </span>
-                </div>
-                <div className="pt-2 sm:pt-3 border-t border-gray-700">
-                  <div className="flex justify-between items-center">
-                    <span className="text-white font-semibold">Lucro Líquido</span>
-                    <span className={`font-bold ${stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      ${stats.totalProfit.toLocaleString()}
-                    </span>
-                  </div>
+                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Lucro Total</p>
+                  <p className="text-lg sm:text-xl font-bold text-primary-400">
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'USD'
+                    }).format(stats.totalProfit)}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Card de Ações Rápidas */}
+            {/* Links Rápidos */}
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
                 <PlusCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
                 Ações Rápidas
               </h2>
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2 sm:space-y-3">
                 <Link
                   href="/protected/vehicles/new"
-                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
-                  <span className="text-gray-200">Adicionar Novo Veículo</span>
-                  <PlusCircleIcon className="h-5 w-5 text-primary-400" />
+                  <TruckIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
+                  <span className="text-sm sm:text-base text-white">Adicionar Veículo</span>
                 </Link>
                 <Link
-                  href="/protected/vehicles"
-                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+                  href="/protected/customers/new"
+                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
-                  <span className="text-gray-200">Ver Todos os Veículos</span>
-                  <TruckIcon className="h-5 w-5 text-primary-400" />
+                  <UserGroupIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
+                  <span className="text-sm sm:text-base text-white">Novo Cliente</span>
                 </Link>
                 <Link
                   href="/protected/reports"
-                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
-                  <span className="text-gray-200">Ver Relatórios</span>
-                  <DocumentChartBarIcon className="h-5 w-5 text-primary-400" />
+                  <DocumentChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
+                  <span className="text-sm sm:text-base text-white">Gerar Relatório</span>
                 </Link>
               </div>
             </div>
