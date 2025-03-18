@@ -114,10 +114,10 @@ export async function PUT(
       color,
       vin,
       description,
-      images,
       commissionValue,
     } = data;
 
+    // Atualizar o veículo
     const vehicle = await prisma.vehicle.update({
       where: { id: params.id },
       data: {
@@ -136,12 +136,8 @@ export async function PUT(
               upsert: {
                 create: marketPrices,
                 update: marketPrices,
-              },
-            }
-          : undefined,
-        images: images
-          ? {
-              create: images.map((url: string) => ({ url })),
+                where: { vehicleId: params.id }
+              }
             }
           : undefined,
       },
@@ -161,7 +157,7 @@ export async function PUT(
   } catch (error) {
     console.error('Erro ao atualizar veículo:', error);
     return NextResponse.json(
-      { error: 'Erro ao atualizar veículo' },
+      { error: 'Erro ao atualizar veículo: ' + (error instanceof Error ? error.message : 'Erro desconhecido') },
       { status: 500 }
     );
   }

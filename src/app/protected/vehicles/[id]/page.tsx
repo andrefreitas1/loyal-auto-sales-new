@@ -273,33 +273,46 @@ export default function VehicleDetails() {
         purchaseDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       }
 
+      // Garantir que os valores numéricos sejam números
+      const data = {
+        brand: editedVehicle.brand,
+        model: editedVehicle.model,
+        year: Number(editedVehicle.year),
+        mileage: Number(editedVehicle.mileage),
+        purchasePrice: Number(editedVehicle.purchasePrice),
+        commissionValue: Number(editedVehicle.commissionValue),
+        purchaseDate: purchaseDate,
+        marketPrices: editedVehicle.marketPrices ? {
+          wholesale: Number(editedVehicle.marketPrices.wholesale),
+          mmr: Number(editedVehicle.marketPrices.mmr),
+          retail: Number(editedVehicle.marketPrices.retail),
+          repasse: Number(editedVehicle.marketPrices.repasse)
+        } : null,
+        color: editedVehicle.color,
+        vin: editedVehicle.vin,
+        description: editedVehicle.description
+      };
+
       const response = await fetch(`/api/vehicles/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          brand: editedVehicle.brand,
-          model: editedVehicle.model,
-          year: editedVehicle.year,
-          mileage: editedVehicle.mileage,
-          purchasePrice: editedVehicle.purchasePrice,
-          commissionValue: editedVehicle.commissionValue,
-          purchaseDate: purchaseDate,
-          marketPrices: editedVehicle.marketPrices,
-          color: editedVehicle.color,
-          vin: editedVehicle.vin,
-          description: editedVehicle.description
-        }),
+        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        const updatedVehicle = await response.json();
-        setVehicle(updatedVehicle);
-        setIsEditing(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao atualizar veículo');
       }
+
+      const updatedVehicle = await response.json();
+      setVehicle(updatedVehicle);
+      setIsEditing(false);
+      toast.success('Veículo atualizado com sucesso!');
     } catch (error) {
       console.error('Erro ao atualizar veículo:', error);
+      toast.error(error instanceof Error ? error.message : 'Erro ao atualizar veículo');
     }
   };
 
