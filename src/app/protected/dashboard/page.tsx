@@ -16,6 +16,9 @@ import {
   ChevronRightIcon
 } from '@heroicons/react/24/outline';
 import { Vehicle } from '@/types';
+import { useLanguage } from '@/hooks/useLanguage';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { TranslationKey } from '@/types/translations';
 
 interface DashboardStats {
   acquired: number;
@@ -45,6 +48,7 @@ export default function Dashboard() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -131,12 +135,17 @@ export default function Dashboard() {
         {/* Cabeçalho com Gradiente */}
         <div className="relative mb-4 sm:mb-8 bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl sm:rounded-2xl p-4 sm:p-8 overflow-hidden">
           <div className="relative z-10">
-            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
-              Bem-vindo à Loyal Auto Sales
-            </h1>
-            <p className="text-sm sm:text-base text-primary-100">
-              Sistema de gestão de veículos - Orlando, Florida
-            </p>
+            <div className="flex justify-between items-start">
+              <div>
+                <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
+                  {t('welcome')}
+                </h1>
+                <p className="text-sm sm:text-base text-primary-100">
+                  {t('subtitle')}
+                </p>
+              </div>
+              <LanguageSelector />
+            </div>
           </div>
           <div className="absolute right-0 top-0 w-32 sm:w-64 h-full opacity-10">
             <TruckIcon className="w-full h-full" />
@@ -157,7 +166,7 @@ export default function Dashboard() {
                   <TruckIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.acquired}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-yellow-100">Adquiridos</p>
+                <p className="text-xs sm:text-sm font-medium text-yellow-100">{t('acquired')}</p>
               </Link>
 
               <Link
@@ -168,7 +177,7 @@ export default function Dashboard() {
                   <WrenchScrewdriverIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.inPreparation}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-blue-100">Em Preparação</p>
+                <p className="text-xs sm:text-sm font-medium text-blue-100">{t('inPreparation')}</p>
               </Link>
 
               <Link
@@ -179,7 +188,7 @@ export default function Dashboard() {
                   <ShoppingCartIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.forSale}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-green-100">À Venda</p>
+                <p className="text-xs sm:text-sm font-medium text-green-100">{t('forSale')}</p>
               </Link>
 
               <Link
@@ -190,7 +199,7 @@ export default function Dashboard() {
                   <CheckCircleIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.sold}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-purple-100">Vendidos</p>
+                <p className="text-xs sm:text-sm font-medium text-purple-100">{t('sold')}</p>
               </Link>
             </div>
 
@@ -198,7 +207,7 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Veículos em Destaque
+                {t('featuredVehicles')}
               </h2>
               {recentVehicles.length > 0 ? (
                 <div className="relative">
@@ -247,77 +256,77 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8 sm:py-12 text-gray-400 text-sm sm:text-base">
-                  Nenhum veículo com imagens disponível
+                  {t('noVehicles')}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Coluna da Direita - Resumo Financeiro */}
+          {/* Coluna da Direita */}
           <div className="space-y-4 sm:space-y-8">
+            {/* Card de Resumo Financeiro */}
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Resumo Financeiro
+                {t('financialSummary')}
               </h2>
               <div className="space-y-3 sm:space-y-4">
-                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Receita Total</p>
-                  <p className="text-lg sm:text-xl font-bold text-green-400">
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'USD'
-                    }).format(stats.totalRevenue)}
-                  </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">{t('totalRevenue')}</span>
+                  <span className="text-green-400 font-semibold">
+                    ${stats.totalRevenue.toLocaleString()}
+                  </span>
                 </div>
-                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Investimento Total</p>
-                  <p className="text-lg sm:text-xl font-bold text-blue-400">
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'USD'
-                    }).format(stats.totalInvestment)}
-                  </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">{t('totalExpenses')}</span>
+                  <span className="text-red-400 font-semibold">
+                    ${stats.totalExpenses.toLocaleString()}
+                  </span>
                 </div>
-                <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Lucro Total</p>
-                  <p className="text-lg sm:text-xl font-bold text-primary-400">
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'USD'
-                    }).format(stats.totalProfit)}
-                  </p>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">{t('totalInvestment')}</span>
+                  <span className="text-blue-400 font-semibold">
+                    ${stats.totalInvestment.toLocaleString()}
+                  </span>
+                </div>
+                <div className="pt-2 sm:pt-3 border-t border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <span className="text-white font-semibold">{t('netProfit')}</span>
+                    <span className={`font-bold ${stats.totalProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      ${stats.totalProfit.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Links Rápidos */}
+            {/* Card de Ações Rápidas */}
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <PlusCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Ações Rápidas
+                {t('quickActions')}
               </h2>
-              <div className="space-y-2 sm:space-y-3">
+              <div className="space-y-3 sm:space-y-4">
                 <Link
                   href="/protected/vehicles/new"
-                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <TruckIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Adicionar Veículo</span>
+                  <span className="text-gray-200">{t('addNewVehicle')}</span>
+                  <PlusCircleIcon className="h-5 w-5 text-primary-400" />
                 </Link>
                 <Link
-                  href="/protected/customers/new"
-                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
+                  href="/protected/vehicles"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <UserGroupIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Novo Cliente</span>
+                  <span className="text-gray-200">{t('viewAllVehicles')}</span>
+                  <TruckIcon className="h-5 w-5 text-primary-400" />
                 </Link>
                 <Link
                   href="/protected/reports"
-                  className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-gray-700/50 hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <DocumentChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Gerar Relatório</span>
+                  <span className="text-gray-200">{t('viewReports')}</span>
+                  <DocumentChartBarIcon className="h-5 w-5 text-primary-400" />
                 </Link>
               </div>
             </div>
