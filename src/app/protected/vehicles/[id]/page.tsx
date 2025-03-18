@@ -446,17 +446,7 @@ export default function VehicleDetails() {
     }
 
     try {
-      // Atualizar o estado local primeiro
-      setVehicle(prev => ({
-        ...prev!,
-        images: prev!.images.filter(img => !selectedImagesForDeletion.includes(img.id))
-      }));
-      setEditedVehicle(prev => ({
-        ...prev!,
-        images: prev!.images.filter(img => !selectedImagesForDeletion.includes(img.id))
-      }));
-
-      // Fazer as chamadas à API
+      // Fazer as chamadas à API primeiro
       const deletePromises = selectedImagesForDeletion.map(imageId =>
         fetch(`/api/vehicles/${params.id}/images?imageId=${imageId}`, {
           method: 'DELETE',
@@ -464,13 +454,29 @@ export default function VehicleDetails() {
       );
 
       await Promise.all(deletePromises);
+      
+      // Atualizar o estado local após sucesso da API
+      setVehicle(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          images: prev.images.filter(img => !selectedImagesForDeletion.includes(img.id))
+        };
+      });
+      
+      setEditedVehicle(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          images: prev.images.filter(img => !selectedImagesForDeletion.includes(img.id))
+        };
+      });
+
       setShowDeleteModal(false);
       setSelectedImagesForDeletion([]);
       toast.success('Imagens excluídas com sucesso!');
     } catch (error) {
       console.error('Erro ao excluir imagens:', error);
-      // Em caso de erro, recarregar os dados do veículo
-      fetchVehicleDetails();
       toast.error('Erro ao excluir imagens. Tente novamente.');
     }
   };
