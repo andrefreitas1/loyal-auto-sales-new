@@ -171,14 +171,24 @@ export default function VehicleDetails() {
 
       const { receipts } = await response.json();
       
-      setVehicle((prev) => ({
-        ...prev!,
-        expenses: prev!.expenses.map((expense) =>
-          expense.id === expenseId
-            ? { ...expense, receipts: [...expense.receipts, ...receipts] }
-            : expense
-        ),
-      }));
+      // Atualizar o estado local de forma segura
+      setVehicle(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          expenses: prev.expenses.map(expense => {
+            if (expense.id === expenseId) {
+              return {
+                ...expense,
+                receipts: Array.isArray(expense.receipts) 
+                  ? [...expense.receipts, ...receipts]
+                  : [...receipts]
+              };
+            }
+            return expense;
+          })
+        };
+      });
 
       toast.success('Comprovantes adicionados com sucesso!');
     } catch (error) {
