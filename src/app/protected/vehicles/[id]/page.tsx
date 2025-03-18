@@ -256,6 +256,8 @@ export default function VehicleDetails() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+    // Ajustar para o fuso horário local
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
