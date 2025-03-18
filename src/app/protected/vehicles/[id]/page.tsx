@@ -407,6 +407,7 @@ export default function VehicleDetails() {
       Array.from(e.target.files).forEach((file) => {
         formData.append('files', file);
       });
+      formData.append('vehicleId', params.id as string);
 
       const uploadResponse = await fetch('/api/upload', {
         method: 'POST',
@@ -417,27 +418,18 @@ export default function VehicleDetails() {
         throw new Error('Erro ao fazer upload das imagens');
       }
 
-      const { urls } = await uploadResponse.json();
+      const { images } = await uploadResponse.json();
 
-      // Atualizar o veículo com as novas imagens
-      const response = await fetch(`/api/vehicles/${params.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...vehicle,
-          images: [...(vehicle?.images || []), ...urls],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao atualizar o veículo');
-      }
-
-      const updatedVehicle = await response.json();
-      setVehicle(updatedVehicle);
-      setEditedVehicle(updatedVehicle);
+      // Atualizar o estado local com as novas imagens
+      setVehicle(prev => ({
+        ...prev!,
+        images: [...prev!.images, ...images]
+      }));
+      setEditedVehicle(prev => ({
+        ...prev!,
+        images: [...prev!.images, ...images]
+      }));
+      
       toast.success('Imagens adicionadas com sucesso!');
     } catch (error) {
       console.error('Erro ao fazer upload:', error);

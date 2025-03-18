@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { v2 as cloudinary } from 'cloudinary';
+import prisma from '@/lib/prisma';
 
 // Configurar o Cloudinary
 cloudinary.config({
@@ -22,10 +23,18 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const files = formData.getAll('files') as File[];
+    const vehicleId = formData.get('vehicleId') as string;
 
     if (!files || files.length === 0) {
       return NextResponse.json(
         { error: 'Nenhum arquivo enviado' },
+        { status: 400 }
+      );
+    }
+
+    if (!vehicleId) {
+      return NextResponse.json(
+        { error: 'ID do veículo não fornecido' },
         { status: 400 }
       );
     }
@@ -50,9 +59,22 @@ export async function POST(request: NextRequest) {
     });
 
     const results = await Promise.all(uploadPromises);
+    const urls = results.map((result: any) => result.secure_url);
+
+    // Criar registros das imagens no banco de dados
+    const images = await Promise.all(
+      urls.map(url =>
+        prisma.image.create({
+          data: {
+            url,
+            vehicleId
+          }
+        })
+      )
+    );
 
     return NextResponse.json({
-      urls: results.map((result: any) => result.secure_url),
+      images
     });
   } catch (error) {
     console.error('Erro no upload:', error);
