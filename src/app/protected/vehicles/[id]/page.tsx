@@ -1231,7 +1231,7 @@ export default function VehicleDetails() {
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
                 Selecione as imagens para excluir
@@ -1249,51 +1249,53 @@ export default function VehicleDetails() {
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
-              {vehicle.images.map((image) => (
-                <div
-                  key={image.id}
-                  className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer group ${
-                    selectedImagesForDeletion.includes(image.id)
-                      ? 'ring-2 ring-red-500'
-                      : ''
-                  }`}
-                  onClick={() => toggleImageSelection(image.id)}
-                >
-                  <Image
-                    src={image.url}
-                    alt={`${vehicle.brand} ${vehicle.model}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                  />
-                  <div className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity ${
-                    selectedImagesForDeletion.includes(image.id)
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-100'
-                  }`}>
-                    <svg
-                      className={`w-8 h-8 ${
-                        selectedImagesForDeletion.includes(image.id)
-                          ? 'text-red-500'
-                          : 'text-white'
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      {selectedImagesForDeletion.includes(image.id) ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      )}
-                    </svg>
+            <div className="overflow-y-auto flex-1 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {vehicle.images.map((image) => (
+                  <div
+                    key={image.id}
+                    className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer group ${
+                      selectedImagesForDeletion.includes(image.id)
+                        ? 'ring-2 ring-red-500'
+                        : ''
+                    }`}
+                    onClick={() => toggleImageSelection(image.id)}
+                  >
+                    <Image
+                      src={image.url}
+                      alt={`${vehicle.brand} ${vehicle.model}`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                    />
+                    <div className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity ${
+                      selectedImagesForDeletion.includes(image.id)
+                        ? 'opacity-100'
+                        : 'opacity-0 group-hover:opacity-100'
+                    }`}>
+                      <svg
+                        className={`w-8 h-8 ${
+                          selectedImagesForDeletion.includes(image.id)
+                            ? 'text-red-500'
+                            : 'text-white'
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        {selectedImagesForDeletion.includes(image.id) ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        )}
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 border-t pt-4">
               <button
                 onClick={() => {
                   setShowDeleteModal(false);
