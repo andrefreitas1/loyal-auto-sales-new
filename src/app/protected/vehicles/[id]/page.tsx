@@ -1339,86 +1339,72 @@ export default function VehicleDetails() {
       )}
 
       {showDownloadModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Selecione as imagens para baixar
-              </h3>
-              <button
-                onClick={() => {
-                  setShowDownloadModal(false);
-                  setSelectedImagesForDownload([]);
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
-              {vehicle.images.map((image) => (
-                <div
-                  key={image.id}
-                  className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer group ${
-                    selectedImagesForDownload.includes(image.id)
-                      ? 'ring-2 ring-blue-500'
-                      : ''
-                  }`}
-                  onClick={() => toggleImageDownloadSelection(image.id)}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Selecione as imagens para baixar</h3>
+                <button
+                  onClick={() => setShowDownloadModal(false)}
+                  className="text-gray-400 hover:text-gray-500"
                 >
-                  <Image
-                    src={image.url}
-                    alt={`${vehicle.brand} ${vehicle.model}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                  />
-                  <div className={`absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity ${
-                    selectedImagesForDownload.includes(image.id)
-                      ? 'opacity-100'
-                      : 'opacity-0 group-hover:opacity-100'
-                  }`}>
-                    <svg
-                      className={`w-8 h-8 ${
-                        selectedImagesForDownload.includes(image.id)
-                          ? 'text-blue-500'
-                          : 'text-white'
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      {selectedImagesForDownload.includes(image.id) ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {vehicle?.images?.map((image) => (
+                  <div
+                    key={image.id}
+                    className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 ${
+                      selectedImagesForDownload.includes(image.id)
+                        ? 'border-primary-500'
+                        : 'border-transparent'
+                    }`}
+                    onClick={() => toggleImageDownloadSelection(image.id)}
+                  >
+                    <Image
+                      src={image.url}
+                      alt={`${vehicle.brand} ${vehicle.model}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className={`absolute inset-0 flex items-center justify-center ${
+                      selectedImagesForDownload.includes(image.id)
+                        ? 'bg-primary-500 bg-opacity-20'
+                        : 'bg-black bg-opacity-0 hover:bg-opacity-10'
+                    }`}>
+                      {selectedImagesForDownload.includes(image.id) && (
+                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
                       )}
-                    </svg>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowDownloadModal(false);
-                  setSelectedImagesForDownload([]);
-                }}
-                className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleDownloadSelectedImages}
-                disabled={selectedImagesForDownload.length === 0}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Baixar {selectedImagesForDownload.length} imagem(ns)
-              </button>
+              <div className="mt-6 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowDownloadModal(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleDownloadSelectedImages}
+                  disabled={selectedImagesForDownload.length === 0}
+                  className={`px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 ${
+                    selectedImagesForDownload.length === 0
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-primary-600 hover:bg-primary-700'
+                  }`}
+                >
+                  Baixar Selecionadas ({selectedImagesForDownload.length})
+                </button>
+              </div>
             </div>
           </div>
         </div>
