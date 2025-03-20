@@ -92,7 +92,7 @@ export default function Dashboard() {
         );
       }
     } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error);
+      console.error('Error fetching statistics:', error);
     } finally {
       setLoading(false);
     }
@@ -132,10 +132,10 @@ export default function Dashboard() {
         <div className="relative mb-4 sm:mb-8 bg-gradient-to-r from-primary-600 to-primary-800 rounded-xl sm:rounded-2xl p-4 sm:p-8 overflow-hidden">
           <div className="relative z-10">
             <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
-              Bem-vindo à Loyal Auto Sales
+              Welcome to Loyal Auto Sales
             </h1>
             <p className="text-sm sm:text-base text-primary-100">
-              Sistema de gestão de veículos - Orlando, Florida
+              Vehicle Management System - Orlando, Florida
             </p>
           </div>
           <div className="absolute right-0 top-0 w-32 sm:w-64 h-full opacity-10">
@@ -157,7 +157,7 @@ export default function Dashboard() {
                   <TruckIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.acquired}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-yellow-100">Adquiridos</p>
+                <p className="text-xs sm:text-sm font-medium text-yellow-100">Acquired</p>
               </Link>
 
               <Link
@@ -168,7 +168,7 @@ export default function Dashboard() {
                   <WrenchScrewdriverIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.inPreparation}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-blue-100">Em Preparação</p>
+                <p className="text-xs sm:text-sm font-medium text-blue-100">In Preparation</p>
               </Link>
 
               <Link
@@ -179,7 +179,7 @@ export default function Dashboard() {
                   <ShoppingCartIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.forSale}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-green-100">À Venda</p>
+                <p className="text-xs sm:text-sm font-medium text-green-100">For Sale</p>
               </Link>
 
               <Link
@@ -190,7 +190,7 @@ export default function Dashboard() {
                   <CheckCircleIcon className="h-6 w-6 sm:h-8 sm:w-8 opacity-75" />
                   <span className="text-xl sm:text-2xl font-bold">{stats.sold}</span>
                 </div>
-                <p className="text-xs sm:text-sm font-medium text-purple-100">Vendidos</p>
+                <p className="text-xs sm:text-sm font-medium text-purple-100">Sold</p>
               </Link>
             </div>
 
@@ -198,7 +198,7 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 flex items-center">
                 <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Veículos em Destaque
+                Featured Vehicles
               </h2>
               {recentVehicles.length > 0 ? (
                 <div className="relative">
@@ -247,7 +247,7 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8 sm:py-12 text-gray-400 text-sm sm:text-base">
-                  Nenhum veículo com imagens disponível
+                  No vehicles with images available
                 </div>
               )}
             </div>
@@ -258,11 +258,11 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
                 <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Resumo Financeiro
+                Financial Summary
               </h2>
               <div className="space-y-3 sm:space-y-4">
                 <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Receita Total</p>
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Total Revenue</p>
                   <p className="text-lg sm:text-xl font-bold text-green-400">
                     {new Intl.NumberFormat('pt-BR', {
                       style: 'currency',
@@ -271,7 +271,7 @@ export default function Dashboard() {
                   </p>
                 </div>
                 <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Investimento Total</p>
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Total Investment</p>
                   <p className="text-lg sm:text-xl font-bold text-blue-400">
                     {new Intl.NumberFormat('pt-BR', {
                       style: 'currency',
@@ -280,7 +280,7 @@ export default function Dashboard() {
                   </p>
                 </div>
                 <div className="bg-gray-700/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Lucro Total</p>
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Total Profit</p>
                   <p className="text-lg sm:text-xl font-bold text-primary-400">
                     {new Intl.NumberFormat('pt-BR', {
                       style: 'currency',
@@ -295,7 +295,7 @@ export default function Dashboard() {
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center">
                 <PlusCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-primary-400" />
-                Ações Rápidas
+                Quick Actions
               </h2>
               <div className="space-y-2 sm:space-y-3">
                 <Link
@@ -303,21 +303,21 @@ export default function Dashboard() {
                   className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
                   <TruckIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Adicionar Veículo</span>
+                  <span className="text-sm sm:text-base text-white">Add Vehicle</span>
                 </Link>
                 <Link
                   href="/protected/customers/new"
                   className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
                   <UserGroupIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Novo Cliente</span>
+                  <span className="text-sm sm:text-base text-white">New Customer</span>
                 </Link>
                 <Link
                   href="/protected/reports"
                   className="flex items-center p-3 sm:p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors"
                 >
                   <DocumentChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary-400 mr-3" />
-                  <span className="text-sm sm:text-base text-white">Gerar Relatório</span>
+                  <span className="text-sm sm:text-base text-white">Generate Report</span>
                 </Link>
               </div>
             </div>

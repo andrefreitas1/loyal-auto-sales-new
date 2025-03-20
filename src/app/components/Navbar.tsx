@@ -68,15 +68,15 @@ export default function Navbar() {
   const navItems = [
     ...(session?.user?.role === 'admin' ? [
       { href: '/protected/dashboard', label: 'Dashboard' },
-      { href: '/protected/vehicles', label: 'Veículos' },
+      { href: '/protected/vehicles', label: 'Vehicles' },
     ] : []),
-    { href: '/protected/vehicles-in-preparation', label: 'Veículos em Preparação' },
-    { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
-    { href: '/protected/customers', label: 'Clientes' },
-    { href: '/protected/customer-status', label: 'Status dos Clientes' },
+    { href: '/protected/vehicles-in-preparation', label: 'Vehicles in Preparation' },
+    { href: '/protected/vehicles-for-sale', label: 'Available for Sale' },
+    { href: '/protected/customers', label: 'Customers' },
+    { href: '/protected/customer-status', label: 'Customer Status' },
     ...(session?.user?.role === 'admin' ? [
-      { href: '/protected/reports', label: 'Relatórios' },
-      { href: '/protected/users', label: 'Usuários' },
+      { href: '/protected/reports', label: 'Reports' },
+      { href: '/protected/users', label: 'Users' },
     ] : []),
   ];
 
@@ -86,7 +86,7 @@ export default function Navbar() {
     setSuccess('');
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('As novas senhas não coincidem');
+      setError('New passwords do not match');
       return;
     }
 
@@ -103,7 +103,7 @@ export default function Navbar() {
       });
 
       if (response.ok) {
-        setSuccess('Senha alterada com sucesso!');
+        setSuccess('Password changed successfully!');
         setPasswordData({
           currentPassword: '',
           newPassword: '',
@@ -115,11 +115,11 @@ export default function Navbar() {
         }, 2000);
       } else {
         const data = await response.json();
-        setError(data.error || 'Erro ao alterar senha');
+        setError(data.error || 'Error changing password');
       }
     } catch (error) {
       console.error('Erro ao alterar senha:', error);
-      setError('Erro ao alterar senha');
+      setError('Error changing password');
     }
   };
 
