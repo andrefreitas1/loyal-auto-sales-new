@@ -20,6 +20,7 @@ interface VehicleWithPrices extends Vehicle {
   }[];
 }
 
+// Página de contato com formulário e seleção de veículo
 export default function ContactPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
