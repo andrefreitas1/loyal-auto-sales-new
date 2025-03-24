@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ContactForm from '@/app/contact/ContactForm';
 import ContactNavbar from '@/components/ContactNavbar';
 
@@ -17,7 +18,13 @@ export default function ContactPage() {
             </div>
 
             <div className="max-w-2xl mx-auto">
-              <ContactForm />
+              <Suspense fallback={
+                <div className="flex justify-center items-center h-64">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+                </div>
+              }>
+                <ContactForm />
+              </Suspense>
             </div>
           </div>
         </div>
