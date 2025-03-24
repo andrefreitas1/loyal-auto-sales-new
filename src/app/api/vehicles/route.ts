@@ -111,8 +111,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get('status');
+
     const vehicles = await prisma.vehicle.findMany({
       select: {
         id: true,
@@ -161,7 +164,7 @@ export async function GET() {
         }
       },
       where: {
-        status: {
+        status: status || {
           not: 'deleted'
         }
       }

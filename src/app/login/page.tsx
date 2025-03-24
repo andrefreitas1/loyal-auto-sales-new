@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 
@@ -11,8 +11,6 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/protected/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,29 +22,35 @@ function LoginForm() {
         email,
         password,
         redirect: false,
-        callbackUrl,
       });
 
       if (result?.error) {
-        if (result.error === 'CredentialsSignin') {
-          setError('Email ou senha inválidos');
-        } else {
-          setError('Ocorreu um erro ao tentar fazer login');
+        switch (result.error) {
+          case 'Email e senha são obrigatórios':
+            setError('Por favor, preencha todos os campos');
+            break;
+          case 'Usuário não encontrado':
+            setError('Email não encontrado');
+            break;
+          case 'Senha incorreta':
+            setError('Senha incorreta');
+            break;
+          case 'Permissão inválida':
+            setError('Você não tem permissão para acessar o sistema');
+            break;
+          default:
+            setError('Ocorreu um erro ao tentar fazer login');
         }
-      } else if (result?.url) {
-        // Verifica o papel do usuário para redirecionar
-        const session = await fetch('/api/auth/session').then(res => res.json());
-        const redirectUrl = session?.user?.role === 'operator' 
-          ? '/protected/vehicles-for-sale' 
-          : '/protected/dashboard';
-        router.push(redirectUrl);
       } else {
-        // Verifica o papel do usuário para redirecionar
-        const session = await fetch('/api/auth/session').then(res => res.json());
-        const redirectUrl = session?.user?.role === 'operator' 
-          ? '/protected/vehicles-for-sale' 
-          : '/protected/dashboard';
-        router.push(redirectUrl);
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
+        
+        if (session?.user) {
+          const redirectUrl = session.user.role === 'operator' 
+            ? '/protected/vehicles-for-sale' 
+            : '/protected/dashboard';
+          router.push(redirectUrl);
+        }
       }
     } catch (error) {
       console.error('Erro no login:', error);

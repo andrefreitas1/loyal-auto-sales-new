@@ -10,12 +10,15 @@ import {
   UsersIcon, 
   UserGroupIcon,
   TruckIcon,
+  BellIcon,
 } from '@heroicons/react/24/outline';
+import { BellAlertIcon } from '@heroicons/react/24/solid';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [hasNewMessages, setHasNewMessages] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -27,6 +30,30 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
+
+  // Verificar novas mensagens
+  useEffect(() => {
+    const checkNewMessages = async () => {
+      try {
+        const response = await fetch('/api/potential-customers');
+        if (response.ok) {
+          const data = await response.json();
+          // Considera como nova mensagem se houver mensagens não lidas
+          const hasNew = data.some((contact: any) => !contact.isRead);
+          setHasNewMessages(hasNew);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar mensagens:', error);
+      }
+    };
+
+    if (session?.user?.role === 'admin') {
+      checkNewMessages();
+      // Verificar a cada 5 minutos
+      const interval = setInterval(checkNewMessages, 5 * 60 * 1000);
+      return () => clearInterval(interval);
+    }
+  }, [session]);
 
   // Prevenir scroll quando o menu móvel estiver aberto
   useEffect(() => {
@@ -159,56 +186,85 @@ export default function Navbar() {
 
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             <div className="ml-3 relative" ref={menuRef}>
-              <button
-                type="button"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
-                <span className="sr-only">Abrir menu do usuário</span>
-                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-              </button>
-
-              {/* Menu dropdown do usuário */}
-              {isUserMenuOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                  <div className="py-1">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
-                      <div className="font-medium">{session?.user?.name || 'Usuário'}</div>
-                      <div className="text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setShowChangePassword(true);
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Alterar Senha
-                    </button>
-                    {session?.user?.role === 'admin' && (
-                      <Link
-                        href="/protected/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Configurações
-                      </Link>
+              <div className="flex items-center space-x-4">
+                {session?.user?.role === 'admin' && (
+                  <Link
+                    href="/protected/potential-customers"
+                    className="relative"
+                  >
+                    {hasNewMessages ? (
+                      <BellAlertIcon className="h-6 w-6 text-primary-600" />
+                    ) : (
+                      <BellIcon className="h-6 w-6 text-gray-400" />
                     )}
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Sair
-                    </button>
+                    {hasNewMessages && (
+                      <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+                    )}
+                  </Link>
+                )}
+                
+                <button
+                  type="button"
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <span className="sr-only">Abrir menu do usuário</span>
+                  <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                   </div>
-                </div>
-              )}
+                </button>
+
+                {isUserMenuOpen && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div className="py-1">
+                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                        <div className="font-medium">{session?.user?.name || 'Usuário'}</div>
+                        <div className="text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
+                        </div>
+                      </div>
+                      {session?.user?.role === 'admin' && (
+                        <Link
+                          href="/protected/potential-customers"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                        >
+                          <BellIcon className="h-5 w-5 mr-2" />
+                          Clientes Potenciais
+                          {hasNewMessages && (
+                            <span className="ml-2 h-2 w-2 bg-red-500 rounded-full"></span>
+                          )}
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => {
+                          setShowChangePassword(true);
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Alterar Senha
+                      </button>
+                      {session?.user?.role === 'admin' && (
+                        <Link
+                          href="/protected/settings"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Configurações
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sair
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

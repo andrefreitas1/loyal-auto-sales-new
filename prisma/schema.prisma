@@ -4,29 +4,31 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Vehicle {
-  id            String       @id @default(uuid())
-  brand         String
-  model         String
-  year          Int
-  color         String
-  vin           String       @unique
-  mileage       Float
-  purchasePrice Float
-  commissionValue Float?     @default(0)
-  purchaseDate  DateTime     @default(now())
-  status        String       @default("acquired")
-  description   String?      @db.Text
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  expenses      Expense[]
-  images        Image[]
-  marketPrices  MarketPrice?
-  saleInfo      SaleInfo?
-  customers     Customer[]
+  id                 String              @id @default(uuid())
+  brand              String
+  model              String
+  year               Int
+  color              String
+  vin                String              @unique
+  mileage            Float
+  purchasePrice      Float
+  purchaseDate       DateTime            @default(now())
+  status             String              @default("acquired")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  description        String?
+  commissionValue    Float?              @default(0)
+  contacts           Contact[]
+  customers          Customer[]
+  expenses           Expense[]
+  images             Image[]
+  marketPrices       MarketPrice?
+  saleInfo           SaleInfo?
+  potentialCustomers PotentialCustomer[]
 }
 
 model Image {
@@ -85,66 +87,97 @@ model SaleInfo {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  role      String     @default("operator")
-  active    Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  customers Customer[]
+  id                   String                  @id @default(cuid())
+  name                 String
+  email                String                  @unique
+  password             String
+  role                 String                  @default("operator")
+  active               Boolean                 @default(true)
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  customers            Customer[]
   statusHistoryUpdates CustomerStatusHistory[] @relation("StatusUpdater")
 }
 
-enum ResidenceType {
-  RENTAL
-  MORTGAGE
-  OWNED
-}
-
 model Customer {
-  id             String                 @id @default(uuid())
-  firstName      String
-  lastName       String
-  birthDate      DateTime
-  phone          String
-  email          String?
-  passportUrl    String
-  address        String                 @default("")
-  city           String                 @default("")
-  state          String                 @default("")
-  zipCode        String                 @default("")
-  residenceType  String                 @default("RENTAL")
-  residenceYears Int                    @default(0)
-  residenceMonths Int                   @default(0)
-  profession     String                 @default("")
-  monthlyIncome  Float                  @default(0)
-  jobYears       Int                    @default(0)
-  jobMonths      Int                    @default(0)
-  status         String                 @default("new")
+  id              String                  @id @default(uuid())
+  birthDate       DateTime
+  phone           String
+  email           String?
+  passportUrl     String
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  operatorId      String
+  vehicleId       String
+  status          String                  @default("new")
   statusUpdatedAt DateTime?
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
-  operatorId     String
-  operator       User                   @relation(fields: [operatorId], references: [id])
-  vehicleId      String
-  vehicle        Vehicle                @relation(fields: [vehicleId], references: [id])
-  statusHistory  CustomerStatusHistory[]
+  address         String                  @default("")
+  city            String                  @default("")
+  firstName       String
+  jobMonths       Int                     @default(0)
+  jobYears        Int                     @default(0)
+  monthlyIncome   Float                   @default(0)
+  profession      String                  @default("")
+  residenceMonths Int                     @default(0)
+  residenceYears  Int                     @default(0)
+  state           String                  @default("")
+  zipCode         String                  @default("")
+  lastName        String
+  residenceType   String                  @default("RENTAL")
+  operator        User                    @relation(fields: [operatorId], references: [id])
+  vehicle         Vehicle                 @relation(fields: [vehicleId], references: [id])
+  statusHistory   CustomerStatusHistory[]
 
   @@index([operatorId])
   @@index([vehicleId])
 }
 
 model CustomerStatusHistory {
-  id         String   @id @default(uuid())
-  customerId String
-  status     String
-  updatedBy  String
-  createdAt  DateTime @default(now())
-  customer   Customer @relation(fields: [customerId], references: [id])
-  updatedByUser User  @relation("StatusUpdater", fields: [updatedBy], references: [id])
+  id            String   @id @default(uuid())
+  customerId    String
+  status        String
+  updatedBy     String
+  createdAt     DateTime @default(now())
+  customer      Customer @relation(fields: [customerId], references: [id])
+  updatedByUser User     @relation("StatusUpdater", fields: [updatedBy], references: [id])
 
   @@index([customerId])
   @@index([updatedBy])
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  phone     String
+  email     String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  vehicleId String?
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id])
+
+  @@index([vehicleId])
+}
+
+model PotentialCustomer {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  vehicleId String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+
+  @@index([vehicleId])
+  @@map("potential_customers")
+}
+
+enum ResidenceType {
+  RENTAL
+  MORTGAGE
+  OWNED
 }
