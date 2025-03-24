@@ -30,6 +30,7 @@ export default function VehicleList() {
   const { data: session, status } = useSession();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -45,13 +46,16 @@ export default function VehicleList() {
 
   const fetchVehicles = async () => {
     try {
+      setError(null);
       const response = await fetch('/api/vehicles');
-      if (response.ok) {
-        const data = await response.json();
-        setVehicles(data);
+      if (!response.ok) {
+        throw new Error('Erro ao buscar veículos');
       }
+      const data = await response.json();
+      setVehicles(data);
     } catch (error) {
       console.error('Erro ao buscar veículos:', error);
+      setError('Erro ao carregar veículos. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -99,6 +103,27 @@ export default function VehicleList() {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">
+            <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">{error}</h3>
+          <button
+            onClick={fetchVehicles}
+            className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors"
+          >
+            Tentar Novamente
+          </button>
         </div>
       </div>
     );
