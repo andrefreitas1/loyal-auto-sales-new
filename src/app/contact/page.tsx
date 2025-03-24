@@ -1,7 +1,5 @@
-import { Suspense } from 'react';
-import ContactForm from './ContactForm';
+import ContactForm from '@/app/contact/ContactForm';
 import ContactNavbar from '@/components/ContactNavbar';
-import { TruckIcon } from '@heroicons/react/24/outline';
 
 export default function ContactPage() {
   return (
