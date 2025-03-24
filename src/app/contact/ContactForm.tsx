@@ -12,8 +12,7 @@ export default function ContactForm() {
     lastName: '',
     email: '',
     phone: '',
-    vehicleId: searchParams.get('vehicleId') || '',
-    message: ''
+    vehicleId: searchParams.get('vehicleId') || ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,8 +49,7 @@ export default function ContactForm() {
         lastName: '',
         email: '',
         phone: '',
-        vehicleId: '',
-        message: ''
+        vehicleId: ''
       });
     } catch (err) {
       setError('Erro ao enviar mensagem. Por favor, tente novamente.');
@@ -60,7 +58,7 @@ export default function ContactForm() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -95,7 +93,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="firstName" className="block text-sm font-medium text-gray-200 mb-1">
-          Nome
+          Primeiro Nome
         </label>
         <input
           type="text"
@@ -110,7 +108,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="lastName" className="block text-sm font-medium text-gray-200 mb-1">
-          Sobrenome
+          Último Nome
         </label>
         <input
           type="text"
@@ -149,22 +147,6 @@ export default function ContactForm() {
           value={formData.phone}
           onChange={handleChange}
           className="w-full px-3 py-2.5 text-sm bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white"
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-200 mb-1">
-          Mensagem
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          value={formData.message}
-          onChange={handleChange}
-          rows={4}
-          className="w-full px-3 py-2.5 text-sm bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white placeholder-gray-400"
-          placeholder="Digite sua mensagem aqui..."
           required
         />
       </div>
