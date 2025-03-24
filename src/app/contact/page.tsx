@@ -6,7 +6,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <ContactNavbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-32 pb-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
