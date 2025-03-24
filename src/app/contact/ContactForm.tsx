@@ -8,10 +8,11 @@ export default function ContactForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
-    vehicleInterest: searchParams.get('vehicleId') || '',
+    vehicleId: searchParams.get('vehicleId') || '',
     message: ''
   });
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,13 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          vehicleId: formData.vehicleId || null
+        }),
       });
 
       if (!response.ok) {
@@ -39,10 +46,11 @@ export default function ContactForm() {
 
       setSuccess(true);
       setFormData({
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         phone: '',
-        vehicleInterest: '',
+        vehicleId: '',
         message: ''
       });
     } catch (err) {
@@ -75,25 +83,40 @@ export default function ContactForm() {
       )}
 
       <div>
-        <label htmlFor="vehicleInterest" className="block text-sm font-medium text-gray-200 mb-1">
+        <label htmlFor="vehicleId" className="block text-sm font-medium text-gray-200 mb-1">
           Veículo de Interesse
         </label>
         <VehicleSelect
-          value={formData.vehicleInterest}
-          onChange={(value) => setFormData(prev => ({ ...prev, vehicleInterest: value }))}
+          value={formData.vehicleId}
+          onChange={(value) => setFormData(prev => ({ ...prev, vehicleId: value }))}
           required
         />
       </div>
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-200 mb-1">
-          Nome Completo
+        <label htmlFor="firstName" className="block text-sm font-medium text-gray-200 mb-1">
+          Nome
         </label>
         <input
           type="text"
-          id="name"
-          name="name"
-          value={formData.name}
+          id="firstName"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 text-sm bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="lastName" className="block text-sm font-medium text-gray-200 mb-1">
+          Sobrenome
+        </label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          value={formData.lastName}
           onChange={handleChange}
           className="w-full px-3 py-2.5 text-sm bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white"
           required
