@@ -109,7 +109,9 @@ export default function ContactPage() {
           </p>
         </div>
         <div className="mt-12">
-          <ContactForm />
+          <Suspense fallback={<div>Carregando formulário...</div>}>
+            <ContactForm />
+          </Suspense>
         </div>
       </div>
     </div>
