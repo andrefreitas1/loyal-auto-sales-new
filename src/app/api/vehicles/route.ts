@@ -124,6 +124,7 @@ export async function GET() {
         mileage: true,
         status: true,
         purchasePrice: true,
+        purchaseDate: true,
         images: {
           select: {
             url: true
@@ -131,19 +132,27 @@ export async function GET() {
         },
         expenses: {
           select: {
-            amount: true
+            id: true,
+            type: true,
+            amount: true,
+            date: true
           }
         },
         saleInfo: {
           select: {
-            salePrice: true
+            salePrice: true,
+            saleDate: true
           }
         },
         marketPrices: {
           select: {
-            retail: true
+            wholesale: true,
+            mmr: true,
+            retail: true,
+            repasse: true
           }
-        }
+        },
+        vin: true
       }
     });
 

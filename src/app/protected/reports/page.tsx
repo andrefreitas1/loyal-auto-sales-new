@@ -107,7 +107,8 @@ export default function Reports() {
         };
 
         // Filtra despesas e vendas pelo período selecionado
-        const filterByDate = (date: string) => {
+        const filterByDate = (date: string | undefined | null) => {
+          if (!date) return false;
           if (!isFiltered) return true;
           const itemDate = new Date(date);
           const start = new Date(startDate || '2025-02-28');
@@ -115,22 +116,22 @@ export default function Reports() {
           return itemDate >= start && itemDate <= end;
         };
 
-        const totalInvestment = vehicles.reduce((sum, v) => sum + v.purchasePrice, 0);
+        const totalInvestment = vehicles.reduce((sum, v) => sum + (v.purchasePrice || 0), 0);
         
         const totalExpenses = vehicles.reduce((sum, v) => 
-          sum + v.expenses
+          sum + (v.expenses || [])
             .filter(exp => filterByDate(exp.date))
-            .reduce((expSum, exp) => expSum + exp.amount, 0), 0);
+            .reduce((expSum, exp) => expSum + (exp.amount || 0), 0), 0);
         
         const totalSales = vehicles
           .filter(v => v.saleInfo && filterByDate(v.saleInfo.saleDate))
           .reduce((sum, v) => sum + (v.saleInfo?.salePrice || 0), 0);
 
         const expensesByType = vehicles.reduce((types, v) => {
-          v.expenses
+          (v.expenses || [])
             .filter(exp => filterByDate(exp.date))
             .forEach(exp => {
-              types[exp.type] = (types[exp.type] || 0) + exp.amount;
+              types[exp.type] = (types[exp.type] || 0) + (exp.amount || 0);
             });
           return types;
         }, {} as { [key: string]: number });
@@ -152,11 +153,13 @@ export default function Reports() {
     }
   };
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | undefined | null) => {
+    if (value === undefined || value === null) return '$0.00';
     return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined | null) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
