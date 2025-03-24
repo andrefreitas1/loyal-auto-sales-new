@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import VehicleSelect from '@/components/VehicleSelect';
 
 export default function ContactForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    vehicleInterest: '',
+    vehicleInterest: searchParams.get('vehicleId') || '',
     message: ''
   });
   const [loading, setLoading] = useState(false);
@@ -76,14 +78,9 @@ export default function ContactForm() {
         <label htmlFor="vehicleInterest" className="block text-sm font-medium text-gray-200 mb-1">
           Veículo de Interesse
         </label>
-        <input
-          type="text"
-          id="vehicleInterest"
-          name="vehicleInterest"
+        <VehicleSelect
           value={formData.vehicleInterest}
-          onChange={handleChange}
-          placeholder="Ex: Toyota Camry 2023"
-          className="w-full px-3 py-2.5 text-sm bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white placeholder-gray-400"
+          onChange={(value) => setFormData(prev => ({ ...prev, vehicleInterest: value }))}
           required
         />
       </div>
