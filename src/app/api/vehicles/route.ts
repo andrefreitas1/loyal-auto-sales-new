@@ -123,9 +123,20 @@ export async function GET() {
         color: true,
         mileage: true,
         status: true,
+        purchasePrice: true,
         images: {
           select: {
             url: true
+          }
+        },
+        expenses: {
+          select: {
+            amount: true
+          }
+        },
+        saleInfo: {
+          select: {
+            salePrice: true
           }
         },
         marketPrices: {
