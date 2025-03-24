@@ -8,6 +8,8 @@ export async function middleware(request: NextRequest) {
   const isHomePage = request.nextUrl.pathname === '/';
   const isInstitutionalPage = request.nextUrl.pathname === '/institutional';
   const isProtectedRoute = request.nextUrl.pathname.startsWith('/protected');
+  const isDashboardPage = request.nextUrl.pathname === '/protected/dashboard';
+  const userRole = token?.role as string;
 
   // Se estiver na página home ou institucional, não redireciona
   if (isHomePage || isInstitutionalPage) {
@@ -19,9 +21,16 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  // Se for operador e tentar acessar o dashboard
+  if (userRole === 'operator' && isDashboardPage) {
+    return NextResponse.redirect(new URL('/protected/vehicles-for-sale', request.url));
+  }
+
   // Se estiver autenticado e tentar acessar a página de login
   if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/protected/dashboard', request.url));
+    // Redireciona para vehicles-for-sale se for operador, senão para dashboard
+    const redirectUrl = userRole === 'operator' ? '/protected/vehicles-for-sale' : '/protected/dashboard';
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
   return NextResponse.next();
