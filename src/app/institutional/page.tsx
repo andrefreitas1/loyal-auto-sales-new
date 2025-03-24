@@ -1,15 +1,15 @@
 import { Metadata } from 'next';
 import prisma from '@/lib/prisma';
-import InstitutionalContent from './institutional/InstitutionalContent';
+import InstitutionalContent from './InstitutionalContent';
 import InstitutionalNavbar from '@/components/InstitutionalNavbar';
-import ImageCarousel from '@/components/ImageCarousel';
+import ImageCarousel from '../../components/ImageCarousel';
 
 export const metadata: Metadata = {
-  title: 'Loyal Auto Sales - Seu Carro nos Estados Unidos',
-  description: 'Na Loyal Auto Sales, transformamos o sonho de ter um carro nos Estados Unidos em realidade. Com anos de experiência no mercado americano, oferecemos um serviço personalizado e transparente.',
+  title: 'Sobre Nós | Loyal Auto Sales',
+  description: 'Conheça a história da Loyal Auto Sales e nossa missão de oferecer os melhores veículos para nossos clientes.',
 };
 
-export default async function HomePage() {
+export default async function InstitutionalPage() {
   // Busca todos os veículos à venda
   const featuredVehicles = await prisma.vehicle.findMany({
     where: {

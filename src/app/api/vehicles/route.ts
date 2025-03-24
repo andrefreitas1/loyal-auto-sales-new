@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import cloudinary from '@/lib/cloudinary';
+import prisma from '@/lib/prisma';
 
 // Definir que esta rota é dinâmica
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const prisma = new PrismaClient();
+const prismaClient = new PrismaClient();
 
 interface CloudinaryResponse {
   secure_url: string;
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Criar veículo no banco de dados
-    const vehicle = await prisma.vehicle.create({
+    const vehicle = await prismaClient.vehicle.create({
       data: {
         brand,
         model,
@@ -107,15 +108,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const status = searchParams.get('status');
-
     const vehicles = await prisma.vehicle.findMany({
       select: {
         id: true,
@@ -123,49 +121,17 @@ export async function GET(request: NextRequest) {
         model: true,
         year: true,
         color: true,
-        vin: true,
         mileage: true,
-        purchasePrice: true,
-        commissionValue: true,
-        purchaseDate: true,
         status: true,
-        createdAt: true,
-        updatedAt: true,
         images: {
           select: {
-            id: true,
             url: true
-          }
-        },
-        expenses: {
-          select: {
-            id: true,
-            type: true,
-            description: true,
-            amount: true,
-            date: true
           }
         },
         marketPrices: {
           select: {
-            id: true,
-            wholesale: true,
-            mmr: true,
-            retail: true,
-            repasse: true
+            retail: true
           }
-        },
-        saleInfo: {
-          select: {
-            id: true,
-            salePrice: true,
-            saleDate: true
-          }
-        }
-      },
-      where: {
-        status: status || {
-          not: 'deleted'
         }
       }
     });
@@ -174,10 +140,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Erro ao buscar veículos:', error);
     return NextResponse.json(
-      { error: 'Erro ao buscar veículos: ' + (error instanceof Error ? error.message : 'Erro desconhecido') },
+      { error: 'Erro ao buscar veículos' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 } 

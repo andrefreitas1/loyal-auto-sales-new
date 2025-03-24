@@ -1,35 +1,31 @@
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
   const isAuthPage = request.nextUrl.pathname.startsWith('/login');
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/protected');
+  const isHomePage = request.nextUrl.pathname === '/';
+  const isInstitutionalPage = request.nextUrl.pathname === '/institutional';
 
-  // Se estiver tentando acessar uma página de autenticação e já estiver logado
-  if (isAuthPage && token) {
-    // Redireciona operadores para vehicles-for-sale e admins para dashboard
-    const redirectUrl = token.role === 'operator' 
-      ? '/protected/vehicles-for-sale' 
-      : '/protected/dashboard';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+  // Se estiver na página home ou institucional, não redireciona
+  if (isHomePage || isInstitutionalPage) {
+    return NextResponse.next();
   }
 
-  // Se estiver tentando acessar uma rota protegida e não estiver logado
-  if (isProtectedRoute && !token) {
+  // Se não estiver autenticado e tentar acessar uma página protegida
+  if (!token && !isAuthPage) {
     return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  // Se estiver autenticado e tentar acessar a página de login
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/protected/:path*',
-    '/api/vehicles/:path*',
-    '/api/users/:path*',
-    '/api/upload-passport/:path*',
-    '/api/customers/:path*',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }; 
