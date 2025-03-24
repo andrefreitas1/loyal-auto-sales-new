@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
 
   // Se estiver autenticado e tentar acessar a página de login
   if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/protected/dashboard', request.url));
   }
 
   return NextResponse.next();
