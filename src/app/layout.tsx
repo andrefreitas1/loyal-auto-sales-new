@@ -1,10 +1,15 @@
+import type { Metadata } from 'next';
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "./providers";
+import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-export { metadata } from "./metadata";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: 'Loyal Auto Sales',
+  description: 'Sistema de gerenciamento de veículos',
+};
 
 export default function RootLayout({
   children,
@@ -13,6 +18,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <link
+          rel="preload"
+          href="/logo/logo-preta.png"
+          as="image"
+          type="image/png"
+        />
+      </head>
       <body className={inter.className}>
         <Providers>
           <div className="min-h-screen bg-gray-50">
