@@ -21,8 +21,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Se for operador e tentar acessar o dashboard
-  if (userRole === 'operator' && isDashboardPage) {
+  // Páginas restritas para operadores
+  const restrictedPages = [
+    '/protected/vehicles',
+    '/protected/reports',
+    '/protected/users',
+    '/protected/potential-customers',
+    '/protected/dashboard'
+  ];
+
+  // Se for operador e tentar acessar páginas restritas
+  if (userRole === 'operator' && restrictedPages.includes(request.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/protected/vehicles-for-sale', request.url));
   }
 
