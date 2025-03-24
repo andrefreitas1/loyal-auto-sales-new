@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface Vehicle {
   id: string;
@@ -26,13 +27,21 @@ interface Vehicle {
 
 export default function VehicleList() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    fetchVehicles();
-  }, []);
+    if (status === 'unauthenticated') {
+      router.push('/login');
+      return;
+    }
+
+    if (status === 'authenticated') {
+      fetchVehicles();
+    }
+  }, [status, router]);
 
   const fetchVehicles = async () => {
     try {

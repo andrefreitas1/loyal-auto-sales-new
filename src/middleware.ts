@@ -7,6 +7,7 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login');
   const isHomePage = request.nextUrl.pathname === '/';
   const isInstitutionalPage = request.nextUrl.pathname === '/institutional';
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/protected');
 
   // Se estiver na página home ou institucional, não redireciona
   if (isHomePage || isInstitutionalPage) {
@@ -14,7 +15,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Se não estiver autenticado e tentar acessar uma página protegida
-  if (!token && !isAuthPage) {
+  if (!token && isProtectedRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
