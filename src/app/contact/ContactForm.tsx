@@ -1,74 +1,26 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
-import { Vehicle } from '@prisma/client';
-import Image from 'next/image';
-import { Listbox } from '@headlessui/react';
-import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-interface VehicleWithPrices extends Vehicle {
-  marketPrices: {
-    retail: number;
-  } | null;
-  images: {
-    id: string;
-    url: string;
-  }[];
-}
-
-function ContactFormContent() {
+export default function ContactForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    vehicleInterest: '',
+    message: ''
+  });
   const [loading, setLoading] = useState(false);
-  const [vehicle, setVehicle] = useState<VehicleWithPrices | null>(null);
-  const [vehicles, setVehicles] = useState<VehicleWithPrices[]>([]);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    const vehicleId = searchParams.get('vehicleId');
-    if (vehicleId) {
-      fetchVehicle(vehicleId);
-    }
-    fetchVehicles();
-  }, [searchParams]);
-
-  const fetchVehicles = async () => {
-    try {
-      const response = await fetch('/api/vehicles?status=FOR_SALE');
-      if (!response.ok) throw new Error('Erro ao buscar veículos');
-      const data = await response.json();
-      setVehicles(data);
-    } catch (error) {
-      console.error('Erro ao buscar veículos:', error);
-      toast.error('Erro ao carregar veículos disponíveis');
-    }
-  };
-
-  const fetchVehicle = async (id: string) => {
-    try {
-      const response = await fetch(`/api/vehicles/${id}/public`);
-      if (!response.ok) throw new Error('Erro ao buscar veículo');
-      const data = await response.json();
-      setVehicle(data);
-    } catch (error) {
-      console.error('Erro ao buscar veículo:', error);
-      toast.error('Erro ao carregar informações do veículo');
-    }
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
-
-    const formData = new FormData(event.currentTarget);
-    const data = {
-      firstName: formData.get('firstName'),
-      lastName: formData.get('lastName'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      vehicleId: vehicle?.id
-    };
+    setError('');
+    setSuccess(false);
 
     try {
       const response = await fetch('/api/contact', {
@@ -76,149 +28,136 @@ function ContactFormContent() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao enviar formulário');
+        throw new Error('Erro ao enviar mensagem');
       }
 
-      toast.success('Mensagem enviada com sucesso!');
-      router.push('/institutional');
-    } catch (error) {
-      console.error(error);
-      toast.error('Erro ao enviar mensagem. Tente novamente.');
+      setSuccess(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        vehicleInterest: '',
+        message: ''
+      });
+    } catch (err) {
+      setError('Erro ao enviar mensagem. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-            Nome
-          </label>
-          <input
-            type="text"
-            name="firstName"
-            id="firstName"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
+          {error}
         </div>
-        <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-            Sobrenome
-          </label>
-          <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          />
+      )}
+
+      {success && (
+        <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-lg">
+          Mensagem enviada com sucesso! Entraremos em contato em breve.
         </div>
-      </div>
+      )}
 
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
+        <label htmlFor="vehicleInterest" className="block text-sm font-medium text-gray-700 mb-1">
+          Veículo de Interesse
         </label>
         <input
-          type="email"
-          name="email"
-          id="email"
+          type="text"
+          id="vehicleInterest"
+          name="vehicleInterest"
+          value={formData.vehicleInterest}
+          onChange={handleChange}
+          placeholder="Ex: Toyota Camry 2023"
+          className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         />
       </div>
 
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          Nome Completo
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+          E-mail
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
           Telefone
         </label>
         <input
           type="tel"
-          name="phone"
           id="phone"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
         />
       </div>
 
       <div>
-        <label htmlFor="vehicle" className="block text-sm font-medium text-gray-700">
-          Veículo de Interesse
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+          Mensagem
         </label>
-        <Listbox value={vehicle} onChange={setVehicle}>
-          <div className="relative mt-1">
-            <Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm">
-              <span className="block truncate">
-                {vehicle ? `${vehicle.brand} ${vehicle.model} ${vehicle.year}` : 'Selecione um veículo'}
-              </span>
-              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </span>
-            </Listbox.Button>
-            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {vehicles.map((v) => (
-                <Listbox.Option
-                  key={v.id}
-                  value={v}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-3 pr-9 ${
-                      active ? 'bg-blue-600 text-white' : 'text-gray-900'
-                    }`
-                  }
-                >
-                  {({ selected, active }) => (
-                    <>
-                      <span className={`block truncate ${selected ? 'font-semibold' : 'font-normal'}`}>
-                        {v.brand} {v.model} {v.year}
-                      </span>
-                      {selected ? (
-                        <span
-                          className={`absolute inset-y-0 right-0 flex items-center pr-4 ${
-                            active ? 'text-white' : 'text-blue-600'
-                          }`}
-                        >
-                          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </span>
-                      ) : null}
-                    </>
-                  )}
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </div>
-        </Listbox>
+        <textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          rows={4}
+          className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          placeholder="Digite sua mensagem aqui..."
+          required
+        />
       </div>
 
       <div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          className="w-full bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Enviando...' : 'Enviar Mensagem'}
         </button>
       </div>
     </form>
-  );
-}
-
-export default function ContactForm() {
-  return (
-    <Suspense fallback={<div>Carregando formulário...</div>}>
-      <ContactFormContent />
-    </Suspense>
   );
 } 
