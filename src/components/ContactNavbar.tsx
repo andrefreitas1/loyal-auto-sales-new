@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/hooks/useLanguage';
+import LanguageSelector from './LanguageSelector';
 
 export default function ContactNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const { translations } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,14 +23,34 @@ export default function ContactNavbar() {
   }, []);
 
   const handleNavigation = (sectionId: string) => {
-    router.push('/');
-    // Aguarda a navegação ser concluída antes de rolar
-    setTimeout(() => {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    const navbarHeight = 80; // Altura do navbar em pixels
+
+    if (sectionId === 'inicio') {
+      router.push('/');
+    } else {
+      router.push('/');
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          const sectionPosition = section.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({
+            top: sectionPosition - navbarHeight,
+            behavior: 'smooth'
+          });
+        } else {
+          setTimeout(() => {
+            const retrySection = document.getElementById(sectionId);
+            if (retrySection) {
+              const retryPosition = retrySection.getBoundingClientRect().top + window.pageYOffset;
+              window.scrollTo({
+                top: retryPosition - navbarHeight,
+                behavior: 'smooth'
+              });
+            }
+          }, 500);
+        }
+      }, 300);
+    }
     setIsMenuOpen(false);
   };
 
@@ -56,39 +79,41 @@ export default function ContactNavbar() {
                 onClick={() => handleNavigation('inicio')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
               >
-                Início
+                {translations.navbar.home}
               </button>
               <button 
                 onClick={() => handleNavigation('historia')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
               >
-                História
+                {translations.navbar.history}
               </button>
               <button 
                 onClick={() => handleNavigation('valores')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
               >
-                Valores
+                {translations.navbar.values}
               </button>
               <button 
-                onClick={() => handleNavigation('veiculos')}
+                onClick={() => handleNavigation('veiculos-destaque')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors"
               >
-                Veículos em Destaque
+                {translations.navbar.featuredVehicles}
               </button>
             </div>
-            <div className="flex items-center space-x-6">
+            
+            <div className="flex items-center space-x-4">
+              <LanguageSelector />
               <Link 
                 href="/contact" 
                 className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-medium"
               >
-                Contato
+                {translations.navbar.contact}
               </Link>
               <Link 
                 href="/login" 
                 className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors text-lg font-medium"
               >
-                Employers
+                {translations.navbar.employers}
               </Link>
             </div>
           </div>
@@ -133,39 +158,42 @@ export default function ContactNavbar() {
                 onClick={() => handleNavigation('inicio')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors text-left"
               >
-                Início
+                {translations.navbar.home}
               </button>
               <button
                 onClick={() => handleNavigation('historia')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors text-left"
               >
-                História
+                {translations.navbar.history}
               </button>
               <button
                 onClick={() => handleNavigation('valores')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors text-left"
               >
-                Valores
+                {translations.navbar.values}
               </button>
               <button
-                onClick={() => handleNavigation('veiculos')}
+                onClick={() => handleNavigation('veiculos-destaque')}
                 className="text-lg font-medium text-gray-900 hover:text-primary-600 transition-colors text-left"
               >
-                Veículos em Destaque
+                {translations.navbar.featuredVehicles}
               </button>
+              <div className="flex justify-center py-2">
+                <LanguageSelector />
+              </div>
               <Link
                 href="/contact"
                 className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-medium text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contato
+                {translations.navbar.contact}
               </Link>
               <Link
                 href="/login"
                 className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors text-lg font-medium text-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Employers
+                {translations.navbar.employers}
               </Link>
             </div>
           </div>

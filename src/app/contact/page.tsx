@@ -1,8 +1,13 @@
+'use client';
+
 import { Suspense } from 'react';
 import ContactForm from '@/app/contact/ContactForm';
 import ContactNavbar from '@/components/ContactNavbar';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function ContactPage() {
+  const { translations } = useLanguage();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <ContactNavbar />
@@ -11,9 +16,9 @@ export default function ContactPage() {
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-xl overflow-hidden">
           <div className="p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-white mb-4">Entre em Contato</h1>
+              <h1 className="text-3xl font-bold text-white mb-4">{translations.contact.title}</h1>
               <p className="text-gray-300 max-w-2xl mx-auto">
-                Estamos prontos para atender você. Preencha o formulário abaixo e entraremos em contato o mais breve possível.
+                {translations.contact.description}
               </p>
             </div>
 

@@ -3,13 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { metadata as homeMetadata } from './metadata';
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: 'Loyal Auto Sales',
-  description: 'Sistema de gerenciamento de veículos',
-};
+export const metadata: Metadata = homeMetadata;
 
 export default function RootLayout({
   children,
@@ -24,6 +22,7 @@ export default function RootLayout({
           href="/logo/logo-preta.png"
           as="image"
           type="image/png"
+          crossOrigin="anonymous"
         />
       </head>
       <body className={inter.className}>

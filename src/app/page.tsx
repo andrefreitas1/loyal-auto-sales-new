@@ -1,118 +1,136 @@
-import { Metadata } from 'next';
-import prisma from '@/lib/prisma';
-import InstitutionalContent from './institutional/InstitutionalContent';
-import InstitutionalNavbar from '@/components/InstitutionalNavbar';
-import ImageCarousel from '@/components/ImageCarousel';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Loyal Auto Sales - Seu Carro nos Estados Unidos',
-  description: 'Na Loyal Auto Sales, transformamos o sonho de ter um carro nos Estados Unidos em realidade. Com anos de experiência no mercado americano, oferecemos um serviço personalizado e transparente.',
-};
+import { useEffect, useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { Vehicle } from '@prisma/client';
+import Link from 'next/link';
+import { Carousel } from '@/components/Carousel';
+import InstitutionalContent from '@/app/institutional/InstitutionalContent';
+import ContactNavbar from '@/components/ContactNavbar';
+import Image from 'next/image';
 
-export default async function HomePage() {
-  // Busca todos os veículos à venda
-  const featuredVehicles = await prisma.vehicle.findMany({
-    where: {
-      status: 'for_sale',
-    },
-    include: {
-      images: true,
-      marketPrices: true,
-    },
-  });
+export default function HomePage() {
+  const { translations } = useLanguage();
+  const [featuredVehicles, setFeaturedVehicles] = useState<(Vehicle & {
+    images: { url: string }[];
+    marketPrices: { retail: number } | null;
+  })[]>([]);
+  const [carouselImages, setCarouselImages] = useState<string[]>([]);
 
-  // Busca todos os veículos à venda para o carrossel
-  const allVehicles = await prisma.vehicle.findMany({
-    where: {
-      status: 'for_sale',
-      images: {
-        some: {} // Garante que o veículo tenha pelo menos uma imagem
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetch('/api/vehicles');
+        const data = await response.json();
+        setFeaturedVehicles(data);
+        
+        // Coletar todas as imagens para o carrossel
+        const allImages = data.flatMap((vehicle: Vehicle & { images: { url: string }[] }) => 
+          vehicle.images.map(img => img.url)
+        );
+        setCarouselImages(allImages);
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
       }
-    },
-    include: {
-      images: {
-        take: 1 // Pega apenas a primeira imagem de cada veículo
-      }
-    },
-  });
+    };
 
-  // Prepara as imagens para o carrossel
-  const carouselImages = allVehicles.map(vehicle => ({
-    url: vehicle.images[0].url,
-    alt: `${vehicle.brand} ${vehicle.model} ${vehicle.year}`,
-    vehicleId: vehicle.id
-  }));
+    fetchVehicles();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <InstitutionalNavbar />
-      <div className="relative isolate pt-16">
-        {/* Background pattern */}
-        <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
-          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary-200 to-primary-400 opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
+    <div className="min-h-screen bg-gray-100">
+      <ContactNavbar />
+      
+      {/* Hero Section with Carousel Background */}
+      <section className="relative h-screen">
+        {/* Carousel Background */}
+        <div className="absolute inset-0">
+          {carouselImages.length > 0 && (
+            <Carousel images={carouselImages} />
+          )}
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          {/* Seção Início */}
-          <div id="inicio" className="relative min-h-screen">
-            {/* Carrossel de Imagens */}
-            <div className="absolute inset-0 w-full h-full">
-              <ImageCarousel images={carouselImages} />
+        {/* Welcome Content */}
+        <div className="relative container mx-auto px-4 h-full flex items-center">
+          <div className="max-w-2xl text-white">
+            <h1 className="text-5xl font-bold mb-6">{translations.home.hero.title}</h1>
+            <p className="text-xl mb-8">{translations.home.hero.description}</p>
+            <div className="flex space-x-4">
+              <Link
+                href="#historia"
+                className="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              >
+                {translations.home.hero.historyButton}
+              </Link>
+              <Link
+                href="#valores"
+                className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors"
+              >
+                {translations.home.hero.valuesButton}
+              </Link>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Conteúdo sobreposto */}
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen bg-black/40">
-              <div className="text-center w-full max-w-4xl px-4">
-                <h1 className="text-5xl font-bold text-white mb-8">Bem-vindo à Loyal Auto Sales</h1>
-                <p className="text-xl text-gray-100 max-w-3xl mx-auto leading-relaxed mb-12">
-                  Na Loyal Auto Sales, transformamos o sonho de ter um carro nos Estados Unidos em realidade. 
-                  Com anos de experiência no mercado americano, oferecemos um serviço personalizado e transparente, 
-                  garantindo a melhor experiência para nossa comunidade latino-americana.
-                </p>
-                <div className="flex justify-center gap-6">
-                  <a href="#historia" className="bg-primary-600 text-white px-8 py-4 rounded-md hover:bg-primary-700 transition-colors text-lg font-semibold">
-                    Conheça Nossa História
-                  </a>
-                  <a href="#valores" className="bg-gray-800 text-white px-8 py-4 rounded-md hover:bg-gray-700 transition-colors text-lg font-semibold">
-                    Nossos Valores
-                  </a>
+      {/* História Section */}
+      <section id="historia" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">{translations.home.history.title}</h2>
+          <div className="max-w-3xl mx-auto">
+            <p className="text-lg text-gray-700 mb-6">{translations.home.history.paragraph1}</p>
+            <p className="text-lg text-gray-700 mb-6">{translations.home.history.paragraph2}</p>
+            <p className="text-lg text-gray-700">{translations.home.history.paragraph3}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Institutional Content */}
+      <section id="valores" className="py-16">
+        <InstitutionalContent vehicles={featuredVehicles} />
+      </section>
+
+      {/* Seção de Veículos em Destaque */}
+      <section id="veiculos-destaque" className="bg-white">
+        <div className="container mx-auto px-4 pt-32 pb-16">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            {translations.home.featuredVehicles.title}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredVehicles.map((vehicle) => (
+              <div key={vehicle.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="relative h-48">
+                  <Image
+                    src={vehicle.images[0]?.url || ''}
+                    alt={vehicle.brand + ' ' + vehicle.model}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{vehicle.brand} {vehicle.model}</h3>
+                  <div className="space-y-2 text-gray-600">
+                    <p>{translations.home.featuredVehicles.year}: {vehicle.year}</p>
+                    <p>{translations.home.featuredVehicles.color}: {vehicle.color}</p>
+                    <p>{translations.home.featuredVehicles.mileage}: {vehicle.mileage}</p>
+                  </div>
+                  <div className="mt-4 mb-4">
+                    <p className="text-sm text-gray-500">{translations.home.featuredVehicles.price}</p>
+                    <p className="text-2xl font-bold text-blue-600">${vehicle.marketPrices?.retail}</p>
+                  </div>
+                  <Link
+                    href="/contact"
+                    className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    {translations.home.featuredVehicles.contactButton}
+                  </Link>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Seção Nossa História */}
-          <div id="historia" className="py-24">
-            <div className="bg-white/5 rounded-2xl p-8 ring-1 ring-white/10">
-              <h2 className="text-3xl font-bold text-white mb-6">Nossa História</h2>
-              <div className="prose prose-invert max-w-none">
-                <p className="text-gray-300 text-lg mb-4">
-                  A Loyal Auto Sales nasceu da paixão por carros e do desejo de ajudar o público Latino-Americano a realizarem o sonho de ter um veículo nos Estados Unidos. 
-                  Nossa jornada começou com uma visão clara: oferecer um serviço transparente, confiável e personalizado.
-                </p>
-                <p className="text-gray-300 text-lg mb-4">
-                  Ao longo dos anos, construímos uma reputação sólida baseada na confiança e no compromisso com nossos clientes. 
-                  Nossa experiência no mercado americano nos permite oferecer as melhores opções de financiamento e veículos.
-                </p>
-                <p className="text-gray-300 text-lg">
-                  Hoje, a Loyal Auto Sales é uma empresa consolidada que continua crescendo e evoluindo, sempre mantendo 
-                  nossos valores fundamentais e o compromisso com a excelência em tudo que fazemos.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Seção Valores e Carros à Venda */}
-          <div id="valores" className="py-24">
-            <InstitutionalContent vehicles={featuredVehicles} />
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Background pattern */}
-      <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
-        <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-primary-200 to-primary-400 opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" />
-      </div>
+      </section>
     </div>
   );
 } 

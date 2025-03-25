@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import VehicleSelect from '@/components/VehicleSelect';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function ContactForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { translations } = useLanguage();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -76,13 +78,13 @@ export default function ContactForm() {
 
       {success && (
         <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg">
-          Mensagem enviada com sucesso! Entraremos em contato em breve.
+          {translations.contact.form.success}
         </div>
       )}
 
       <div>
         <label htmlFor="vehicleId" className="block text-sm font-medium text-gray-200 mb-1">
-          Veículo de Interesse
+          {translations.contact.form.vehicleInterest}
         </label>
         <VehicleSelect
           value={formData.vehicleId}
@@ -93,7 +95,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="firstName" className="block text-sm font-medium text-gray-200 mb-1">
-          Primeiro Nome
+          {translations.contact.form.firstName}
         </label>
         <input
           type="text"
@@ -108,7 +110,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="lastName" className="block text-sm font-medium text-gray-200 mb-1">
-          Último Nome
+          {translations.contact.form.lastName}
         </label>
         <input
           type="text"
@@ -123,7 +125,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-1">
-          E-mail
+          {translations.contact.form.email}
         </label>
         <input
           type="email"
@@ -138,7 +140,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="phone" className="block text-sm font-medium text-gray-200 mb-1">
-          Telefone
+          {translations.contact.form.phone}
         </label>
         <input
           type="tel"
@@ -157,7 +159,7 @@ export default function ContactForm() {
           disabled={loading}
           className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2.5 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Enviando...' : 'Enviar Mensagem'}
+          {loading ? translations.contact.form.sending : translations.contact.form.submit}
         </button>
       </div>
     </form>

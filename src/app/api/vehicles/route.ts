@@ -115,52 +115,20 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const vehicles = await prisma.vehicle.findMany({
-      select: {
-        id: true,
-        brand: true,
-        model: true,
-        year: true,
-        color: true,
-        mileage: true,
-        status: true,
-        purchasePrice: true,
-        purchaseDate: true,
-        images: {
-          select: {
-            url: true
-          }
-        },
-        expenses: {
-          select: {
-            id: true,
-            type: true,
-            amount: true,
-            date: true
-          }
-        },
-        saleInfo: {
-          select: {
-            salePrice: true,
-            saleDate: true
-          }
-        },
-        marketPrices: {
-          select: {
-            wholesale: true,
-            mmr: true,
-            retail: true,
-            repasse: true
-          }
-        },
-        vin: true
-      }
+      where: {
+        status: 'for_sale',
+      },
+      include: {
+        images: true,
+        marketPrices: true,
+      },
     });
 
     return NextResponse.json(vehicles);
   } catch (error) {
-    console.error('Erro ao buscar veículos:', error);
+    console.error('Error fetching vehicles:', error);
     return NextResponse.json(
-      { error: 'Erro ao buscar veículos' },
+      { error: 'Failed to fetch vehicles' },
       { status: 500 }
     );
   }
