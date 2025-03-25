@@ -38,7 +38,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-primary-50">
       <ContactNavbar />
       
       {/* Hero Section with Carousel Background */}
@@ -59,7 +59,7 @@ export default function HomePage() {
             <div className="flex space-x-4">
               <Link
                 href="#historia"
-                className="bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                className="bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
               >
                 {translations.home.hero.historyButton}
               </Link>
@@ -77,7 +77,7 @@ export default function HomePage() {
       {/* História Section */}
       <section id="historia" className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">{translations.home.history.title}</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-primary-900">{translations.home.history.title}</h2>
           <div className="max-w-3xl mx-auto">
             <p className="text-lg text-gray-700 mb-6">{translations.home.history.paragraph1}</p>
             <p className="text-lg text-gray-700 mb-6">{translations.home.history.paragraph2}</p>
@@ -87,14 +87,14 @@ export default function HomePage() {
       </section>
 
       {/* Institutional Content */}
-      <section id="valores" className="py-16">
+      <section id="valores" className="py-16 bg-primary-50">
         <InstitutionalContent vehicles={featuredVehicles} />
       </section>
 
       {/* Seção de Veículos em Destaque */}
       <section id="veiculos-destaque" className="bg-white">
         <div className="container mx-auto px-4 pt-32 pb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-3xl font-bold text-center mb-12 text-primary-900">
             {translations.home.featuredVehicles.title}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
