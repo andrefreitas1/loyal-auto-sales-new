@@ -97,10 +97,10 @@ export default function Navbar() {
       { href: '/protected/dashboard', label: 'Dashboard' },
       { href: '/protected/vehicles', label: 'Veículos' },
     ] : []),
-    { href: '/protected/vehicles-in-preparation', label: 'Veículos em Preparação' },
-    { href: '/protected/vehicles-for-sale', label: 'Disponíveis à Venda' },
+    { href: '/protected/vehicles-in-preparation', label: 'Em Preparação' },
+    { href: '/protected/vehicles-for-sale', label: 'Á Venda' },
     { href: '/protected/customers', label: 'Clientes' },
-    { href: '/protected/customer-status', label: 'Status dos Clientes' },
+    { href: '/protected/customer-status', label: 'Status' },
     ...(session?.user?.role === 'admin' ? [
       { href: '/protected/reports', label: 'Relatórios' },
       { href: '/protected/users', label: 'Usuários' },
@@ -217,50 +217,58 @@ export default function Navbar() {
                 </button>
 
                 {isUserMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                    <div className="py-1">
-                      <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
-                        <div className="font-medium">{session?.user?.name || 'Usuário'}</div>
-                        <div className="text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
+                  <div className="fixed inset-0 z-40" onClick={() => setIsUserMenuOpen(false)}>
+                    <div className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    <div className="absolute right-4 top-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                      <div className="py-1">
+                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                          <div className="font-medium">{session?.user?.name || 'Usuário'}</div>
+                          <div className="text-gray-500">{session?.user?.email || 'usuario@exemplo.com'}</div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {session?.user?.role === 'admin' ? 'Administrador' : 'Operador'}
+                          </div>
                         </div>
+                        {session?.user?.role === 'admin' && (
+                          <Link
+                            href="/protected/potential-customers"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <BellIcon className="h-5 w-5 mr-2" />
+                            Clientes Potenciais
+                            {hasNewMessages && (
+                              <span className="ml-2 h-2 w-2 bg-red-500 rounded-full"></span>
+                            )}
+                          </Link>
+                        )}
+                        <button
+                          onClick={() => {
+                            setShowChangePassword(true);
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Alterar Senha
+                        </button>
+                        {session?.user?.role === 'admin' && (
+                          <Link
+                            href="/protected/settings"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            Configurações
+                          </Link>
+                        )}
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Sair
+                        </button>
                       </div>
-                      {session?.user?.role === 'admin' && (
-                        <Link
-                          href="/protected/potential-customers"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-                        >
-                          <BellIcon className="h-5 w-5 mr-2" />
-                          Clientes Potenciais
-                          {hasNewMessages && (
-                            <span className="ml-2 h-2 w-2 bg-red-500 rounded-full"></span>
-                          )}
-                        </Link>
-                      )}
-                      <button
-                        onClick={() => {
-                          setShowChangePassword(true);
-                          setIsUserMenuOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Alterar Senha
-                      </button>
-                      {session?.user?.role === 'admin' && (
-                        <Link
-                          href="/protected/settings"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          Configurações
-                        </Link>
-                      )}
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Sair
-                      </button>
                     </div>
                   </div>
                 )}
