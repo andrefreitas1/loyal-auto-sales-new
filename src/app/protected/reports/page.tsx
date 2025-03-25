@@ -250,17 +250,17 @@ export default function Reports() {
       ];
 
       const soldData = soldVehicles.map(vehicle => {
-        const custoTotal = vehicle.purchasePrice + 
-          vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+        const totalCost = vehicle.purchasePrice + 
+          (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
         const valorVenda = vehicle.saleInfo?.salePrice || 0;
-        const lucro = valorVenda - custoTotal;
+        const lucro = valorVenda - totalCost;
 
         return [
           `${vehicle.brand} ${vehicle.model} (${vehicle.year}) - ${vehicle.color}`,
           formatDate(vehicle.purchaseDate),
           vehicle.saleInfo ? formatDate(vehicle.saleInfo.saleDate) : 'N/A',
           vehicle.vin,
-          formatCurrency(custoTotal),
+          formatCurrency(totalCost),
           formatCurrency(valorVenda),
           formatCurrency(lucro)
         ];
@@ -470,7 +470,7 @@ export default function Reports() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {[...reportData.vehiclesByStatus.acquired, ...reportData.vehiclesByStatus.in_preparation, ...reportData.vehiclesByStatus.for_sale].map((vehicle) => {
                     const totalCost = vehicle.purchasePrice + 
-                      vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                      (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
                     
                     const wholesaleProfit = vehicle.marketPrices ? vehicle.marketPrices.wholesale - totalCost : 0;
                     const mmrProfit = vehicle.marketPrices ? vehicle.marketPrices.mmr - totalCost : 0;
@@ -506,7 +506,7 @@ export default function Reports() {
                         <td className="px-6 py-4">
                           <div className="text-sm text-gray-900">
                             <div>Compra: {formatCurrency(vehicle.purchasePrice)}</div>
-                            <div>Despesas: {formatCurrency(vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0))}</div>
+                            <div>Despesas: {formatCurrency(vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0)}</div>
                             <div className="font-semibold">Total: {formatCurrency(totalCost)}</div>
                           </div>
                         </td>
@@ -576,14 +576,16 @@ export default function Reports() {
               const validVehicles = vehicles.filter(v => v.marketPrices && v.marketPrices[format]);
               
               const totalProfit = validVehicles.reduce((sum, vehicle) => {
-                const totalCost = vehicle.purchasePrice + vehicle.expenses.reduce((expSum, exp) => expSum + exp.amount, 0);
+                const totalCost = vehicle.purchasePrice + 
+                  (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
                 const price = vehicle.marketPrices?.[format] || 0;
                 return sum + (price - totalCost);
               }, 0);
 
               const averageMargin = validVehicles.length > 0
                 ? validVehicles.reduce((sum, vehicle) => {
-                    const totalCost = vehicle.purchasePrice + vehicle.expenses.reduce((expSum, exp) => expSum + exp.amount, 0);
+                    const totalCost = vehicle.purchasePrice + 
+                      (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
                     const price = vehicle.marketPrices?.[format] || 0;
                     return sum + calculateProfitMargin(price, totalCost);
                   }, 0) / validVehicles.length
@@ -753,7 +755,7 @@ export default function Reports() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {reportData.vehiclesByStatus.for_sale.map((vehicle) => {
                   const totalCost = vehicle.purchasePrice + 
-                    vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                    (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
                   
                   return (
                     <tr key={vehicle.id}>
@@ -785,7 +787,7 @@ export default function Reports() {
                       <td className="px-6 py-4 text-sm text-gray-500">
                         <div>
                           <p>Compra: {formatCurrency(vehicle.purchasePrice)}</p>
-                          <p>Despesas: {formatCurrency(vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0))}</p>
+                          <p>Despesas: {formatCurrency(vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0)}</p>
                           <p className="font-semibold">Total: {formatCurrency(totalCost)}</p>
                         </div>
                       </td>
@@ -826,7 +828,7 @@ export default function Reports() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {reportData.vehiclesByStatus.sold.map((vehicle) => {
                   const totalCost = vehicle.purchasePrice + 
-                    vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                    (vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0);
                   const profit = (vehicle.saleInfo?.salePrice || 0) - totalCost;
                   
                   return (
@@ -859,7 +861,7 @@ export default function Reports() {
                       <td className="px-6 py-4 text-sm text-gray-500">
                         <div>
                           <p>Compra: {formatCurrency(vehicle.purchasePrice)}</p>
-                          <p>Despesas: {formatCurrency(vehicle.expenses.reduce((sum, exp) => sum + exp.amount, 0))}</p>
+                          <p>Despesas: {formatCurrency(vehicle.expenses?.reduce((sum, exp) => sum + exp.amount, 0) || 0)}</p>
                           <p className="font-semibold">Total: {formatCurrency(totalCost)}</p>
                         </div>
                       </td>
