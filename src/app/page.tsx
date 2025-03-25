@@ -24,11 +24,12 @@ export default function HomePage() {
         const data = await response.json();
         setFeaturedVehicles(data);
         
-        // Coletar todas as imagens para o carrossel
-        const allImages = data.flatMap((vehicle: Vehicle & { images: { url: string }[] }) => 
-          vehicle.images.map(img => img.url)
-        );
-        setCarouselImages(allImages);
+        // Coletar apenas a primeira imagem de cada veículo para o carrossel
+        const firstImages = data.map((vehicle: Vehicle & { images: { url: string }[] }) => 
+          vehicle.images[0]?.url
+        ).filter(Boolean); // Remove valores undefined/null
+        
+        setCarouselImages(firstImages);
       } catch (error) {
         console.error('Error fetching vehicles:', error);
       }

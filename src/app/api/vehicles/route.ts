@@ -121,6 +121,7 @@ export async function GET() {
       include: {
         images: true,
         marketPrices: true,
+        expenses: true,
       },
     });
 
