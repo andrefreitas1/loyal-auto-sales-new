@@ -118,7 +118,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-4 mb-4">
                     <p className="text-sm text-gray-500">{translations.home.featuredVehicles.price}</p>
-                    <p className="text-2xl font-bold text-blue-600">${vehicle.marketPrices?.retail}</p>
+                    <p className="text-2xl font-bold text-blue-600">${(vehicle.marketPrices?.retail || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                   <Link
                     href="/contact"
