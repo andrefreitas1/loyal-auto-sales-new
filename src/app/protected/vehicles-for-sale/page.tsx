@@ -116,7 +116,7 @@ export default function VehiclesForSale() {
                               <span className="text-sm font-medium text-green-800">Preço de Venda</span>
                             </div>
                             <div className="text-2xl font-bold text-green-700">
-                              ${(vehicle.marketPrices.retail || 0).toLocaleString()}
+                              ${(vehicle.marketPrices.retail || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
                           </div>
                           <div className="bg-white p-2 rounded-full shadow-sm">
@@ -138,7 +138,7 @@ export default function VehiclesForSale() {
                               <span className="text-sm font-medium text-blue-800">Sua Comissão</span>
                             </div>
                             <div className="text-xl font-bold text-blue-700">
-                              ${(vehicle.commissionValue || 0).toLocaleString()}
+                              ${(vehicle.commissionValue || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
                             <div className="text-xs text-blue-600 mt-1">
                               Ganhe essa comissão ao vender este veículo!
